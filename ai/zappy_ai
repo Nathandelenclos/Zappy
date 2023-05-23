@@ -1,0 +1,80 @@
+#!/bin/python3
+
+import sys
+import argparse
+import socket
+import select
+
+port = None
+team_name = None
+ip_server = None
+
+def manHelp():
+    print("USAGE:  ./zappy_ai -p port -n name -h machine")
+    print("\tport\tis the port number")
+    print("\tname\tis the name of the team")
+    print("\tmachine\tis the name of the machine; localhost by default")
+
+def Error_man():
+    global port, team_name, ip_server
+
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "-help":
+            manHelp()
+            raise SystemExit()
+        else:
+            raise Exception("Bad arguments\n")
+    elif len(sys.argv) == 5 or len(sys.argv) == 7:
+        parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument('-p', type=int)
+        parser.add_argument('-n', type=str)
+        parser.add_argument('-h', type=str)
+        args = parser.parse_args()
+        port = args.p
+        team_name = args.n
+        ip_server = args.h
+        if team_name == None or port == None:
+            raise Exception("Bad arguments\n")
+        if ip_server == None:
+            ip_server = "127.0.0.1"
+    else:
+        raise Exception("Bad arguments\n")
+    
+def main():
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        client_socket.connect((ip_server, port))
+        print("Connexion au serveur établie.")
+        client_socket.send((team_name+"\n").encode())
+        socket_list = [sys.stdin, client_socket]
+        while (1):
+            read_socket, _, _ = select.select(socket_list,[],[])
+            for notified_socket in read_socket:
+                if notified_socket == client_socket:
+                    data = client_socket.recv(1024)
+                    if data:
+                        data = data.decode()
+                        print(data, end="")
+                if notified_socket == sys.stdin:
+                    command = sys.stdin.readline().strip()
+                    if command:
+                        if command == "STOP":
+                            break
+                        else:
+                            command = command + "\n"
+                            client_socket.send(command.encode())
+        client_socket.close()
+        print("Connexion fermée.")
+
+    except ConnectionRefusedError:
+        print("La connexion au serveur a été refusée.")
+
+if __name__ == "__main__":
+    try:
+        Error_man()
+        main()
+    except SystemExit:
+        exit(0)
+    except Exception as error:
+        sys.stdout.write(str(error))
+        exit(84)
