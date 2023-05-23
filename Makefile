@@ -5,8 +5,8 @@
 ## Makefile
 ##
 
-PROJECT	=	MyTeams
-NAME	=	myTeams
+PROJECT	=	Zappy
+NAME	=	zappy
 
 MAKES	=	./ai	\
             ./gui	\
