@@ -16,7 +16,6 @@ auto_command = []
 last_broadcast = None
 last_command = None
 last_answer = None
-mode = None
 
 class Game_data:
     def __init__(self):
@@ -78,67 +77,17 @@ def read_server(client_socket):
             msg += char_read.decode()
     return (msg)
 
-def check_inventory(client_socket, myGameData):
-    print("Inventory")
-    client_socket.send(("Inventory"+"\n").encode())
-    data = read_server(client_socket)
-    rtn_val = answer_management(data)
-    if rtn_val == 0:
-        clean_string = data.strip("[] ")
-        pattern = r"(\w+)\s(\d+)"
-        matches = re.findall(pattern, clean_string)
-        data = [[name, value] for name, value in matches]
-        while (len(data) > 0):
-            myGameData.inventory[data[0][0]] = data[0][1]
-            data.pop(0)
-        # print(myGameData.inventory)
-        # rtn_val = -1
-    return (rtn_val)
-
 def search_food(client_socket):
-    global last_command, mode
-    print("Look")
     client_socket.send(("Look"+"\n").encode())
-    last_command = "Look"
-    mode = "FOOD"
 
-def action_choice(client_socket, myGameData, data):
-    global auto_command, last_command
-    answer = 0
+def action_choice(client_socket):
     if (len(auto_command) > 0):
         command = auto_command[0] + "\n"
-        print(command, end="")
         auto_command.pop(0)
         client_socket.send(command.encode())
-    elif (last_command == "Look" and mode == "FOOD" and data != ""):
-        # inserer strategie de calcul de chemin pour chercher bouffe
-        auto_command.append("Left")
-        auto_command.append("Forward")
-        auto_command.append("Forward")
-        command = auto_command[0] + "\n"
-        print(command, end="")
-        auto_command.pop(0)
-        client_socket.send(command.encode())
-        last_command = None
     else:
-        answer = check_inventory(client_socket, myGameData)
         search_food(client_socket)
-    return (answer)
-
-def answer_management(data):
-    global last_broadcast
-    if data == "dead":
-        print("YOU DIED x)")
-        return (-1)
-    else:
-        answer = data.split()
-        if data[0] == "message":
-            last_broadcast = answer
-            print(answer, end="")
-            return(1)
-        print(data)
-        return (0)
-
+    
 def main():
     global auto_command, last_command, last_answer, last_broadcast
 
@@ -149,6 +98,7 @@ def main():
         print("Connexion au serveur établie.")
         print(read_server(client_socket))
         client_socket.send((team_name+"\n").encode())
+        socket_list = [sys.stdin, client_socket]
         myGameData = Game_data()
         free_places = read_server(client_socket)
         myGameData.available_connection = free_places
@@ -158,20 +108,50 @@ def main():
         myGameData.map_size_y = map_size[1]
         print(map_size[0] + " " + map_size[1])
         while (1):
-            if i == 0:
-                choice = action_choice(client_socket, myGameData, "")
-                if (choice == -1):
-                    break
-                i += 1
-                continue
-            data = read_server(client_socket)
-            choice = answer_management(data)
-            if (choice == -1):
-                break
-            elif (choice == 0):
-                choice = action_choice(client_socket, myGameData, data)
-                if (choice == -1):
-                    break
+            # data = read_server(client_socket)
+            # print(data)
+            # if data == "dead":
+            #     print("YOU DIED x)")
+            #     break
+            # else:
+            #     answer = data.split()
+            #     if data[0] == "message":
+            #         last_broadcast = answer
+            #         print(answer, end="")
+            #         continue
+            #     print(answer, end="")
+            #     action_choice(client_socket)
+
+                
+            read_socket, _, _ = select.select(socket_list,[],[])
+            for notified_socket in read_socket:
+                if notified_socket == client_socket:
+                    data = client_socket.recv(1024)
+                    if data:
+                        data = data.decode()
+                        print(data, end="")
+                        answer = data.split()
+                        if (len(auto_command) > 0):
+                            command = auto_command[0] + "\n"
+                            auto_command.pop(0)
+                            client_socket.send(command.encode())
+                        elif (answer[0] != "message"):
+                            last_answer = answer
+                if notified_socket == sys.stdin:
+                    command = sys.stdin.readline().strip()
+                    if command:
+                        if command == "STOP":
+                            client_socket.close()
+                            print("Connexion fermée.")
+                            return (0)
+                        elif command == "AUTO":
+                            auto_command.append("Right")
+                            auto_command.append("Forward")
+                            auto_command.append("Forward")
+                            client_socket.send((command+"\n").encode())
+                        else:
+                            command = command + "\n"
+                            client_socket.send(command.encode())
         client_socket.close()
         print("Connexion fermée.")
 
