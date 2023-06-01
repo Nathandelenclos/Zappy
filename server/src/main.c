@@ -9,7 +9,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-
+/**
+ * Main function.
+ * @param argc - Argument count.
+ * @param argv - Argument vector.
+ * @return 0 if success, 84 if error.
+ */
 int main(int argc, char **argv)
 {
     return 0;

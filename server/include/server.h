@@ -11,11 +11,14 @@
     #include "my.h"
     #include "list.h"
     #include "network.h"
+    #include "map.h"
+    #include "player.h"
 
 typedef struct {
     int socket_fd;
     struct sockaddr_in sockaddr;
     socklen_t len;
+    player_t *player;
 } client_t;
 
 typedef struct {
