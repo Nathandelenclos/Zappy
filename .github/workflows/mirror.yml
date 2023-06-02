@@ -4,26 +4,15 @@ on:
   push:
 
 jobs:
-  push:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+  to_epitech:
+    runs-on: ubuntu-latest
+    steps:                                              # <-- must use actions/checkout before mirroring!
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
-      - name: Get Current Branch
-        id: branch
-        run: echo "::set-output name=branch_name::$(echo ${GITHUB_REF#refs/heads/})"
-
-      - name: Push to Epitech Repository
-        env:
-          DESTINATION_REPO: "git@github.com:EpitechPromo2026/B-YEP-400-LIL-4-1-zappy-david.plouvier.git"
-          DESTINATION_BRANCH: ${{ steps.branch.outputs.branch_name }}
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          if ! git remote | grep -q "epitech"; then
-          git remote add epitech $DESTINATION_REPO
-          fi
-          git push epitech HEAD:$DESTINATION_BRANCH
+      - uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            git@github:com:EpitechPromo2026/B-YEP-400-LIL-4-1-zappy-davidplouvier.git
+          ssh_private_key:                              # <-- use 'secrets' to pass credential information.
+            ${{ secrets.PRIVATE_SSH_KEY }}
