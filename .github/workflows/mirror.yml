@@ -24,5 +24,7 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
+          if ! git remote | grep -q "^$remote_name$"; then
           git remote add epitech $DESTINATION_REPO
+          fi
           git push epitech HEAD:$DESTINATION_BRANCH
