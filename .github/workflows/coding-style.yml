@@ -12,3 +12,11 @@ jobs:
       run: |
         coding-style . .
         cat coding-style-report.txt
+
+    - name: Send teams notification
+      uses: microsoft/teams-notification@v1
+      with:
+        webhook: ${{ secrets.TEAMS_WEBHOOK }}
+        title: "Coding Style Check"
+        summary: "Voici le rapport de coding style"
+        filePath: "coding-style-reports.log"
