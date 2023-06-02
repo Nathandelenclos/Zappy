@@ -11,12 +11,12 @@ jobs:
     - name: Coding Style
       run: |
         coding-style . .
-        cat coding-style-report.txt
+        echo "::set-output name=cds::$(cat coding-style-reports.log)"
 
     - name: Send teams notification
-      uses: microsoft/teams-notification@v1
+      uses: aliencube/microsoft-teams-actions@v0.8.0
       with:
-        webhook: ${{ secrets.TEAMS_WEBHOOK }}
-        title: "Coding Style Check"
-        summary: "Voici le rapport de coding style"
-        filePath: "coding-style-reports.log"
+        webhook_uri: ${{ secrets.TEAMS_WEBHOOK }}
+        title: Coding Style Check
+        text: ${{ steps.coding_style.outputs.cds }}
+        theme_color: '#171515'
