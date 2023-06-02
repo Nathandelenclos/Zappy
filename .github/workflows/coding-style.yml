@@ -1,0 +1,14 @@
+name: Coding Style CI
+
+on:
+  push:
+
+jobs:
+  coding_style:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Coding Style
+      run: |
+        coding-style . .
+        cat coding-style-report.txt
