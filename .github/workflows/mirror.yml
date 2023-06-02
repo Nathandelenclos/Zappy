@@ -11,10 +11,15 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Get Current Branch
+        id: branch
+        run: echo "::set-output name=branch_name::$(echo ${GITHUB_REF#refs/heads/})"
+
       - name: Push to Epitech Repository
         env:
           DESTINATION_REPO: "git@github.com:EpitechPromo2026/B-YEP-400-LIL-4-1-zappy-david.plouvier.git"
-          DESTINATION_BRANCH: ${{ GITHUB_REF#refs/heads/ }}
+          DESTINATION_BRANCH: ${{ steps.branch.outputs.branch_name }}
           ACCESS_TOKEN: ${{ secrets.TOKEN }}
         run: |
           git config --global user.name "GitHub Actions"
