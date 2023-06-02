@@ -13,7 +13,7 @@ team_name = None
 ip_server = None
 
 auto_command = []
-last_broadcast = None
+last_broadcast = []
 last_command = None
 last_answer = None
 mode = None
@@ -172,6 +172,9 @@ def main():
                 choice = action_choice(client_socket, myGameData, data)
                 if (choice == -1):
                     break
+            else:
+                last_broadcast.append()
+
         client_socket.close()
         print("Connexion fermée.")
 
