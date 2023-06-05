@@ -8,7 +8,7 @@
 #include <stdbool.h>
 #include "server.h"
 
-void handle_client(server_t *server, args_t *args)
+void handle_client(server_t *server)
 {
     int activity;
     server->last_fd = server->socket_fd;
@@ -25,5 +25,6 @@ void handle_client(server_t *server, args_t *args)
         if ((activity < 0) && (errno != EINTR)) {
             printf("Erreur lors de la surveillance des sockets\n");
         }
+        new_connection(server);
     }
 }

@@ -20,10 +20,10 @@ int main(int argc, char **argv)
 {
     args_t *args = args_init();
     args = args_parsed(args, argc, argv);
-    server_t *server = create_server(args->port);
+    server_t *server = create_server(args);
     if (server == NULL)
         perror_exit("create_server");
-    handle_client(server, args);
+    handle_client(server);
     FREE_ALL();
     return EXIT_SUCCESS;
 }

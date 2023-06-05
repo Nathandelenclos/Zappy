@@ -5,9 +5,6 @@
 ** network/create_server.c
 */
 
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include "network.h"
 #include "server.h"
@@ -30,13 +27,13 @@ void init_socketaddr(server_t *server, int port)
  * @param port - Port to listen.
  * @return - Return server fd.
  */
-server_t *create_server(int port)
+server_t *create_server(args_t *args)
 {
     server_t *server = MALLOC(sizeof(server_t));
     server->commands = NULL;
     server->clients = NULL;
     server->socket_fd = create_socket();
-    init_socketaddr(server, port);
+    init_socketaddr(server, args->port);
     int ret;
     ret = bind(server->socket_fd, (struct sockaddr *) &server->sockaddr,
         sizeof(server->sockaddr));
