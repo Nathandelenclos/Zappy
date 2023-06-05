@@ -19,8 +19,7 @@ LIBS	=	./libs/linked_list	\
 
 OBJS	=	$(SRCS:.c=.o) $(MAIN:.c=.o)
 
-TESTOBJ	=	$(SRCS:.c=.o) $(TESTS:.c=.o)
-TESTNAME	=	unit_tests
+TEST_NAME	=	../../unit_tests
 
 ################################################################################
 
@@ -32,7 +31,7 @@ LDFLAGS	+=	-llist
 LDFLAGS	+=	-lmy
 LDFLAGS	+=	-lnet
 
-TESTCFLAGS = $(CFLAGS) $(LDFLAGS) --coverage -lcriterion
+TEST_CFLAGS = $(CFLAGS) $(LDFLAGS) --coverage -lcriterion
 
 ################################################################################
 
@@ -40,6 +39,7 @@ OUTPUT_DOC	=	./doc
 INPUT_DOC	=	./src
 
 ################################################################################
+
 SHELL	=	/bin/bash
 PRINT	=	printf "$(PROJECT):\t" ; printf
 RM	=	rm -f
@@ -90,8 +90,9 @@ fclean: clean
 	@ printf "$(GREEN)Done$(RESET)\n"
 
 tests_run:	$(TESTOBJ)
-	@ gcc -o $(TESTNAME) $(TESTOBJ) $(TESTCFLAGS)
+	@ gcc -o $(TEST_NAME) $(TESTS) $(TEST_CFLAGS)
 	./$(TESTNAME)
+	gcovr --exclude tests/
 
 re: fclean all
 de: fclean debug

@@ -13,6 +13,9 @@
     #include "network.h"
     #include "map.h"
     #include "player.h"
+    #include "utils.h"
+
+    #define MAX_CONNECTIONS 1024
 
 typedef struct {
     int socket_fd;
@@ -24,11 +27,13 @@ typedef struct {
 typedef struct {
     int socket_fd;
     struct sockaddr_in sockaddr;
-    node *clients;
     fd_set readfds;
     int last_fd;
-    node *client;
+    node *clients;
     node *commands;
 } server_t;
+
+server_t *create_server(int port);
+void handle_client(server_t *server, args_t *args);
 
 #endif /* !SERVER_H_ */
