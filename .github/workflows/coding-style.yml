@@ -1,0 +1,22 @@
+name: Coding Style CI
+
+on:
+  push:
+
+jobs:
+  coding_style:
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v2
+    - name: Coding Style
+      run: |
+        coding-style . .
+        echo "::set-output name=cds::$(cat coding-style-reports.log)"
+
+    - name: Send teams notification
+      uses: aliencube/microsoft-teams-actions@v0.8.0
+      with:
+        webhook_uri: ${{ secrets.TEAMS_WEBHOOK }}
+        title: Coding Style Check
+        text: ${{ steps.coding_style.outputs.cds }}
+        theme_color: '#171515'
