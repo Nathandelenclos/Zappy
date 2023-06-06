@@ -3,7 +3,6 @@
 import sys
 import argparse
 import socket
-import select
 import re
 
 # from main import temp_evo
@@ -66,16 +65,18 @@ def Error_man():
     else:
         raise Exception("Bad arguments\n")
 
-def answer_management(data):
+def answer_management(data, client_socket):
     global last_broadcast
     if data == "dead":
         print("YOU DIED x)")
+        client_socket.close()
+        print("Connexion fermée.")
         return (-1)
     else:
         answer = data.split()
-        if data[0] == "message":
-            last_broadcast = answer
-            print(answer, end="")
+        if answer[0] == "message":
+            last_broadcast.append(data)
+            print(data)
             return(1)
         print(data)
         return (0)
@@ -98,12 +99,7 @@ def check_inventory(client_socket, myGameData):
     answer = 1
     while (answer != 0):
         data = read_server(client_socket)
-        answer = answer_management(data)
-        if (answer == -1):
-            client_socket.close()
-            print("Connexion fermée.")
-        elif (answer == 1):
-            last_broadcast.append(data)
+        answer = answer_management(data, client_socket)
     clean_string = data.strip("[] ")
     pattern = r"(\w+)\s(\d+)"
     matches = re.findall(pattern, clean_string)
@@ -114,10 +110,10 @@ def check_inventory(client_socket, myGameData):
     # print(myGameData.inventory)
 
 def search_choice(client_socket, data, item):
-    # add_command = []
-    # add_command.append("Left")
-    # add_command.append("Forward")
-    # add_command.append("Forward")
+    add_command = []
+    add_command.append("Left")
+    add_command.append("Forward")
+    add_command.append("Forward")
     # add_command = find_path(data, item) inserer strategie de calcul de chemin pour chercher bouffe
     while (len(add_command) > 0):
         auto_command.append(add_command[0])
@@ -130,12 +126,9 @@ def search_choice(client_socket, data, item):
         answer = 1
         while (answer != 0):
             data = read_server(client_socket)
-            answer = answer_management(data)
-            if (answer == -1):
-                client_socket.close()
-                print("Connexion fermée.")
-            elif (answer == 1):
-                last_broadcast.append(data)
+            answer = answer_management(data, client_socket)
+    for broadcast in last_broadcast:
+        print(broadcast)
 
 def search_item(client_socket, item, quantity, myGameData):
     global last_command, mode, auto_command
@@ -147,12 +140,7 @@ def search_item(client_socket, item, quantity, myGameData):
         answer = 1
         while (answer != 0):
             data = read_server(client_socket)
-            answer = answer_management(data)
-            if (answer == -1):
-                client_socket.close()
-                print("Connexion fermée.")
-            elif (answer == 1):
-                last_broadcast.append(data)
+            answer = answer_management(data, client_socket)
         if answer != "ok":
             search_choice(client_socket, data, item)
 
@@ -185,14 +173,9 @@ def main():
                 i += 1
                 continue
             data = read_server(client_socket)
-            choice = answer_management(data)
-            if (choice == -1):
-                client_socket.close()
-                print("Connexion fermée.")
-            elif (choice == 0):
+            choice = answer_management(data, client_socket)
+            if (choice == 0):
                 action_choice(client_socket, myGameData, data)
-            else:
-                last_broadcast.append(data)
 
     except ConnectionRefusedError:
         print("La connexion au serveur a été refusée.")
