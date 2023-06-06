@@ -25,7 +25,7 @@ Test(help, test_help_output, .init = redirect_all_stdout)
            "    height is the height of the world\n"
            "    nameX is the name of the team X\n"
            "    clientsNb is the number of authorized clients per team\n"
-           "    freq is the reciprocal of time unit for execution of actions");
+           "    freq is the reciprocal of time unit for execution of actions", "Message help incorrect");
 }
 
 

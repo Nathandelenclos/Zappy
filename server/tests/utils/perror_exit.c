@@ -20,6 +20,6 @@ void redirect_all_std(void)
 Test(perror_exit, exits_with_failure, .exit_code = EXIT_FAILURE, .init = redirect_all_std)
 {
     perror_exit("Test Error");
-    cr_assert_stderr_eq_str("Test Error: ");
-    cr_assert_stderr_eq_str(strerror(errno));
+    cr_assert_stderr_eq_str("Test Error: ", "Message perror incorrect");
+    cr_assert_stderr_eq_str(strerror(errno), "Message perror incorrect");
 }
