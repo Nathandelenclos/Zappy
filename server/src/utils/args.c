@@ -36,7 +36,7 @@ args_t *args_init()
 args_t *args_team_name(args_t *args, int argc, char **argv, int i)
 {
     if (strcmp(argv[i], "-n") == 0 && argv[i + 1] != NULL) {
-            while (strcmp(argv[i + 1], "-c") != 0 && argv[i + 1] != NULL &&
+            while (argv[i] != NULL && argv[i + 1] != NULL && strcmp(argv[i + 1], "-c") != 0 &&
                    strcmp(argv[i + 1], "-f") != 0 && strcmp(argv[i + 1], "-p") != 0 &&
                      strcmp(argv[i + 1], "-x") != 0 && strcmp(argv[i + 1], "-y") != 0) {
                 put_in_list(&args->teams, argv[i + 1]);

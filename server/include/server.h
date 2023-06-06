@@ -8,7 +8,8 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-    #include "my.h"
+#include <stdbool.h>
+#include "my.h"
     #include "list.h"
     #include "network.h"
     #include "map.h"
@@ -36,6 +37,7 @@ typedef struct {
     struct sockaddr_in sockaddr;
     fd_set readfds;
     int last_fd;
+    bool is_running;
     node *clients;
     node *commands;
 } server_t;
@@ -44,5 +46,6 @@ server_t *create_server(args_t *args);
 void handle_client(server_t *server);
 void new_connection(server_t *server);
 client_t *create_client(server_t *server);
+void action(server_t *server);
 
 #endif /* !SERVER_H_ */

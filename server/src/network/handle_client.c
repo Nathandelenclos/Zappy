@@ -12,10 +12,8 @@ void handle_client(server_t *server)
 {
     int activity;
     server->last_fd = server->socket_fd;
-    bool is_running = true;
-    while (is_running) {
+    while (server->is_running) {
         FD_ZERO(&server->readfds);
-        FD_SET(0, &server->readfds);
         FD_SET(server->socket_fd, &server->readfds);
         for (node *tmp = server->clients;
             tmp != NULL; tmp = tmp->next)
@@ -25,6 +23,7 @@ void handle_client(server_t *server)
         if ((activity < 0) && (errno != EINTR)) {
             printf("Erreur lors de la surveillance des sockets\n");
         }
+        action(server);
         new_connection(server);
     }
 }

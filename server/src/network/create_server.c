@@ -33,6 +33,7 @@ server_t *create_server(args_t *args)
     server->commands = NULL;
     server->clients = NULL;
     server->socket_fd = create_socket();
+    server->is_running = true;
     init_socketaddr(server, args->port);
     int ret;
     ret = bind(server->socket_fd, (struct sockaddr *) &server->sockaddr,
