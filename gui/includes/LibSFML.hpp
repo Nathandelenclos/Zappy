@@ -17,11 +17,15 @@ namespace zappy_gui {
             explicit LibSFML(Data data);
             ~LibSFML() override = default;
 
+            void openWindow() override;
             void displayWindow() override;
             void manageEvents() override;
 
+            bool isWindowRunning() const override { return _windowRunning; };
+
         protected:
             Data _data;
+            bool _windowRunning;
         private:
             sf::RenderWindow _window;
             sf::VideoMode _videoMode;

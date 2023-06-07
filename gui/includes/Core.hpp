@@ -17,15 +17,20 @@ namespace zappy_gui {
             Core();
             ~Core();
 
+            bool isRunning() const { return _isRunning; };
+
             void findLibraries();
             void setData(Data data);
 
+            void createWindow();
             void displayWindow();
 
         protected:
+            bool _isRunning;
             std::vector<std::string> _libraries;
             Data _data;
         private:
+            std::shared_ptr<IGraphical> _lib;
             GraphicalLoaderPtr _loader;
     };
 

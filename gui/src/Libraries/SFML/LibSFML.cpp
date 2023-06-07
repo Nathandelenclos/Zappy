@@ -16,8 +16,13 @@ namespace zappy_gui {
         _videoMode.width = WINDOW_WIDTH;
         _videoMode.height = WINDOW_HEIGHT;
         _videoMode.bitsPerPixel = WINDOW_FPS;
-        _window.create(_videoMode, WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
         _window.setFramerateLimit(WINDOW_MAX_FPS);
+    }
+
+    void LibSFML::openWindow()
+    {
+        _window.create(_videoMode, WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
+        _windowRunning = true;
     }
 
     void LibSFML::displayWindow()
@@ -32,6 +37,7 @@ namespace zappy_gui {
         if (_window.pollEvent(_event)) {
             if (_event.type == sf::Event::Closed || _event.key.code == sf::Keyboard::Escape) {
                 _window.close();
+                _windowRunning = false;
             }
         }
     }

@@ -16,6 +16,7 @@ namespace zappy_gui {
             if (lib == "./libraries/LibSFML.so")
                 _loader = std::make_shared<GraphicalLoader>(lib);
         }
+        _isRunning = true;
     }
 
     Core::~Core()
@@ -46,12 +47,17 @@ namespace zappy_gui {
         _data = std::move(data);
     }
 
+    void Core::createWindow()
+    {
+        _lib = _loader->getSFMLInstance(_data);
+        _lib->openWindow();
+    }
+
     void Core::displayWindow()
     {
-        std::cout << "Displaying window" << std::endl;
-        std::cout << _data.message << std::endl;
-        auto lib = _loader->getSFMLInstance(_data);
-        lib->displayWindow();
+        _lib->displayWindow();
+        if (!_lib->isWindowRunning())
+            _isRunning = false;
     }
 
 }

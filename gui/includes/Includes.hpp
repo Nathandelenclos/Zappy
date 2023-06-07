@@ -19,12 +19,14 @@
 #include <sstream>
 #include <dlfcn.h>
 #include <dirent.h>
+#include <fcntl.h>
 
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iomanip>
+#include <thread>
 
 /* Class */
 

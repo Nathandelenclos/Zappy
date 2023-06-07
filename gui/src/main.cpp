@@ -17,28 +17,29 @@ int main(int argc, char **argv)
         std::shared_ptr<zappy_gui::GuiClient> guiClient(new zappy_gui::GuiClient(argumentsManager->getPort(), argumentsManager->getMachine()));
         guiClient->connectToServer();
         if (guiClient->startCommunication()) {
+            int v_select = 0;
             int maxFd = guiClient->getSocket();
             fd_set readFds;
 
             std::shared_ptr<zappy_gui::Core> core(new zappy_gui::Core());
+            core->createWindow();
 
             while (guiClient->isRunning()) {
                 FD_ZERO(&readFds);
-                FD_SET(guiClient->getSocket(), &readFds);
+                FD_SET(STDIN_FILENO, &readFds);
+                FD_SET(maxFd, &readFds);
 
-                std::cout << "Waiting for select" << std::endl;
-                int readyFds = select(maxFd + 1, &readFds, nullptr, nullptr, nullptr);
-                std::cout << "Select done" << std::endl;
-                if (readyFds == -1)
-                    throw zappy_gui::Exception(Error, "Select failed");
-                if (FD_ISSET(guiClient->getSocket(), &readFds)) {
+                v_select = select(maxFd + 1, &readFds, nullptr, nullptr, nullptr);
+                if (v_select == -1)
+                    throw zappy_gui::Exception (Error, "Select failed");
+                if (FD_ISSET(maxFd, &readFds)) {
                     core->setData(guiClient->getData());
                 }
-
-                core->displayWindow();
-
+                if (core->isRunning())
+                    core->displayWindow();
+                else
+                    break;
             }
-
         } else {
             guiClient->connectionStatus();
         }
