@@ -11,13 +11,6 @@
 
 namespace zappy_gui {
 
-    struct Data {
-        size_t width;
-        size_t height;
-        size_t frequency;
-        std::vector<std::string> teams;
-    };
-
     class GuiClient {
         public:
             GuiClient(int port, std::string machine);
@@ -26,7 +19,8 @@ namespace zappy_gui {
             void connectToServer();
             void sendCommand(const std::string& command) const;
 
-            void startCommunication();
+            bool startCommunication();
+            bool isRunning();
             void handleUserInput(const std::string& input);
 
             std::string receiveResponse() const;
@@ -36,6 +30,7 @@ namespace zappy_gui {
             void parseData(const std::string& data);
             static void dataLoading();
             Data getData() const { return _data; };
+            int getSocket() const { return _socket; };
 
         protected:
             int _port;

@@ -42,7 +42,7 @@ namespace zappy_gui {
             std::cout << std::endl << std::endl << STATUS LIGHTGREEN CONNECTED RESET PORT YELLOW << _port << RESET << std::endl << std::endl;
     }
 
-    void GuiClient::startCommunication()
+    bool GuiClient::startCommunication()
     {
         std::string response = receiveResponse();
 
@@ -51,20 +51,24 @@ namespace zappy_gui {
             std::cout << LIGHTBLUE << response << RESET << AUTHENTICATION << std::endl << std::endl << PROMPT MAGENTA GRAPHIC RESET << std::endl;
             std::cout << (response = receiveResponse()) << std::endl;
             parseData(response);
-            while (true) {
-                std::cout << RESET PROMPT MAGENTA;
-                std::string userInput;
-                std::getline(std::cin, userInput);
-                std::cout << RESET;
-
-                if (userInput == EXIT || userInput == BYE || userInput == QUIT)
-                    break;
-
-                handleUserInput(userInput);
-            }
+            return (true);
         } else {
             std::cout << EXPECTED_WELCOME << std::endl;
+            return (false);
         }
+    }
+
+    bool GuiClient::isRunning()
+    {
+        std::cout << RESET PROMPT MAGENTA;
+        std::string userInput;
+        std::getline(std::cin, userInput);
+        std::cout << RESET;
+
+        if (userInput == EXIT || userInput == QUIT || userInput == BYE)
+            return (false);
+        handleUserInput(userInput);
+        return (true);
     }
 
     void GuiClient::handleUserInput(const std::string &input)
@@ -72,7 +76,8 @@ namespace zappy_gui {
         if (input.empty())
             return;
         sendCommand(input + '\n');
-        std::cout << RESET << receiveResponse();
+        _data.message = receiveResponse();
+        std::cout << RESET << _data.message;
     }
 
     void GuiClient::sendCommand(const std::string &command) const
@@ -97,7 +102,7 @@ namespace zappy_gui {
 
     void GuiClient::parseData(const std::string &data)
     {
-        dataLoading();
+        /* dataLoading(); */
         std::istringstream iss(data);
         std::string line;
 
@@ -108,12 +113,28 @@ namespace zappy_gui {
 
             if (command == MSZ) {
                 lineStream >> _data.width >> _data.height;
+                _data.grid.resize(_data.width, std::vector<Cell>(_data.height));
             } else if (command == SGT) {
                 lineStream >> _data.frequency;
             } else if (command == TNA) {
                 std::string teamName;
                 lineStream >> teamName;
                 _data.teams.push_back(teamName);
+            } else if (command == BCT) {
+                int x, y;
+                lineStream >> x >> y;
+
+                if (x >= 0 && x < _data.width && y >= 0 && y < _data.height) {
+                    Cell& cell = _data.grid[x][y];
+                    std::vector<int> resources;
+                    int resource;
+
+                    while (lineStream >> resource)
+                        resources.push_back(resource);
+                    cell.x = x;
+                    cell.y = y;
+                    cell.resources = resources;
+                }
             } else
                 continue;
         }
