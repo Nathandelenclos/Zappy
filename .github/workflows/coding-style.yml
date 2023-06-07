@@ -9,11 +9,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Coding Style
-      run: coding-style . .
+      run: coding-style . . > reports.log
 
     - name: Send teams notification
       run: |
         curl -X POST -H "Content-Type: application/json" -d '{
-        
-          "text": "'"$(cat coding-style-reports.log)"'"
+          "text": "'*"$(tail -n 1 reports.log)"*'"
         }' ${{ secrets.TEAMS_WEBHOOK }}
