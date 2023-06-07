@@ -28,4 +28,10 @@ struct map_s {
     struct map_s *right;
 };
 
+
+map_t *create_tile(void);
+void generate_x_tiles(map_t *tile, int x);
+void link_up_down(map_t *first, map_t *second);
+map_t *generate_map(int x, int y);
+
 #endif /* !MAP_H_ */

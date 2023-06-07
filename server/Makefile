@@ -8,10 +8,10 @@
 PROJECT = Zappy Server
 NAME = ../zappy_server
 
-MAIN = src/main.c
-SRCS = $(shell find ./src -type f -name "*.c" ! -name 'main.c')
-HEADS = $(shell find ./include -type f -name "*.h" && find ./libs -type f -name "*.h")
-TESTS = $(shell find ./tests -type f -name "*.c")
+MAIN	= 	src/main.c
+SRCS	=	$(shell find ./src -type f -name "*.c" ! -name 'main.c')
+HEADS	=	$(shell find ./include -type f -name "*.h" && find ./libs -type f -name "*.h")
+TESTS	=	$(shell find ./tests -type f -name "*.c")
 
 LIBS = ./libs/linked_list \
 		./libs/my \
