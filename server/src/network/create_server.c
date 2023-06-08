@@ -31,6 +31,7 @@ server_t *create_server(args_t *args)
     server_t *server = MALLOC(sizeof(server_t));
     server->commands = NULL;
     server->clients = NULL;
+    server->teams = args->teams;
     server->socket_fd = socket(AF_INET, SOCK_STREAM, 0);;
     if (server->socket_fd < 0) {
         perror("socket()");

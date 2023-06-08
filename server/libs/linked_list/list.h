@@ -44,5 +44,6 @@ node *find_list(node *list, int (*function)(each_t each));
 void map_list(node *list, void (*function)(each_t each));
 void insertion_sort(node **headRef, int (*cmp)(void *, void *));
 char *my_strdup(char *data);
+node *search_in_list_by(node *list, void *ptr, int (*cmp)(void *, void *));
 
 #endif

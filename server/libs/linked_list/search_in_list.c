@@ -23,3 +23,14 @@ node *search_in_list(node *list, void *ptr)
     }
     return NULL;
 }
+
+node *search_in_list_by(node *list, void *ptr, int (*cmp)(void *, void *))
+{
+    node *tmp = list;
+    while (tmp != NULL) {
+        if (cmp(tmp->data, ptr) == 0)
+            return tmp;
+        tmp = tmp->next;
+    }
+    return NULL;
+}

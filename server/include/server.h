@@ -34,6 +34,7 @@ typedef struct {
     socklen_t len;
     player_t *player;
     STATE_CONNECTION state;
+    string team;
 } client_t;
 
 typedef struct {
@@ -45,6 +46,7 @@ typedef struct {
     bool is_running;
     node *clients;
     node *commands;
+    node *teams;
 } server_t;
 
 server_t *create_server(args_t *args);
