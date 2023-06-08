@@ -62,5 +62,6 @@ server_t *create_server(args_t *args)
     server->teams = args->teams;
     server = init_networking(server);
     server->map = generate_map(args->width, args->height);
+    server->time = 0;
     return server;
 }
