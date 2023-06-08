@@ -9,14 +9,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Coding Style
-      run: |
-        coding-style . .
-        echo "::set-output name=cds::$(cat coding-style-reports.log)"
+      run: coding-style . . > reports.log
 
     - name: Send teams notification
-      uses: aliencube/microsoft-teams-actions@v0.8.0
-      with:
-        webhook_uri: ${{ secrets.TEAMS_WEBHOOK }}
-        title: Coding Style Check
-        text: ${{ steps.coding_style.outputs.cds }}
-        theme_color: '#171515'
+      run: |
+        curl -X POST -H "Content-Type: application/json" -d '{
+          "text": "'"$(tail -n 1 reports.log | sed 's/\/home\/ndelenclos\/actions-runner\/_work\/Zappy\/Zappy\/coding-style-reports.log/dir/')"'"
+        }' ${{ secrets.TEAMS_WEBHOOK }}
