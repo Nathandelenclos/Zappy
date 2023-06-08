@@ -14,5 +14,5 @@ jobs:
     - name: Send teams notification
       run: |
         curl -X POST -H "Content-Type: application/json" -d '{
-          "text": "*Coding Style:*"$(tail -n 1 reports.log)"*\n" $(cat coding-style-reports.log)
+          "text": "'"$(tail -n 1 reports.log | sed 's/\/home\/ndelenclos\/actions-runner\/_work\/Zappy\/Zappy\/coding-style-reports.log/dir/')"'"
         }' ${{ secrets.TEAMS_WEBHOOK }}
