@@ -22,7 +22,7 @@ void handle_client(server_t *server)
         activity = select(server->last_fd + 1, &server->readfds, NULL, NULL, &timeval);
         server->time++;
         if ((activity < 0) && (errno != EINTR)) {
-            printf("Erreur lors de la surveillance des sockets\n");
+            printf(ERROR_SOCKET);
         }
         handle_action(server);
         new_connection(server);
