@@ -23,6 +23,24 @@ string read_message(client_t *client)
 }
 
 /**
+ * New command.
+ * @param server - The server.
+ * @param client - The client.
+ * @param command - The command.
+ */
+void new_command(server_t *server, client_t *client, string command)
+{
+    command_t *commands = client->type == GUI ? commands_gui : commands_ai;
+    for (int i = 0; commands[i].name != NULL; i++) {
+        if (strcmp(commands[i].name, command) == 0) {
+            commands[i].func(server, client, command);
+            return;
+        }
+    }
+    dprintf(client->socket_fd, KO);
+}
+
+/**
  * Handle action.
  * @param server - The server.
  * @param client - The client.
@@ -30,8 +48,9 @@ string read_message(client_t *client)
 void action(server_t *server, client_t *client)
 {
     string action = read_message(client);
-    if (action == NULL)
+    if (action == NULL) {
         return;
+    }
     if (client->state == WAITING_TEAM_NAME) {
         client->team = search_in_list_by(server->teams, action,
             search_by_string)->data;
@@ -41,7 +60,7 @@ void action(server_t *server, client_t *client)
         }
         client->state = WAITING_COMMAND;
     } else if (client->state == WAITING_COMMAND) {
-        // TODO: Handle command
+        new_command(server, client, action);
     }
     FREE(action);
 }
@@ -52,11 +71,13 @@ void action(server_t *server, client_t *client)
  */
 void handle_action(server_t *server)
 {
-    if (!(server->is_running))
+    if (!(server->is_running)) {
         return;
+    }
     for (node *tmp = server->clients; tmp != NULL; tmp = tmp->next) {
         client_t *client = (client_t *) tmp->data;
-        if (FD_ISSET(client->socket_fd, &server->readfds))
+        if (FD_ISSET(client->socket_fd, &server->readfds)) {
             action(server, client);
+        }
     }
 }

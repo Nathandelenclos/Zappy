@@ -8,8 +8,10 @@
 #ifndef MESSAGE_H_
     #define MESSAGE_H_
 
+    // Messages
     #define WELCOME "WELCOME\n"
     #define KO "ko\n"
     #define OK "ok\n"
 
 #endif /* !MESSAGE_H_ */
+x
