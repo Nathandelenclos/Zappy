@@ -21,8 +21,11 @@
     #include <sys/socket.h>
     #include <netinet/in.h>
     #include <errno.h>
+    #include <time.h>
 
     #define MAX_CONNECTIONS 1024
+
+typedef unsigned long long timestamp_t;
 
 typedef enum {
     WAITING_TEAM_NAME,
@@ -52,9 +55,11 @@ typedef struct {
     fd_set readfds;
     int last_fd;
     bool is_running;
+    timestamp_t time;
     node *clients;
     node *commands;
     node *teams;
+    map_t *map;
 } server_t;
 
 typedef struct {

@@ -59,6 +59,8 @@ void action(server_t *server, client_t *client)
             return;
         }
         client->state = WAITING_COMMAND;
+        dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
+            server->args->width, server->args->height);
     } else if (client->state == WAITING_COMMAND) {
         new_command(server, client, action);
     }
