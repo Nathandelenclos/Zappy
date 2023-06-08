@@ -5,6 +5,7 @@ import argparse
 import socket
 import select
 import re
+import math
 
 # from main import temp_evo
 
@@ -18,12 +19,15 @@ last_command = None
 last_answer = None
 mode = None
 
+def printGreen(data):
+    print("\033[92m" + data + "\033[0m")
+
 class Game_data:
     def __init__(self):
         self.map_size_x = 0
         self.map_size_y = 0
         self.available_connection = 0
-        self.lvl = 1
+        self.lvl = 3
         # self.vision = [],
         self.inventory  = {
             "food": None,
@@ -102,6 +106,52 @@ def search_food(client_socket):
     last_command = "Look"
     mode = "FOOD"
 
+def find_path(data, item):
+    myGameData = Game_data()
+    data = data.replace('[', ' ')
+    data = data.replace(']', ' ')
+    splitData = data.split(",")
+    instructions = []
+    count = 0
+    for i in range(0, len(splitData)):
+        if splitData[i].find(item) != -1:
+            break;
+        count += 1
+    if count == len(splitData):
+        return ["Forward" for f in range(0, myGameData.lvl)]
+    elif (splitData[0].find(item)) != -1:
+        return ["Take " + item]
+    else:
+        fCount = 0
+        limit = 1
+        tile = 0
+        width = 1
+        for i in range(0, len(splitData)):
+            if i == limit:
+                limit += limit + 2
+                fCount += 1
+                width += 2
+            if splitData[i].find(item) != -1:
+                for a in range(0, fCount):
+                    instructions.append("Forward")
+                tile = i
+                break
+        viewLine = [b for b in range((limit - width), limit)]
+        middle = viewLine[int((len(viewLine) / 2))]
+        if tile < middle:
+            instructions.append("Left")
+            for t in range(0, (middle - tile)):
+                instructions.append("Forward")
+            instructions.append("Take " + item)
+        elif tile > middle:
+            instructions.append("Right")
+            for t in range(0, (tile - middle)):
+                instructions.append("Forward")
+            instructions.append("Take " + item)
+        else:
+            instructions.append("Take " + item)
+        return instructions
+
 def action_choice(client_socket, myGameData, data):
     global auto_command, last_command
     answer = 0
@@ -111,8 +161,8 @@ def action_choice(client_socket, myGameData, data):
         auto_command.pop(0)
         client_socket.send(command.encode())
     elif (last_command == "Look" and mode == "FOOD" and data != ""):
+        instructions = find_path(data, "food")
         # inserer strategie de calcul de chemin pour chercher bouffe
-        auto_command.append("Left")
         auto_command.append("Forward")
         auto_command.append("Forward")
         command = auto_command[0] + "\n"
@@ -182,7 +232,9 @@ def main():
         print("La connexion au serveur a été refusée.")
 
 if __name__ == "__main__":
-    try:
+    Error_man()
+    main()
+    '''try:
         Error_man()
         main()
     except SystemExit:
@@ -190,3 +242,4 @@ if __name__ == "__main__":
     except Exception as error:
         sys.stdout.write(str(error))
         exit(84)
+'''
