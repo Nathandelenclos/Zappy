@@ -205,17 +205,17 @@ def search_item(client_socket, item, quantity, myGameData):
         if (item != "food"):
             if (int(myGameData.inventory["food"]) < 5):
                 search_item(client_socket, "food", 30 - myGameData.inventory["food"], myGameData)
-
+    mode = None
 
 def can_evolve(client_socket, myGameData):
     can_lvl_up = 0
-    lvl = "lvl"+myGameData.lvl
-    stones_needed = myGameData.evolution_infos[lvl]
+    lvl = "lvl"+str(myGameData.lvl+1)
+    stones_needed = myGameData.evolution_infos[lvl].copy()
     stones_needed.pop(0)
     index = 0
     for stone in stones_needed:
         stone_name = myGameData.stones_in_game[index]
-        my_stone = myGameData.inventory[stone_name]
+        my_stone = int(myGameData.inventory[stone_name])
         if my_stone < stone:
             search_item(client_socket, stone_name, stone - my_stone, myGameData)
             can_lvl_up += 1
@@ -228,10 +228,10 @@ def can_evolve(client_socket, myGameData):
 def gathering_mode():
     return ()
 
-def action_choice(client_socket, myGameData, data):
+def action_choice(client_socket, myGameData):
     check_inventory(client_socket, myGameData)
     if (int(myGameData.inventory["food"]) < 20 and mode == None):
-        search_item(client_socket, "food", 30 - myGameData.inventory["food"], myGameData)
+        search_item(client_socket, "food", 30, myGameData)
     else:
         if (can_evolve(client_socket, myGameData) == True and mode == None):
             gathering_mode()
@@ -255,23 +255,25 @@ def main():
         myGameData.map_size_y = map_size[1]
         print(map_size[0] + " " + map_size[1])
         while (1):
-            if i == 0:
-                action_choice(client_socket, myGameData, "")
-                i += 1
-                continue
-            data = read_server(client_socket)
-            choice = answer_management(data, client_socket)
-            if (choice == 0):
-                action_choice(client_socket, myGameData, data)
+            # if i == 0:
+            #     action_choice(client_socket, myGameData, "")
+            #     i += 1
+            #     continue
+            # data = read_server(client_socket)
+            # choice = answer_management(data, client_socket)
+            # if (choice == 0):
+            action_choice(client_socket, myGameData)
     except ConnectionRefusedError:
         print("La connexion au serveur a été refusée.")
 
 if __name__ == "__main__":
-    try:
-        Error_man()
-        main()
-    except SystemExit:
-        exit(0)
-    except Exception as error:
-        sys.stdout.write(str(error))
-        exit(84)
+    Error_man()
+    main()
+    # try:
+    #     Error_man()
+    #     main()
+    # except SystemExit:
+    #     exit(0)
+    # except Exception as error:
+    #     sys.stdout.write(str(error))
+    #     exit(84)
