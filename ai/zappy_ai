@@ -3,9 +3,9 @@
 import sys
 import argparse
 import socket
-import select
 import re
 import math
+import random
 
 # from main import temp_evo
 
@@ -19,16 +19,26 @@ last_command = None
 last_answer = None
 mode = None
 
-def printGreen(data):
-    print("\033[92m" + data + "\033[0m")
+# def printGreen(data):
+#     print("\033[92m" + data + "\033[0m")
 
 class Game_data:
     def __init__(self):
         self.map_size_x = 0
         self.map_size_y = 0
         self.available_connection = 0
-        self.lvl = 3
+        self.lvl = 1
+        self.stones_in_game = ["linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
         # self.vision = [],
+        self.evolution_infos  = {
+            "lvl2": [1, 1, 0, 0, 0, 0, 0],
+            "lvl3": [2, 1, 1, 1, 0, 0, 0],
+            "lvl4": [2, 2, 0, 1, 0, 2, 0],
+            "lvl5": [4, 1, 1, 2, 0, 1, 0],
+            "lvl6": [4, 1, 2, 1, 3, 0, 0],
+            "lvl7": [6, 1, 2, 3, 0, 1, 0],
+            "lvl8": [6, 2, 2, 2, 2, 2, 1]
+        }
         self.inventory  = {
             "food": None,
             "linemate": None ,
@@ -70,6 +80,22 @@ def Error_man():
     else:
         raise Exception("Bad arguments\n")
 
+def answer_management(data, client_socket):
+    global last_broadcast
+    if data == "dead":
+        print("YOU DIED x)")
+        client_socket.close()
+        print("Connexion fermée.")
+        return (-1)
+    else:
+        answer = data.split()
+        if answer[0] == "message":
+            last_broadcast.append(data)
+            print(data)
+            return(1)
+        print(data)
+        return (0)
+
 def read_server(client_socket):
     msg = ""
     while (1):
@@ -85,26 +111,18 @@ def read_server(client_socket):
 def check_inventory(client_socket, myGameData):
     print("Inventory")
     client_socket.send(("Inventory"+"\n").encode())
-    data = read_server(client_socket)
-    rtn_val = answer_management(data)
-    if rtn_val == 0:
-        clean_string = data.strip("[] ")
-        pattern = r"(\w+)\s(\d+)"
-        matches = re.findall(pattern, clean_string)
-        data = [[name, value] for name, value in matches]
-        while (len(data) > 0):
-            myGameData.inventory[data[0][0]] = data[0][1]
-            data.pop(0)
-        # print(myGameData.inventory)
-        # rtn_val = -1
-    return (rtn_val)
-
-def search_food(client_socket):
-    global last_command, mode
-    print("Look")
-    client_socket.send(("Look"+"\n").encode())
-    last_command = "Look"
-    mode = "FOOD"
+    answer = 1
+    while (answer != 0):
+        data = read_server(client_socket)
+        answer = answer_management(data, client_socket)
+    clean_string = data.strip("[] ")
+    pattern = r"(\w+)\s(\d+)"
+    matches = re.findall(pattern, clean_string)
+    data = [[name, value] for name, value in matches]
+    while (len(data) > 0):
+        myGameData.inventory[data[0][0]] = data[0][1]
+        data.pop(0)
+    # print(myGameData.inventory)
 
 def find_path(data, item):
     myGameData = Game_data()
@@ -152,42 +170,71 @@ def find_path(data, item):
             instructions.append("Take " + item)
         return instructions
 
-def action_choice(client_socket, myGameData, data):
-    global auto_command, last_command
-    answer = 0
-    if (len(auto_command) > 0):
+def search_choice(client_socket, data, item):
+    add_command = []
+    add_command = find_path(data, item)
+    while (len(add_command) > 0):
+        auto_command.append(add_command[0])
+        add_command.pop(0)
+    while (len(auto_command) > 0):
         command = auto_command[0] + "\n"
         print(command, end="")
         auto_command.pop(0)
         client_socket.send(command.encode())
-    elif (last_command == "Look" and mode == "FOOD" and data != ""):
-        instructions = find_path(data, "food")
-        # inserer strategie de calcul de chemin pour chercher bouffe
-        auto_command.append("Forward")
-        auto_command.append("Forward")
-        command = auto_command[0] + "\n"
-        print(command, end="")
-        auto_command.pop(0)
-        client_socket.send(command.encode())
-        last_command = None
-    else:
-        answer = check_inventory(client_socket, myGameData)
-        search_food(client_socket)
-    return (answer)
+        answer = 1
+        while (answer != 0):
+            data = read_server(client_socket)
+            answer = answer_management(data, client_socket)
+    for broadcast in last_broadcast:
+        print(broadcast)
 
-def answer_management(data):
-    global last_broadcast
-    if data == "dead":
-        print("YOU DIED x)")
-        return (-1)
+def search_item(client_socket, item, quantity, myGameData):
+    global last_command, mode, auto_command
+    while (quantity > int(myGameData.inventory[item])):
+        print("Look")
+        client_socket.send(("Look"+"\n").encode())
+        last_command = "Look"
+        mode = item
+        answer = 1
+        while (answer != 0):
+            data = read_server(client_socket)
+            answer = answer_management(data, client_socket)
+        if answer != "ok":
+            search_choice(client_socket, data, item)
+        check_inventory(client_socket, myGameData)
+        if (item != "food"):
+            if (int(myGameData.inventory["food"]) < 5):
+                search_item(client_socket, "food", 30 - myGameData.inventory["food"], myGameData)
+
+
+def can_evolve(client_socket, myGameData):
+    can_lvl_up = 0
+    lvl = "lvl"+myGameData.lvl
+    stones_needed = myGameData.evolution_infos[lvl]
+    stones_needed.pop(0)
+    index = 0
+    for stone in stones_needed:
+        stone_name = myGameData.stones_in_game[index]
+        my_stone = myGameData.inventory[stone_name]
+        if my_stone < stone:
+            search_item(client_socket, stone_name, stone - my_stone, myGameData)
+            can_lvl_up += 1
+        index += 1
+    if can_lvl_up == 0:
+        return (True)
     else:
-        answer = data.split()
-        if data[0] == "message":
-            last_broadcast = answer
-            print(answer, end="")
-            return(1)
-        print(data)
-        return (0)
+        return (False)
+
+def gathering_mode():
+    return ()
+
+def action_choice(client_socket, myGameData, data):
+    check_inventory(client_socket, myGameData)
+    if (int(myGameData.inventory["food"]) < 20 and mode == None):
+        search_item(client_socket, "food", 30 - myGameData.inventory["food"], myGameData)
+    else:
+        if (can_evolve(client_socket, myGameData) == True and mode == None):
+            gathering_mode()
 
 def main():
     global auto_command, last_command, last_answer, last_broadcast
@@ -209,32 +256,18 @@ def main():
         print(map_size[0] + " " + map_size[1])
         while (1):
             if i == 0:
-                choice = action_choice(client_socket, myGameData, "")
-                if (choice == -1):
-                    break
+                action_choice(client_socket, myGameData, "")
                 i += 1
                 continue
             data = read_server(client_socket)
-            choice = answer_management(data)
-            if (choice == -1):
-                break
-            elif (choice == 0):
-                choice = action_choice(client_socket, myGameData, data)
-                if (choice == -1):
-                    break
-            else:
-                last_broadcast.append()
-
-        client_socket.close()
-        print("Connexion fermée.")
-
+            choice = answer_management(data, client_socket)
+            if (choice == 0):
+                action_choice(client_socket, myGameData, data)
     except ConnectionRefusedError:
         print("La connexion au serveur a été refusée.")
 
 if __name__ == "__main__":
-    Error_man()
-    main()
-    '''try:
+    try:
         Error_man()
         main()
     except SystemExit:
@@ -242,4 +275,3 @@ if __name__ == "__main__":
     except Exception as error:
         sys.stdout.write(str(error))
         exit(84)
-'''
