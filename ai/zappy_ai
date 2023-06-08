@@ -19,8 +19,8 @@ last_command = None
 last_answer = None
 mode = None
 
-# def printGreen(data):
-#     print("\033[92m" + data + "\033[0m")
+def printGreen(data):
+    print("\033[92m" + data + "\033[0m")
 
 class Game_data:
     def __init__(self):
@@ -48,6 +48,8 @@ class Game_data:
             "phiras": None ,
             "thystame": None 
         }
+
+myGameData = Game_data()
 
 def manHelp():
     print("USAGE:  ./zappy_ai -p port -n name -h machine")
@@ -108,7 +110,8 @@ def read_server(client_socket):
             msg += char_read.decode()
     return (msg)
 
-def check_inventory(client_socket, myGameData):
+def check_inventory(client_socket):
+    global myGameData
     print("Inventory")
     client_socket.send(("Inventory"+"\n").encode())
     answer = 1
@@ -125,7 +128,6 @@ def check_inventory(client_socket, myGameData):
     # print(myGameData.inventory)
 
 def find_path(data, item):
-    myGameData = Game_data()
     data = data.replace('[', ' ')
     data = data.replace(']', ' ')
     splitData = data.split(",")
@@ -188,7 +190,7 @@ def search_choice(client_socket, data, item):
     for broadcast in last_broadcast:
         print(broadcast)
 
-def search_item(client_socket, item, quantity, myGameData):
+def search_item(client_socket, item, quantity):
     global last_command, mode, auto_command
     while (quantity > int(myGameData.inventory[item])):
         print("Look")
@@ -201,13 +203,14 @@ def search_item(client_socket, item, quantity, myGameData):
             answer = answer_management(data, client_socket)
         if answer != "ok":
             search_choice(client_socket, data, item)
-        check_inventory(client_socket, myGameData)
+        check_inventory(client_socket)
         if (item != "food"):
             if (int(myGameData.inventory["food"]) < 5):
-                search_item(client_socket, "food", 30 - myGameData.inventory["food"], myGameData)
+                search_item(client_socket, "food", 30)
     mode = None
 
-def can_evolve(client_socket, myGameData):
+def can_evolve(client_socket):
+    global myGameData
     can_lvl_up = 0
     lvl = "lvl"+str(myGameData.lvl+1)
     stones_needed = myGameData.evolution_infos[lvl].copy()
@@ -217,7 +220,7 @@ def can_evolve(client_socket, myGameData):
         stone_name = myGameData.stones_in_game[index]
         my_stone = int(myGameData.inventory[stone_name])
         if my_stone < stone:
-            search_item(client_socket, stone_name, stone - my_stone, myGameData)
+            search_item(client_socket, stone_name, stone - my_stone)
             can_lvl_up += 1
         index += 1
     if can_lvl_up == 0:
@@ -225,19 +228,51 @@ def can_evolve(client_socket, myGameData):
     else:
         return (False)
 
-def gathering_mode():
-    return ()
+def gathering_mode(client_socket):
+    global myGameData
+    if myGameData.lvl == 1:
+        print("Set linemate")
+        client_socket.send(("Set linemate\n").encode())
+        answer = 1
+        while (answer != 0):
+            data = read_server(client_socket)
+            answer = answer_management(data, client_socket)
+        if data == "ok":
+            print("Look")
+            client_socket.send(("Look\n").encode())
+            answer = 1
+            while (answer != 0):
+                data = read_server(client_socket)
+                answer = answer_management(data, client_socket)
+            print("Incantation")
+            client_socket.send(("Incantation\n").encode())
+            answer = 1
+            while (answer != 0):
+                data = read_server(client_socket)
+                answer = answer_management(data, client_socket)
+            if data == "Elevation underway":
+                printGreen("Evolution is a success")
+                answer = 1
+                while (answer != 0):
+                    data = read_server(client_socket)
+                    answer = answer_management(data, client_socket)
+                myGameData.lvl += 1
+            else:
+                printGreen("Evolution failed")
+        else:
+            printGreen("Item not found in inventory")
 
-def action_choice(client_socket, myGameData):
-    check_inventory(client_socket, myGameData)
+
+def action_choice(client_socket):
+    check_inventory(client_socket)
     if (int(myGameData.inventory["food"]) < 20 and mode == None):
-        search_item(client_socket, "food", 30, myGameData)
+        search_item(client_socket, "food", 30)
     else:
-        if (can_evolve(client_socket, myGameData) == True and mode == None):
-            gathering_mode()
+        if (can_evolve(client_socket) == True and mode == None):
+            gathering_mode(client_socket)
 
 def main():
-    global auto_command, last_command, last_answer, last_broadcast
+    global auto_command, last_command, last_answer, last_broadcast, myGameData
 
     i = 0
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -246,7 +281,6 @@ def main():
         print("Connexion au serveur établie.")
         print(read_server(client_socket))
         client_socket.send((team_name+"\n").encode())
-        myGameData = Game_data()
         free_places = read_server(client_socket)
         myGameData.available_connection = free_places
         print(free_places)
@@ -255,25 +289,16 @@ def main():
         myGameData.map_size_y = map_size[1]
         print(map_size[0] + " " + map_size[1])
         while (1):
-            # if i == 0:
-            #     action_choice(client_socket, myGameData, "")
-            #     i += 1
-            #     continue
-            # data = read_server(client_socket)
-            # choice = answer_management(data, client_socket)
-            # if (choice == 0):
-            action_choice(client_socket, myGameData)
+            action_choice(client_socket)
     except ConnectionRefusedError:
         print("La connexion au serveur a été refusée.")
 
 if __name__ == "__main__":
-    Error_man()
-    main()
-    # try:
-    #     Error_man()
-    #     main()
-    # except SystemExit:
-    #     exit(0)
-    # except Exception as error:
-    #     sys.stdout.write(str(error))
-    #     exit(84)
+    try:
+        Error_man()
+        main()
+    except SystemExit:
+        exit(0)
+    except Exception as error:
+        sys.stdout.write(str(error))
+        exit(84)
