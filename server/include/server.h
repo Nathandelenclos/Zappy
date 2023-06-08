@@ -47,6 +47,7 @@ typedef struct {
     node *clients;
     node *commands;
     node *teams;
+    map_t *map;
 } server_t;
 
 server_t *create_server(args_t *args);

@@ -22,6 +22,32 @@ void init_socketaddr(server_t *server, int port)
 }
 
 /**
+ * Init networking.
+ * @param server - Server to init.
+ * @return - Return server.
+ */
+server_t *init_networking(server_t *server)
+{
+    int ret;
+    server->socket_fd = socket(AF_INET, SOCK_STREAM, 0);;
+    if (server->socket_fd < 0) {
+        perror("socket()");
+        exit(EXIT_FAILURE);
+    }
+    init_socketaddr(server, server->args->port);
+    ret = bind(server->socket_fd, (struct sockaddr *) &server->sockaddr,
+        sizeof(server->sockaddr));
+    if (ret < 0) {
+        perror_exit("bind()");
+    }
+    ret = listen(server->socket_fd, MAX_CONNECTIONS);
+    if (ret < 0) {
+        perror_exit("listen()");
+    }
+    return server;
+}
+
+/**
  * Create server.
  * @param port - Port to listen.
  * @return - Return server fd.
@@ -29,23 +55,12 @@ void init_socketaddr(server_t *server, int port)
 server_t *create_server(args_t *args)
 {
     server_t *server = MALLOC(sizeof(server_t));
+    server->args = args;
+    server->is_running = true;
     server->commands = NULL;
     server->clients = NULL;
     server->teams = args->teams;
-    server->socket_fd = socket(AF_INET, SOCK_STREAM, 0);;
-    if (server->socket_fd < 0) {
-        perror("socket()");
-        exit(EXIT_FAILURE);
-    }
-    server->is_running = true;
-    init_socketaddr(server, args->port);
-    int ret;
-    ret = bind(server->socket_fd, (struct sockaddr *) &server->sockaddr,
-        sizeof(server->sockaddr));
-    if (ret < 0)
-        perror_exit("bind()");
-    ret = listen(server->socket_fd, MAX_CONNECTIONS);
-    if (ret < 0)
-        perror_exit("listen()");
+    server = init_networking(server);
+    server->map = generate_map(args->width, args->height);
     return server;
 }
