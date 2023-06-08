@@ -5,18 +5,19 @@
 ** strdup
 */
 
-#include "network.h"
-
+#include "list.h"
+#include <string.h>
 
 /**
  * strdup with my_malloc for garbage collector.
  * @param data
  * @return
  */
-string my_strdup(string data)
+char *my_strdup(char *data)
 {
-    string ret = MALLOC(sizeof(char) * strlen(data) + 1);
-    for (int i = 0; i <= strlen(data); ++i) {
+    int len = strlen(data);
+    char *ret = MALLOC(sizeof(char) * len + 1);
+    for (int i = 0; i <= len; ++i) {
         ret[i] = data[i];
     }
     return ret;

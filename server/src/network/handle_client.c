@@ -23,7 +23,7 @@ void handle_client(server_t *server)
         if ((activity < 0) && (errno != EINTR)) {
             printf("Erreur lors de la surveillance des sockets\n");
         }
-        action(server);
+        handle_action(server);
         new_connection(server);
     }
 }

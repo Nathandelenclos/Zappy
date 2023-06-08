@@ -14,8 +14,7 @@ HEADS	=	$(shell find ./include -type f -name "*.h" && find ./libs -type f -name 
 TESTS	=	$(shell find ./tests -type f -name "*.c")
 
 LIBS = ./libs/linked_list \
-		./libs/my \
-		./libs/network
+		./libs/my
 
 OBJS = $(SRCS:.c=.o) $(MAIN:.c=.o)
 
@@ -30,7 +29,6 @@ CFLAGS += -Iinclude/ -I ./libs/
 LDFLAGS += -L./libs/
 LDFLAGS += -llist
 LDFLAGS += -lmy
-LDFLAGS += -lnet
 
 TESTCFLAGS = $(CFLAGS) $(LDFLAGS) --coverage -lcriterion
 

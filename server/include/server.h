@@ -8,13 +8,18 @@
 #ifndef SERVER_H_
     #define SERVER_H_
 
-#include <stdbool.h>
-#include "my.h"
+    #include "my.h"
     #include "list.h"
-    #include "network.h"
     #include "map.h"
     #include "player.h"
     #include "utils.h"
+    #include "message.h"
+    #include <stdbool.h>
+    #include <arpa/inet.h>
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <errno.h>
 
     #define MAX_CONNECTIONS 1024
 
@@ -46,6 +51,6 @@ server_t *create_server(args_t *args);
 void handle_client(server_t *server);
 void new_connection(server_t *server);
 client_t *create_client(server_t *server);
-void action(server_t *server);
+void handle_action(server_t *server);
 
 #endif /* !SERVER_H_ */

@@ -10,7 +10,6 @@
 
     #include "my.h"
     #include "list.h"
-    #include "network.h"
     #include "map.h"
 
 typedef struct {

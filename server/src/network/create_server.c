@@ -6,7 +6,6 @@
 */
 
 #include <unistd.h>
-#include "network.h"
 #include "server.h"
 
 /**
@@ -32,7 +31,11 @@ server_t *create_server(args_t *args)
     server_t *server = MALLOC(sizeof(server_t));
     server->commands = NULL;
     server->clients = NULL;
-    server->socket_fd = create_socket();
+    server->socket_fd = socket(AF_INET, SOCK_STREAM, 0);;
+    if (server->socket_fd < 0) {
+        perror("socket()");
+        exit(EXIT_FAILURE);
+    }
     server->is_running = true;
     init_socketaddr(server, args->port);
     int ret;

@@ -10,7 +10,6 @@
 
     #include "my.h"
     #include "list.h"
-    #include "network.h"
     #include "item.h"
     #include "player.h"
 
@@ -27,7 +26,6 @@ struct map_s {
     struct map_s *left;
     struct map_s *right;
 };
-
 
 map_t *create_tile(void);
 void generate_x_tiles(map_t *tile, int x);
