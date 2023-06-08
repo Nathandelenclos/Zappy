@@ -154,6 +154,9 @@ def find_path(data, item):
                 break
         viewLine = [b for b in range((limit - width), limit)]
         middle = viewLine[int((len(viewLine) / 2))]
+        if width > 3:
+            middle -= 1
+        printGreen("Middle is: " + str(middle) + " and tile is: " + str(tile))
         if tile < middle:
             instructions.append("Left")
             for t in range(0, (middle - tile)):
@@ -259,8 +262,9 @@ def action_choice(client_socket):
     if (int(myGameData.inventory["food"]) < 20 and mode == None):
         search_item(client_socket, "food", 30)
     else:
-        if (can_evolve(client_socket) == True and mode == None):
+        if (can_evolve(client_socket) == True and mode == None and myGameData.lvl == 1):
             gathering_mode(client_socket)
+        search_item(client_socket, "thystame", 100)
 
 def main():
     global auto_command, last_command, last_answer, last_broadcast, myGameData
