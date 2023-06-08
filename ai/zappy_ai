@@ -29,7 +29,6 @@ class Game_data:
         self.available_connection = 0
         self.lvl = 1
         self.stones_in_game = ["linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
-        # self.vision = [],
         self.evolution_infos  = {
             "lvl2": [1, 1, 0, 0, 0, 0, 0],
             "lvl3": [2, 1, 1, 1, 0, 0, 0],
@@ -114,10 +113,7 @@ def check_inventory(client_socket):
     global myGameData
     print("Inventory")
     client_socket.send(("Inventory"+"\n").encode())
-    answer = 1
-    while (answer != 0):
-        data = read_server(client_socket)
-        answer = answer_management(data, client_socket)
+    data = receive_answer(client_socket)
     clean_string = data.strip("[] ")
     pattern = r"(\w+)\s(\d+)"
     matches = re.findall(pattern, clean_string)
@@ -227,35 +223,30 @@ def can_evolve(client_socket):
         return (True)
     else:
         return (False)
+    
+def receive_answer(client_socket):
+    answer = 1
+    while (answer != 0):
+        data = read_server(client_socket)
+        answer = answer_management(data, client_socket)
+    return data
 
 def gathering_mode(client_socket):
     global myGameData
     if myGameData.lvl == 1:
         print("Set linemate")
         client_socket.send(("Set linemate\n").encode())
-        answer = 1
-        while (answer != 0):
-            data = read_server(client_socket)
-            answer = answer_management(data, client_socket)
+        data = receive_answer(client_socket)
         if data == "ok":
             print("Look")
             client_socket.send(("Look\n").encode())
-            answer = 1
-            while (answer != 0):
-                data = read_server(client_socket)
-                answer = answer_management(data, client_socket)
+            data = receive_answer(client_socket)
             print("Incantation")
             client_socket.send(("Incantation\n").encode())
-            answer = 1
-            while (answer != 0):
-                data = read_server(client_socket)
-                answer = answer_management(data, client_socket)
+            data = receive_answer(client_socket)
             if data == "Elevation underway":
                 printGreen("Evolution is a success")
-                answer = 1
-                while (answer != 0):
-                    data = read_server(client_socket)
-                    answer = answer_management(data, client_socket)
+                data = receive_answer(client_socket)
                 myGameData.lvl += 1
             else:
                 printGreen("Evolution failed")
