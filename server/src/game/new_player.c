@@ -40,5 +40,6 @@ void new_player(server_t *server, client_t *client)
     for (int i = 0; i < y; ++i) {
         map = map->down;
     }
+    put_in_list(&map->tile->items, client->player);
     client->player->map = map;
 }
