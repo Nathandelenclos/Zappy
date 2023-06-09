@@ -20,10 +20,10 @@
            "    nameX is the name of the team X\n" \
            "    clientsNb is the number of authorized clients per team\n" \
            "    freq is the reciprocal of time unit for execution of actions"
+    #define GRAPHIC "GRAPHIC"
 
     // Error messages
     #define ERROR_SOCKET "Erreur lors de la surveillance des sockets\n"
     #define ERROR_CONNEXION "Erreur lors de l'acceptation de la connexion client"
 
 #endif /* !MESSAGE_H_ */
-x

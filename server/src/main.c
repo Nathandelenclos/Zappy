@@ -18,6 +18,7 @@
  */
 int main(int argc, char **argv)
 {
+    srand(time(NULL));
     args_t *args = args_init();
     args = args_parsed(args, argc, argv);
     server_t *server = create_server(args);

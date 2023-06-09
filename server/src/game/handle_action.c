@@ -45,6 +45,40 @@ void new_command(server_t *server, client_t *client, string command)
  * @param server - The server.
  * @param client - The client.
  */
+void new_graphic_client(server_t *server, client_t *client)
+{
+    client->type = GUI;
+    client->state = WAITING_COMMAND;
+    dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
+        server->args->width, server->args->height);
+}
+
+/**
+ * New ai client.
+ * @param server - The server.
+ * @param client - The client.
+ * @param action - The action.
+ */
+void new_ai_client(server_t *server, client_t *client, string action)
+{
+    client->type = AI;
+    node *team = search_in_list_by(server->teams, action, search_by_string);
+    client->team = team == NULL ? NULL : team->data;
+    if (client->team == NULL) {
+        dprintf(client->socket_fd, KO);
+        return;
+    }
+    client->state = WAITING_COMMAND;
+    new_player(server, client);
+    dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
+        server->args->width, server->args->height);
+}
+
+/**
+ * Handle action.
+ * @param server - The server.
+ * @param client - The client.
+ */
 void action(server_t *server, client_t *client)
 {
     string action = read_message(client);
@@ -52,15 +86,11 @@ void action(server_t *server, client_t *client)
         return;
     }
     if (client->state == WAITING_TEAM_NAME) {
-        client->team = search_in_list_by(server->teams, action,
-            search_by_string)->data;
-        if (client->team == NULL) {
-            dprintf(client->socket_fd, KO);
+        if (strcmp(action, GRAPHIC) == 0) {
+            new_graphic_client(server, client);
             return;
         }
-        client->state = WAITING_COMMAND;
-        dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
-            server->args->width, server->args->height);
+        new_ai_client(server, client, action);
     } else if (client->state == WAITING_COMMAND) {
         new_command(server, client, action);
     }

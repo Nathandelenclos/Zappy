@@ -73,6 +73,7 @@ void handle_client(server_t *server);
 void new_connection(server_t *server);
 client_t *create_client(server_t *server);
 void handle_action(server_t *server);
+void new_player(server_t *server, client_t *client);
 
 static command_t commands_ai[] = {
     {NULL, NONE, NULL}

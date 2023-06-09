@@ -5,7 +5,6 @@
 ** network/handle_client.c
 */
 
-#include <stdbool.h>
 #include "server.h"
 
 void handle_client(server_t *server)
