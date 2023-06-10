@@ -56,15 +56,31 @@ void add_cmd(cmd_t *cmd, cmd_queue_t **queue)
  * @param cmd
  * @return Command.
  */
-cmd_t *create_cmd(client_t *client_socket, unsigned int timestamp_start,
-    unsigned int timestamp_end, void *cmd)
-    // TODO: Change void *cmd to its real type
+cmd_t *create_cmd(client_t *client_socket, string cmd, timestamp_t timestamp_start,
+    timestamp_t timestamp_end, void (*func)(server_t *server, cmd_t *cmd))
 {
     cmd_t *new_cmd = MALLOC(sizeof(cmd_t));
 
-    new_cmd->client_socket = client_socket;
+    new_cmd->client = client_socket;
     new_cmd->timestamp_start = timestamp_start;
     new_cmd->timestamp_end = timestamp_end;
+    new_cmd->func = func;
+    new_cmd->cmd = cmd;
     new_cmd->state = NOT_STARTED;
     return (new_cmd);
+}
+
+/**
+ * Pop the first command of the queue.
+ * @param queue - Queue to pop the command from.
+ * @return The popped command.
+ */
+cmd_queue_t *pop_first(cmd_queue_t **queue)
+{
+    cmd_queue_t *tmp = queue;
+
+    if (queue == NULL)
+        return NULL;
+    *queue = (*queue)->next;
+    return tmp;
 }

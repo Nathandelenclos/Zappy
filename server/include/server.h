@@ -15,6 +15,7 @@
     #include "utils.h"
     #include "message.h"
     #include "commands.h"
+    #include "cmd.h"
     #include <stdbool.h>
     #include <arpa/inet.h>
     #include <sys/types.h>
@@ -38,7 +39,7 @@ typedef enum {
     NONE,
 } team_type_t;
 
-typedef struct {
+struct client_s {
     int socket_fd;
     struct sockaddr_in sockaddr;
     socklen_t len;
@@ -46,9 +47,9 @@ typedef struct {
     STATE_CONNECTION state;
     string team;
     team_type_t type;
-} client_t;
+};
 
-typedef struct {
+struct server_s {
     args_t *args;
     int socket_fd;
     struct sockaddr_in sockaddr;
@@ -56,11 +57,12 @@ typedef struct {
     int last_fd;
     bool is_running;
     timestamp_t time;
+    cmd_queue_t *cmd_queue;
     node *clients;
     node *commands;
     node *teams;
     map_t *map;
-} server_t;
+};
 
 typedef struct {
     string name;
