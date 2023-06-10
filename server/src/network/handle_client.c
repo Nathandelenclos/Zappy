@@ -8,6 +8,23 @@
 #include "server.h"
 
 /**
+ * Update state of command in commands of client.
+ * @param client - The client.
+ */
+void update_state(client_t *client)
+{
+    cmd_t *last = NULL;
+    for (node *tmp = client->commands; tmp; tmp = tmp->next) {
+        last = tmp->data;
+        if (tmp->next == NULL)
+            break;
+        if (last->state == NOT_STARTED && ((cmd_t *)tmp->next->data)->state == FINISHED ) {
+            last->state = STARTED;
+        }
+    }
+}
+
+/**
  * Exec queue.
  * @param server - The server.
  */
@@ -18,6 +35,8 @@ void exec_queue(server_t *server)
     cmd_t *cmd = server->cmd_queue->data;
     while (cmd->timestamp_end <= server->time) {
         cmd->func(server, cmd);
+        cmd->state = FINISHED;
+        update_state(cmd->client);
         server->cmd_queue = server->cmd_queue->next;
         if (server->cmd_queue == NULL)
             return;

@@ -19,6 +19,12 @@ string read_message(client_t *client)
     if (valread == 0) {
         return NULL;
     }
+    string have_return = strstr(buffer, "\n");
+    string have_return2 = strstr(buffer, "\r");
+    if (have_return != NULL)
+        have_return[0] = '\0';
+    if (have_return2 != NULL)
+        have_return2[0] = '\0';
     return my_strdup(buffer);
 }
 
@@ -28,13 +34,38 @@ string read_message(client_t *client)
  * @param client - The client.
  * @param command - The command.
  */
-void new_command(server_t *server, client_t *client, string command)
+void new_command(server_t *server, client_t *client, command_t command)
+{
+    cmd_t *cmd = create_cmd(
+        client,
+        my_strdup(command.command),
+        server->time,
+        server->time + ((command.time  * 1000) / server->args->freq),
+        command.func);
+    if (client->commands != NULL) {
+        cmd_t *last_cmd = client->commands->data;
+        if (last_cmd->state != FINISHED) {
+            cmd->state = NOT_STARTED;
+            cmd->timestamp_start = last_cmd->timestamp_end;
+            cmd->timestamp_end = cmd->timestamp_start + ((command.time  * 1000) / server->args->freq);
+        }
+    }
+    put_in_list(&client->commands, cmd);
+    add_cmd(cmd, &server->cmd_queue);
+}
+
+/**
+ * Find command.
+ * @param server - The server.
+ * @param client - The client.
+ * @param command - The command.
+ */
+void find_command(server_t *server, client_t *client, string command)
 {
     command_t *commands = client->type == GUI ? commands_gui : commands_ai;
-    for (int i = 0; commands[i].name != NULL; i++) {
-        printf("%s %s\n", commands[i].name, command);
-        if (strstr(command, commands[i].name) != NULL) {
-            commands[i].func(server, client, command);
+    for (int i = 0; commands[i].command != NULL; i++) {
+        if (strstr(command, commands[i].command) != NULL) {
+            new_command(server, client, commands[i]);
             return;
         }
     }
@@ -93,7 +124,7 @@ void action(server_t *server, client_t *client)
         }
         new_ai_client(server, client, action);
     } else if (client->state == WAITING_COMMAND) {
-        new_command(server, client, action);
+        find_command(server, client, action);
     }
     FREE(action);
 }

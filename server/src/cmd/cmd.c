@@ -15,15 +15,15 @@ static void add_sorted(node *new_node, cmd_queue_t **queue)
 {
     node *tmp = *queue;
 
-    if (((cmd_t*)tmp->data)->timestamp_start >
-    ((cmd_t*)new_node->data)->timestamp_start) {
+    if (((cmd_t*)tmp->data)->timestamp_end >
+    ((cmd_t*)new_node->data)->timestamp_end) {
         new_node->next = tmp;
         *queue = new_node;
         return;
     }
     while (tmp->next != NULL &&
-    ((cmd_t*)tmp->data)->timestamp_start <
-    ((cmd_t*)new_node->data)->timestamp_start) {
+    ((cmd_t*)tmp->data)->timestamp_end <
+    ((cmd_t*)new_node->data)->timestamp_end) {
         tmp = tmp->next;
     }
     new_node->next = tmp->next;
@@ -41,11 +41,20 @@ void add_cmd(cmd_t *cmd, cmd_queue_t **queue)
 
     new_node->data = cmd;
     new_node->next = NULL;
-    if (*queue == NULL) {
+
+    if (*queue == NULL || cmd->timestamp_end < ((cmd_t *)(*queue)->data)->timestamp_end) {
+        new_node->next = *queue;
         *queue = new_node;
-        return;
+    } else {
+        node *current = *queue;
+        while (current->next != NULL &&
+        ((cmd_t*)current->next->data)->timestamp_end <
+        ((cmd_t*)new_node->data)->timestamp_end) {
+            current = current->next;
+        }
+        new_node->next = current->next;
+        current->next = new_node;
     }
-    add_sorted(new_node, queue);
 }
 
 /**
@@ -66,7 +75,7 @@ cmd_t *create_cmd(client_t *client_socket, string cmd, timestamp_t timestamp_sta
     new_cmd->timestamp_end = timestamp_end;
     new_cmd->func = func;
     new_cmd->cmd = cmd;
-    new_cmd->state = NOT_STARTED;
+    new_cmd->state = STARTED;
     return (new_cmd);
 }
 

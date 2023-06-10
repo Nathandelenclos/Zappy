@@ -7,31 +7,14 @@
 
 #include "server.h"
 
-void test_exec(server_t *server, cmd_t *cmd)
+/**
+ * Debug cmd.
+ * @param server - The server.
+ * @param cmd - The cmd.
+ */
+void debug_cmd(server_t *server, cmd_t *cmd)
 {
-    dprintf(cmd->client->socket_fd, "test result time start = %llu | time end = %llu | actual time = %llu\n", cmd->timestamp_start, cmd->timestamp_end, server->time);
-    printf( "test result time start = %llu | time end = %llu | actual time = %llu\n", cmd->timestamp_start, cmd->timestamp_end, server->time);
-    FREE(cmd->cmd);
-    FREE(cmd);
+    dprintf(cmd->client->socket_fd, "%s result time start = %llu | time end = %llu | actual time = %llu\n", cmd->cmd,  cmd->timestamp_start, cmd->timestamp_end, server->time);
+    printf( "%s result time start = %llu | time end = %llu | actual time = %llu\n", cmd->cmd, cmd->timestamp_start, cmd->timestamp_end, server->time);
 }
 
-void test(server_t *server, client_t *client, string command)
-{
-
-    add_cmd(create_cmd(
-        client,
-        my_strdup(command),
-        server->time, server->time + ((7  * 1000) / server->args->freq),
-        test_exec), &server->cmd_queue);
-}
-
-
-void test2(server_t *server, client_t *client, string command)
-{
-
-    add_cmd(create_cmd(
-        client,
-        my_strdup(command),
-        server->time, server->time + ((2  * 1000) / server->args->freq),
-        test_exec), &server->cmd_queue);
-}

@@ -47,6 +47,7 @@ struct client_s {
     STATE_CONNECTION state;
     string team;
     team_type_t type;
+    node *commands;
 };
 
 struct server_s {
@@ -64,8 +65,9 @@ struct server_s {
 };
 
 typedef struct {
-    string name;
-    void (*func)(server_t *server, client_t *client, string command);
+    string command;
+    int time;
+    void (*func)(server_t *server, cmd_t *cmd);
 } command_t;
 
 server_t *create_server(args_t *args);
@@ -77,13 +79,13 @@ void new_player(server_t *server, client_t *client);
 void randomize_items(server_t *server);
 
 static command_t commands_ai[] = {
-    {"test", test},
-    {"data", test2},
-    {NULL, NULL}
+    {"test", 7, debug_cmd},
+    {"data", 2, debug_cmd},
+    {NULL, 0, NULL}
 };
 
 static command_t commands_gui[] = {
-    {NULL, NULL}
+    {NULL, 0, NULL}
 };
 
 #endif /* !SERVER_H_ */
