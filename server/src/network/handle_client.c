@@ -16,7 +16,7 @@ void exec_queue(server_t *server)
     if (server->cmd_queue == NULL)
         return;
     cmd_t *cmd = server->cmd_queue->data;
-    while (cmd->timestamp_start <= server->time) {
+    while (cmd->timestamp_end <= server->time) {
         cmd->func(server, cmd);
         server->cmd_queue = server->cmd_queue->next;
         if (server->cmd_queue == NULL)
@@ -35,7 +35,7 @@ void handle_client(server_t *server)
     server->last_fd = server->socket_fd;
     struct timeval timeval  = {0 , 0};
     while (server->is_running) {
-        timeval.tv_usec = 1;
+        timeval.tv_usec = 1000;
         exec_queue(server);
         FD_ZERO(&server->readfds);
         FD_SET(server->socket_fd, &server->readfds);

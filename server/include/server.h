@@ -59,14 +59,12 @@ struct server_s {
     timestamp_t time;
     cmd_queue_t *cmd_queue;
     node *clients;
-    node *commands;
     node *teams;
     map_t *map;
 };
 
 typedef struct {
     string name;
-    team_type_t type;
     void (*func)(server_t *server, client_t *client, string command);
 } command_t;
 
@@ -79,11 +77,13 @@ void new_player(server_t *server, client_t *client);
 void randomize_items(server_t *server);
 
 static command_t commands_ai[] = {
-    {NULL, NONE, NULL}
+    {"test", test},
+    {"data", test2},
+    {NULL, NULL}
 };
 
 static command_t commands_gui[] = {
-    {NULL, NONE, NULL}
+    {NULL, NULL}
 };
 
 #endif /* !SERVER_H_ */

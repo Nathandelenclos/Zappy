@@ -32,7 +32,8 @@ void new_command(server_t *server, client_t *client, string command)
 {
     command_t *commands = client->type == GUI ? commands_gui : commands_ai;
     for (int i = 0; commands[i].name != NULL; i++) {
-        if (strcmp(commands[i].name, command) == 0) {
+        printf("%s %s\n", commands[i].name, command);
+        if (strstr(command, commands[i].name) != NULL) {
             commands[i].func(server, client, command);
             return;
         }
