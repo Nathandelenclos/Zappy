@@ -63,5 +63,6 @@ server_t *create_server(args_t *args)
     server = init_networking(server);
     server->map = generate_map(args->width, args->height);
     server->time = 0;
+    randomize_items(server);
     return server;
 }

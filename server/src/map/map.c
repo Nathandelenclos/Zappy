@@ -13,11 +13,11 @@
  */
 map_t *create_tile(void)
 {
-    map_t *tile = malloc(sizeof(map_t));
+    map_t *tile = MALLOC(sizeof(map_t));
 
     if (tile == NULL)
         return NULL;
-    tile->tile = malloc(sizeof(tile_t));
+    tile->tile = MALLOC(sizeof(tile_t));
     if (tile->tile == NULL)
         return NULL;
     tile->tile->items = NULL;
