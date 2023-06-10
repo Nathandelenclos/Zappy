@@ -4,11 +4,13 @@ import sys
 import argparse
 import socket
 import re
+import uuid
 import math
 import random
 
 # from main import temp_evo
 
+uuid_str = str(uuid.uuid4())
 port = None
 team_name = None
 ip_server = None
@@ -18,6 +20,7 @@ last_broadcast = []
 last_command = None
 last_answer = None
 mode = None
+presence = False
 
 def printGreen(data):
     print("\033[92m" + data + "\033[0m")
@@ -28,6 +31,8 @@ class Game_data:
         self.map_size_y = 0
         self.available_connection = 0
         self.lvl = 1
+        self.available = 0
+        self.uuid_present = []
         self.stones_in_game = ["linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
         self.evolution_infos  = {
             "lvl2": [1, 1, 0, 0, 0, 0, 0],
@@ -81,7 +86,28 @@ def Error_man():
     else:
         raise Exception("Bad arguments\n")
 
-def answer_management(data, client_socket):
+def broadcast_man(data, answer, client_socket, mode):
+    global myGameData, presence
+    if answer[2] != team_name:
+        return ()
+    print(data)
+    message = data.split(", ")
+    if message[1] == team_name+" nb_player" and presence == False:
+        print("Broadcast "+team_name+" present "+uuid_str)
+        client_socket.send(("Broadcast "+team_name+" present "+uuid_str+"\n").encode())
+        data = receive_answer(client_socket)
+        presence = True
+    elif mode == "asker" and answer[3] == "present":
+        if answer[4] in myGameData.uuid_present:
+            return ()
+        myGameData.uuid_present.append(answer[4])
+        myGameData.available += 1
+    elif message[1] == team_name+" end nb_player":
+        presence = False
+    else:
+        last_broadcast.append(answer)
+
+def answer_management(data, client_socket, mode):
     global last_broadcast
     if data == "dead":
         print("YOU DIED x)")
@@ -91,11 +117,19 @@ def answer_management(data, client_socket):
     else:
         answer = data.split()
         if answer[0] == "message":
-            last_broadcast.append(data)
-            print(data)
+            # print(data)
+            # last_broadcast.append(answer)
+            broadcast_man(data, answer, client_socket, mode)
             return(1)
         print(data)
         return (0)
+    
+def receive_answer(client_socket, mode=""):
+    answer = 1
+    while (answer != 0):
+        data = read_server(client_socket)
+        answer = answer_management(data, client_socket, mode)
+    return data
 
 def read_server(client_socket):
     msg = ""
@@ -121,7 +155,6 @@ def check_inventory(client_socket):
     while (len(data) > 0):
         myGameData.inventory[data[0][0]] = data[0][1]
         data.pop(0)
-    # print(myGameData.inventory)
 
 def find_path(data, item):
     data = data.replace('[', ' ')
@@ -156,7 +189,6 @@ def find_path(data, item):
         middle = viewLine[int((len(viewLine) / 2))]
         if width > 3:
             middle -= 1
-        printGreen("Middle is: " + str(middle) + " and tile is: " + str(tile))
         if tile < middle:
             instructions.append("Left")
             for t in range(0, (middle - tile)):
@@ -182,12 +214,9 @@ def search_choice(client_socket, data, item):
         print(command, end="")
         auto_command.pop(0)
         client_socket.send(command.encode())
-        answer = 1
-        while (answer != 0):
-            data = read_server(client_socket)
-            answer = answer_management(data, client_socket)
-    for broadcast in last_broadcast:
-        print(broadcast)
+        data = receive_answer(client_socket)
+    # for broadcast in last_broadcast:
+    #     print(broadcast)
 
 def search_item(client_socket, item, quantity):
     global last_command, mode, auto_command
@@ -196,12 +225,8 @@ def search_item(client_socket, item, quantity):
         client_socket.send(("Look"+"\n").encode())
         last_command = "Look"
         mode = item
-        answer = 1
-        while (answer != 0):
-            data = read_server(client_socket)
-            answer = answer_management(data, client_socket)
-        if answer != "ok":
-            search_choice(client_socket, data, item)
+        data = receive_answer(client_socket)
+        search_choice(client_socket, data, item)
         check_inventory(client_socket)
         if (item != "food"):
             if (int(myGameData.inventory["food"]) < 5):
@@ -226,50 +251,111 @@ def can_evolve(client_socket):
         return (True)
     else:
         return (False)
-    
-def receive_answer(client_socket):
-    answer = 1
-    while (answer != 0):
-        data = read_server(client_socket)
-        answer = answer_management(data, client_socket)
-    return data
 
-def gathering_mode(client_socket):
+def go_evolve(client_socket):
     global myGameData
     if myGameData.lvl == 1:
+        take_all_on_tile(client_socket)
         print("Set linemate")
         client_socket.send(("Set linemate\n").encode())
         data = receive_answer(client_socket)
         if data == "ok":
-            print("Look")
-            client_socket.send(("Look\n").encode())
-            data = receive_answer(client_socket)
             print("Incantation")
             client_socket.send(("Incantation\n").encode())
             data = receive_answer(client_socket)
             if data == "Elevation underway":
-                printGreen("Evolution is a success")
                 data = receive_answer(client_socket)
-                myGameData.lvl += 1
+                if data == "ko":
+                    printGreen("Evolution failed")
+                else:
+                    printGreen("Evolution is a success")
+                    myGameData.lvl += 1
             else:
                 printGreen("Evolution failed")
         else:
             printGreen("Item not found in inventory")
+    elif presence != True:
+        print("Broadcast "+team_name+" nb_player")
+        client_socket.send(("Broadcast "+team_name+" nb_player\n").encode())
+        data = receive_answer(client_socket, "asker")
+        for i in range(0, 4):
+            print("Left")
+            client_socket.send(("Left"+"\n").encode())
+            data = receive_answer(client_socket, "asker")
+        print("Broadcast "+team_name+" end nb_player")
+        client_socket.send(("Broadcast "+team_name+" end nb_player\n").encode())
+        data = receive_answer(client_socket, "asker")
+        if myGameData.available >= myGameData.evolution_infos["lvl"+str(myGameData.lvl+1)][0] - 1:
+            gathering_mode_and_incantation(client_socket)
+        else:
+            print("go fork")
+            # exit(0)
 
+def drop_items_on_tile(client_socket):
+    lvl = "lvl"+str(myGameData.lvl+1)
+    stones_needed = myGameData.evolution_infos[lvl].copy()
+    stones_needed.pop(0)
+    index = 0
+    for stone in stones_needed:
+        stone_name = myGameData.stones_in_game[index]
+        for i in range(0, stone):
+            print("Set "+stone_name)
+            client_socket.send(("Set "+stone_name+"\n").encode())
+            receive_answer(client_socket)
+        index += 1
+
+def gathering_mode(client_socket): #Partie de simon path finding broadcast
+    return (True)
+    # exit (0)
+
+def gathering_mode_and_incantation(client_socket):
+    # print("go evolve to lvl "+str(myGameData.lvl+1))
+    if gathering_mode(client_socket) == True:
+        take_all_on_tile(client_socket)
+        drop_items_on_tile()
+        print("Incantation")
+        client_socket.send(("Incantation\n").encode())
+        data = receive_answer(client_socket)
+        if data == "Elevation underway":
+            data = receive_answer(client_socket)
+            if data == "ko":
+                printGreen("Evolution failed")
+            else:
+                printGreen("Evolution is a success")
+                myGameData.lvl += 1
+        else:
+            printGreen("Evolution failed")
+    exit(0)
+
+def take_all_on_tile(client_socket):
+    print("Look")
+    client_socket.send(("Look\n").encode())
+    data = receive_answer(client_socket)
+    data = data.replace('[', ' ')
+    data = data.replace(']', ' ')
+    splitData = data.split(",")
+    player_tile = splitData[0]
+    items_to_take = player_tile.split()
+    while (len(items_to_take) > 0):
+        if items_to_take[0] == "player":
+            items_to_take.pop(0)
+        else:
+            print("Take "+items_to_take[0])
+            client_socket.send(("Take "+items_to_take[0]+"\n").encode())
+            data = receive_answer(client_socket)
+            items_to_take.pop(0)
 
 def action_choice(client_socket):
     check_inventory(client_socket)
     if (int(myGameData.inventory["food"]) < 20 and mode == None):
         search_item(client_socket, "food", 30)
     else:
-        if (can_evolve(client_socket) == True and mode == None and myGameData.lvl == 1):
-            gathering_mode(client_socket)
-        search_item(client_socket, "thystame", 100)
+        if (can_evolve(client_socket) == True and mode == None):
+            go_evolve(client_socket)
 
 def main():
     global auto_command, last_command, last_answer, last_broadcast, myGameData
 
-    i = 0
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         client_socket.connect((ip_server, port))
