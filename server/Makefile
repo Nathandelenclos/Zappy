@@ -24,7 +24,7 @@ TESTNAME = unit_tests
 ################################################################################
 
 CFLAGS += -W -Wall -Wextra -g
-CFLAGS += -Iinclude/ -I ./libs/
+CFLAGS += -I include/ -I ./libs/ -I ./libs/linked_list/ -I ./libs/my/
 
 LDFLAGS += -L./libs/
 LDFLAGS += -llist
