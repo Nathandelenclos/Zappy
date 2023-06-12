@@ -24,7 +24,7 @@ namespace zappy_gui {
                 _handle ? dlclose(_handle) : 0;
             }
 
-            std::shared_ptr<Loader> getSFMLInstance(const Data& data)
+            std::shared_ptr<Loader> getSFMLInstance(Data *pData)
             {
                 std::shared_ptr<IGraphical> lib;
                 auto entryPoint = dlsym(_handle, SFML_ENTRY);
@@ -32,7 +32,7 @@ namespace zappy_gui {
                 if (!entryPoint)
                     throw Exception(Error, "Cannot load entry point from SFML library");
                 auto *(*entry)(Data) = (IGraphical *(*)(Data))entryPoint;
-                lib = std::shared_ptr<IGraphical>(entry(data));
+                lib = std::shared_ptr<IGraphical>(entry(*pData));
                 if (!lib)
                     throw Exception(Error, "Cannot load SFML library");
                 return std::dynamic_pointer_cast<Loader>(lib);

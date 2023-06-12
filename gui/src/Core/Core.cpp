@@ -42,9 +42,9 @@ namespace zappy_gui {
         closedir(dir);
     }
 
-    void Core::setData(Data data)
+    void Core::setData(Data* data)
     {
-        _data = std::move(data);
+        _data = data;
     }
 
     void Core::createWindow()

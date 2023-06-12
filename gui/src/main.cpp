@@ -22,23 +22,20 @@ int main(int argc, char **argv)
             fd_set readFds;
 
             std::shared_ptr<zappy_gui::Core> core(new zappy_gui::Core());
+            core->setData(guiClient->getData());
             core->createWindow();
+            struct timeval timeout = {0, 0};
 
-            while (guiClient->isRunning()) {
+            while (core->isRunning()) {
                 FD_ZERO(&readFds);
                 FD_SET(STDIN_FILENO, &readFds);
                 FD_SET(maxFd, &readFds);
+                timeout.tv_usec = 1;
 
-                v_select = select(maxFd + 1, &readFds, nullptr, nullptr, nullptr);
+                v_select = select(maxFd + 1, &readFds, nullptr, nullptr, &timeout);
                 if (v_select == -1)
-                    throw zappy_gui::Exception (Error, "Select failed");
-                if (FD_ISSET(maxFd, &readFds)) {
-                    core->setData(guiClient->getData());
-                }
-                if (core->isRunning())
-                    core->displayWindow();
-                else
-                    break;
+                    throw zappy_gui::Exception(Error, "Select failed");
+                core->displayWindow();
             }
         } else {
             guiClient->connectionStatus();

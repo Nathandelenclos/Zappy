@@ -29,7 +29,7 @@ namespace zappy_gui {
 
             void parseData(const std::string& data);
             static void dataLoading();
-            Data getData() const { return _data; };
+            Data* getData() const { return _data; };
             int getSocket() const { return _socket; };
 
         protected:
@@ -38,7 +38,7 @@ namespace zappy_gui {
         private:
             int _socket;
             int _status;
-            Data _data;
+            Data* _data;
     };
 
 }

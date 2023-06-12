@@ -20,6 +20,7 @@ namespace zappy_gui {
             void openWindow() override;
             void displayWindow() override;
             void manageEvents() override;
+            void loadMap();
 
             bool isWindowRunning() const override { return _windowRunning; };
 

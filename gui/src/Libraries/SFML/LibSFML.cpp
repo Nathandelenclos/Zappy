@@ -11,7 +11,7 @@
 
 namespace zappy_gui {
 
-    LibSFML::LibSFML(Data data) : _data(std::move(data))
+    LibSFML::LibSFML(Data data) : _data(std::move(data)), _windowRunning(false)
     {
         _videoMode.width = WINDOW_WIDTH;
         _videoMode.height = WINDOW_HEIGHT;
@@ -28,6 +28,7 @@ namespace zappy_gui {
     void LibSFML::displayWindow()
     {
         manageEvents();
+        loadMap();
         _window.clear(sf::Color::Black);
         _window.display();
     }
@@ -36,8 +37,23 @@ namespace zappy_gui {
     {
         if (_window.pollEvent(_event)) {
             if (_event.type == sf::Event::Closed || _event.key.code == sf::Keyboard::Escape) {
-                _window.close();
                 _windowRunning = false;
+                _window.close();
+            }
+        }
+    }
+
+    void LibSFML::loadMap()
+    {
+        std::cout << "LOADING MAP" << std::endl;
+        for (int y = 0; y < _data.height; y++) {
+            for (int x = 0; x < _data.width; x++) {
+                const Cell& cell = _data.grid[x][y];
+                std::cout << "Cell(" << x << ", " << y << "): ";
+                for (int resource : cell.resources) {
+                    std::cout << resource << " ";
+                }
+                std::cout << std::endl;
             }
         }
     }

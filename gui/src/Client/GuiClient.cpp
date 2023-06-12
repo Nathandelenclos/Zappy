@@ -76,8 +76,8 @@ namespace zappy_gui {
         if (input.empty())
             return;
         sendCommand(input + '\n');
-        _data.message = receiveResponse();
-        std::cout << RESET << _data.message;
+        _data->message = receiveResponse();
+        std::cout << RESET << _data->message;
     }
 
     void GuiClient::sendCommand(const std::string &command) const
@@ -103,6 +103,7 @@ namespace zappy_gui {
     void GuiClient::parseData(const std::string &data)
     {
         /* dataLoading(); */
+        _data = static_cast<Data *>(malloc(sizeof(Data)));
         std::istringstream iss(data);
         std::string line;
 
@@ -112,20 +113,20 @@ namespace zappy_gui {
             lineStream >> command;
 
             if (command == MSZ) {
-                lineStream >> _data.width >> _data.height;
-                _data.grid.resize(_data.width, std::vector<Cell>(_data.height));
+                lineStream >> _data->width >> _data->height;
+                _data->grid.resize(_data->width, std::vector<Cell>(_data->height));
             } else if (command == SGT) {
-                lineStream >> _data.frequency;
+                lineStream >> _data->frequency;
             } else if (command == TNA) {
                 std::string teamName;
                 lineStream >> teamName;
-                _data.teams.push_back(teamName);
+                _data->teams.push_back(teamName);
             } else if (command == BCT) {
                 int x, y;
                 lineStream >> x >> y;
 
-                if (x >= 0 && x < _data.width && y >= 0 && y < _data.height) {
-                    Cell& cell = _data.grid[x][y];
+                if (x >= 0 && x < _data->width && y >= 0 && y < _data->height) {
+                    Cell& cell = _data->grid[x][y];
                     std::vector<int> resources;
                     int resource;
 
