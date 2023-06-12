@@ -21,6 +21,8 @@ last_command = None
 last_answer = None
 mode = None
 presence = False
+fork_done = 0
+broadcast = True
 
 def printGreen(data):
     print("\033[92m" + data + "\033[0m")
@@ -31,7 +33,15 @@ class Game_data:
         self.map_size_y = 0
         self.available_connection = 0
         self.lvl = 1
-        self.available = 0
+        self.available = {
+            "lvl1": 0,
+            "lvl2": 0,
+            "lvl3": 0,
+            "lvl4": 0,
+            "lvl5": 0,
+            "lvl6": 0,
+            "lvl7": 0
+        }
         self.uuid_present = []
         self.stones_in_game = ["linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
         self.evolution_infos  = {
@@ -43,7 +53,7 @@ class Game_data:
             "lvl7": [6, 1, 2, 3, 0, 1, 0],
             "lvl8": [6, 2, 2, 2, 2, 2, 1]
         }
-        self.inventory  = {
+        self.inventory  = { #inventaire commun a faire apres pour opti, ia qui rammasse le dernier item necessaire lance l'appel (broadcast)
             "food": None,
             "linemate": None ,
             "deraumere": None ,
@@ -87,28 +97,29 @@ def Error_man():
         raise Exception("Bad arguments\n")
 
 def broadcast_man(data, answer, client_socket, mode):
-    global myGameData, presence
+    global myGameData, presence, broadcast
     if answer[2] != team_name:
         return ()
     print(data)
     message = data.split(", ")
     if message[1] == team_name+" nb_player" and presence == False:
-        print("Broadcast "+team_name+" present "+uuid_str)
-        client_socket.send(("Broadcast "+team_name+" present "+uuid_str+"\n").encode())
+        print("Broadcast "+team_name+" present "+uuid_str+" "+str(myGameData.lvl))
+        client_socket.send(("Broadcast "+team_name+" present "+uuid_str+" "+str(myGameData.lvl)+"\n").encode())
         data = receive_answer(client_socket)
         presence = True
+        broadcast = False
     elif mode == "asker" and answer[3] == "present":
         if answer[4] in myGameData.uuid_present:
             return ()
         myGameData.uuid_present.append(answer[4])
-        myGameData.available += 1
+        myGameData.available["lvl"+answer[5]] += 1
     elif message[1] == team_name+" end nb_player":
         presence = False
     else:
         last_broadcast.append(answer)
 
 def answer_management(data, client_socket, mode):
-    global last_broadcast
+    global last_broadcast, fork_done, broadcast
     if data == "dead":
         print("YOU DIED x)")
         client_socket.close()
@@ -117,10 +128,19 @@ def answer_management(data, client_socket, mode):
     else:
         answer = data.split()
         if answer[0] == "message":
-            # print(data)
-            # last_broadcast.append(answer)
             broadcast_man(data, answer, client_socket, mode)
             return(1)
+        elif data == "Elevation underway":
+            print(data)
+            broadcast = False
+            data = receive_answer(client_socket)
+            if data == "ko":
+                printGreen("Evolution failed")
+            else:
+                printGreen("Evolution is a success")
+                myGameData.lvl += 1
+                broadcast = True
+            return (0)
         print(data)
         return (0)
     
@@ -215,8 +235,6 @@ def search_choice(client_socket, data, item):
         auto_command.pop(0)
         client_socket.send(command.encode())
         data = receive_answer(client_socket)
-    # for broadcast in last_broadcast:
-    #     print(broadcast)
 
 def search_item(client_socket, item, quantity):
     global last_command, mode, auto_command
@@ -253,7 +271,7 @@ def can_evolve(client_socket):
         return (False)
 
 def go_evolve(client_socket):
-    global myGameData
+    global myGameData, fork_done
     if myGameData.lvl == 1:
         take_all_on_tile(client_socket)
         print("Set linemate")
@@ -263,18 +281,11 @@ def go_evolve(client_socket):
             print("Incantation")
             client_socket.send(("Incantation\n").encode())
             data = receive_answer(client_socket)
-            if data == "Elevation underway":
-                data = receive_answer(client_socket)
-                if data == "ko":
-                    printGreen("Evolution failed")
-                else:
-                    printGreen("Evolution is a success")
-                    myGameData.lvl += 1
-            else:
+            if data != "Elevation underway":
                 printGreen("Evolution failed")
         else:
             printGreen("Item not found in inventory")
-    elif presence != True:
+    elif presence != True and broadcast == True:
         print("Broadcast "+team_name+" nb_player")
         client_socket.send(("Broadcast "+team_name+" nb_player\n").encode())
         data = receive_answer(client_socket, "asker")
@@ -285,11 +296,30 @@ def go_evolve(client_socket):
         print("Broadcast "+team_name+" end nb_player")
         client_socket.send(("Broadcast "+team_name+" end nb_player\n").encode())
         data = receive_answer(client_socket, "asker")
-        if myGameData.available >= myGameData.evolution_infos["lvl"+str(myGameData.lvl+1)][0] - 1:
+        nb_player = 0
+        for value in myGameData.available.values():
+            nb_player += value
+        print("lvl"+str(myGameData.lvl))
+        printGreen(str(myGameData.available["lvl"+str(myGameData.lvl)]))
+        if myGameData.available["lvl"+str(myGameData.lvl)] >= 5:
             gathering_mode_and_incantation(client_socket)
+        elif (nb_player < 5 and fork_done < 5):
+            print("Fork")
+            client_socket.send(("Fork\n").encode())
+            data = receive_answer(client_socket)
+            fork_done += 1
+        elif (nb_player >= 5):
+            printGreen("wait others to evolve")
+            for i in range(0, 8):
+                print("Left")
+                client_socket.send(("Left"+"\n").encode())
+                data = receive_answer(client_socket, "asker")
         else:
-            print("go fork")
-            # exit(0)
+            printGreen("wait clients to connect")
+            for i in range(0, 8):
+                print("Left")
+                client_socket.send(("Left"+"\n").encode())
+                data = receive_answer(client_socket, "asker")
 
 def drop_items_on_tile(client_socket):
     lvl = "lvl"+str(myGameData.lvl+1)
@@ -306,10 +336,8 @@ def drop_items_on_tile(client_socket):
 
 def gathering_mode(client_socket): #Partie de simon path finding broadcast
     return (True)
-    # exit (0)
 
 def gathering_mode_and_incantation(client_socket):
-    # print("go evolve to lvl "+str(myGameData.lvl+1))
     if gathering_mode(client_socket) == True:
         take_all_on_tile(client_socket)
         drop_items_on_tile()
@@ -325,7 +353,6 @@ def gathering_mode_and_incantation(client_socket):
                 myGameData.lvl += 1
         else:
             printGreen("Evolution failed")
-    exit(0)
 
 def take_all_on_tile(client_socket):
     print("Look")
