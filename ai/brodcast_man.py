@@ -12,11 +12,11 @@ def join(answer):
         printGreen("Right\nForward")
     else:
         printGreen("Left\nLeft\nForward")
-    exit(0)
+    # exit(0)
     return
 
 
-def broadcast_man(data, answer, client_socket):
+def broadcast_man(data, answer, client_socket, type):
     global myGameData
     if answer[2] != myGameData.team_name:
         return ()
@@ -28,7 +28,7 @@ def broadcast_man(data, answer, client_socket):
         data = receive_answer(client_socket)
         myGameData.presence = True
         myGameData.broadcast = False
-    elif myGameData.mode == "asker" and answer[3] == "present":
+    elif type == "asker" and answer[3] == "present":
         if answer[4] in myGameData.uuid_present:
             return ()
         myGameData.uuid_present.append(answer[4])
@@ -41,7 +41,7 @@ def broadcast_man(data, answer, client_socket):
     else:
         myGameData.last_broadcast.append(answer)
 
-def answer_management(data, client_socket):
+def answer_management(data, client_socket, type):
     global myGameData
     if data == "dead":
         print("YOU DIED x)")
@@ -51,7 +51,7 @@ def answer_management(data, client_socket):
     else:
         answer = data.split()
         if answer[0] == "message":
-            broadcast_man(data, answer, client_socket)
+            broadcast_man(data, answer, client_socket, type)
             return(1)
         elif data == "Elevation underway":
             print(data)
@@ -67,11 +67,11 @@ def answer_management(data, client_socket):
         print(data)
         return (0)
     
-def receive_answer(client_socket, mode=""):
+def receive_answer(client_socket, type=""):
     answer = 1
     while (answer != 0):
         data = read_server(client_socket)
-        answer = answer_management(data, client_socket)
+        answer = answer_management(data, client_socket, type)
     return data
 
 def read_server(client_socket):
