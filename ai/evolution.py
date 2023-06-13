@@ -62,27 +62,34 @@ def go_evolve(client_socket):
             myGameData.fork_done += 1
         elif (nb_player >= 5):
             printGreen("wait others to evolve")
-            for i in range(0, 8):
+            for i in range(0, 12):
                 print("Left")
                 client_socket.send(("Left"+"\n").encode())
                 data = receive_answer(client_socket, "asker")
         else:
             printGreen("wait clients to connect")
-            for i in range(0, 8):
+            for i in range(0, 12):
                 print("Left")
                 client_socket.send(("Left"+"\n").encode())
                 data = receive_answer(client_socket, "asker")
 
 def gathering_mode(client_socket):
     global myGameData
-    client_socket.send(("Broadcast " + myGameData.team_name + " gather\n").encode())
-    data = receive_answer(client_socket, "asker")
+    while myGameData.nb_arrived < 5:
+        client_socket.send(("Broadcast " + myGameData.team_name + " gather\n").encode())
+        print("Broadcast " + myGameData.team_name + " gather")
+        data = receive_answer(client_socket, "asker")
+        printGreen(str(myGameData.nb_arrived))
+        for i in range(0, 4):
+                print("Left")
+                client_socket.send(("Left"+"\n").encode())
+                data = receive_answer(client_socket, "asker")
     return (True)
 
 def gathering_mode_and_incantation(client_socket):
     if gathering_mode(client_socket) == True:
         take_all_on_tile(client_socket)
-        drop_items_on_tile()
+        drop_items_on_tile(client_socket)
         print("Incantation")
         client_socket.send(("Incantation\n").encode())
         data = receive_answer(client_socket)

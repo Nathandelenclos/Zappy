@@ -1,17 +1,40 @@
 from utils import *
 from game_data import *
 
-def join(answer):
-    if answer == "0":
+def join(answer, client_socket):
+    global myGameData
+    if myGameData.has_arrived == True:
+        return
+    if answer == "0,":
         printGreen("Player is on the elevation tile")
-    elif answer == "2" or answer == "1" or answer == "8":
+        client_socket.send(("Broadcast " + myGameData.team_name + " arrived\n").encode())
+        print("Broadcast " + myGameData.team_name + " arrived")
+        receive_answer(client_socket)
+        myGameData.has_arrived = True
+    elif answer == "2," or answer == "1," or answer == "8,":
         printGreen("Forward")
-    elif answer == "3":
+        client_socket.send(("Forward\n").encode())
+        receive_answer(client_socket)
+    elif answer == "3,":
         printGreen("Left\nForward")
-    elif answer == "7":
+        client_socket.send(("Left\n").encode())
+        receive_answer(client_socket)
+        client_socket.send(("Forward\n").encode())
+        receive_answer(client_socket)
+    elif answer == "7,":
         printGreen("Right\nForward")
+        client_socket.send(("Right\n").encode())
+        receive_answer(client_socket)
+        client_socket.send(("Forward\n").encode())
+        receive_answer(client_socket)
     else:
         printGreen("Left\nLeft\nForward")
+        client_socket.send(("Left\n").encode())
+        receive_answer(client_socket)
+        client_socket.send(("Left\n").encode())
+        receive_answer(client_socket)
+        client_socket.send(("Forward\n").encode())
+        receive_answer(client_socket)
     # exit(0)
     return
 
@@ -28,7 +51,7 @@ def broadcast_man(data, answer, client_socket, type):
         data = receive_answer(client_socket)
         myGameData.presence = True
         myGameData.broadcast = False
-    elif type == "asker" and answer[3] == "present":
+    elif type == "asker" and len(answer) > 3 and answer[3] == "present":
         if answer[4] in myGameData.uuid_present:
             return ()
         myGameData.uuid_present.append(answer[4])
@@ -37,7 +60,9 @@ def broadcast_man(data, answer, client_socket, type):
         myGameData.presence = False
     elif message[1] == myGameData.team_name + " gather":
         myGameData.mode = "gather"
-        join(answer[1])
+        join(answer[1], client_socket)
+    elif message[1] == myGameData.team_name + " arrived":
+        myGameData.nb_arrived += 1
     else:
         myGameData.last_broadcast.append(answer)
 

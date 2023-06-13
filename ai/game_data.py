@@ -19,6 +19,8 @@ class Game_data:
         self.map_size_y = 0
         self.available_connection = 0
         self.lvl = 1
+        self.has_arrived = False
+        self.nb_arrived = 0
         self.available = {
             "lvl1": 0,
             "lvl2": 0,
