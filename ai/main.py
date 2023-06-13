@@ -4,7 +4,7 @@ import re
 from utils import *
 from game_data import *
 from error_man import error_man
-from server_com import receive_answer, read_server
+from brodcast_man import receive_answer, read_server
 from evolution import *
 
 def check_inventory(client_socket):
@@ -21,10 +21,11 @@ def check_inventory(client_socket):
         data.pop(0)
 
 def action_choice(client_socket):
+    global myGameData
     check_inventory(client_socket)
     if (int(myGameData.inventory["food"]) < 20 and myGameData.mode == None):
-        search_item(client_socket, "food", 30)
-    else:
+        search_item(client_socket, "food", 30)        
+    elif myGameData.mode != "gather":
         if (can_evolve(client_socket) == True and myGameData.mode == None):
             go_evolve(client_socket)
 

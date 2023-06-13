@@ -2,11 +2,12 @@ import sys
 import socket
 import re
 from game_data import *
-from server_com import receive_answer
+from brodcast_man import receive_answer
 from main import check_inventory
 
 
 def find_path(data, item):
+    global myGameData
     data = data.replace('[', ' ')
     data = data.replace(']', ' ')
     splitData = data.split(",")
@@ -83,6 +84,7 @@ def search_item(client_socket, item, quantity):
     myGameData.mode = None
 
 def drop_items_on_tile(client_socket):
+    global myGameData
     lvl = "lvl"+str(myGameData.lvl+1)
     stones_needed = myGameData.evolution_infos[lvl].copy()
     stones_needed.pop(0)
@@ -96,6 +98,7 @@ def drop_items_on_tile(client_socket):
         index += 1
 
 def take_all_on_tile(client_socket):
+    global myGameData
     print("Look")
     client_socket.send(("Look\n").encode())
     data = receive_answer(client_socket)

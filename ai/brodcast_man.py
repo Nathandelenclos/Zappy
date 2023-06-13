@@ -1,6 +1,21 @@
 from utils import *
 from game_data import *
 
+def join(answer):
+    if answer == "0":
+        printGreen("Player is on the elevation tile")
+    elif answer == "2" or answer == "1" or answer == "8":
+        printGreen("Forward")
+    elif answer == "3":
+        printGreen("Left\nForward")
+    elif answer == "7":
+        printGreen("Right\nForward")
+    else:
+        printGreen("Left\nLeft\nForward")
+    exit(0)
+    return
+
+
 def broadcast_man(data, answer, client_socket):
     global myGameData
     if answer[2] != myGameData.team_name:
@@ -20,6 +35,9 @@ def broadcast_man(data, answer, client_socket):
         myGameData.available["lvl"+answer[5]] += 1
     elif message[1] == myGameData.team_name+" end nb_player":
         myGameData.presence = False
+    elif message[1] == myGameData.team_name + " gather":
+        myGameData.mode = "gather"
+        join(answer[1])
     else:
         myGameData.last_broadcast.append(answer)
 

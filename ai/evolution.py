@@ -1,6 +1,6 @@
 from utils import *
 from game_data import *
-from server_com import receive_answer
+from brodcast_man import receive_answer
 from search_item import *
 
 def can_evolve(client_socket):
@@ -73,7 +73,10 @@ def go_evolve(client_socket):
                 client_socket.send(("Left"+"\n").encode())
                 data = receive_answer(client_socket, "asker")
 
-def gathering_mode(client_socket): #Partie de simon path finding broadcast
+def gathering_mode(client_socket):
+    global myGameData
+    client_socket.send(("Broadcast " + myGameData.team_name + " gather\n").encode())
+    data = receive_answer(client_socket, "asker")
     return (True)
 
 def gathering_mode_and_incantation(client_socket):
