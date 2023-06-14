@@ -18,8 +18,8 @@ namespace zappy_gui {
 
     class LibSFML : public IGraphical {
         public:
-            explicit LibSFML(Data data);
-            ~LibSFML() override = default;
+            explicit LibSFML();
+            ~LibSFML() override;
 
             void openWindow() override;
             void displayWindow() override;
@@ -28,8 +28,10 @@ namespace zappy_gui {
 
             bool isWindowRunning() const override { return _windowRunning; };
 
+            void setData(const std::shared_ptr<Data>& data) override;
+
         protected:
-            Data _data;
+            std::shared_ptr<Data> _data;
             bool _windowRunning;
         private:
             sf::RenderWindow _window;

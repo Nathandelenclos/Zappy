@@ -103,7 +103,7 @@ namespace zappy_gui {
     void GuiClient::parseData(const std::string &data)
     {
         /* dataLoading(); */
-        _data = static_cast<Data *>(malloc(sizeof(Data)));
+        _data = std::make_shared<Data>();
         std::istringstream iss(data);
         std::string line;
 

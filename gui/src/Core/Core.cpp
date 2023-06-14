@@ -21,6 +21,10 @@ namespace zappy_gui {
 
     Core::~Core()
     {
+        if (_lib)
+            _lib.reset();
+        if (_loader)
+            _loader.reset();
         std::cout << "Core destroyed" << std::endl;
     }
 
@@ -42,14 +46,15 @@ namespace zappy_gui {
         closedir(dir);
     }
 
-    void Core::setData(Data* data)
+    void Core::setData(const std::shared_ptr<Data>& data)
     {
         _data = data;
     }
 
     void Core::createWindow()
     {
-        _lib = _loader->getSFMLInstance(_data);
+        _lib = _loader->getSFMLInstance();
+        _lib->setData(_data);
         _lib->openWindow();
     }
 

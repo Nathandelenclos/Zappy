@@ -33,6 +33,7 @@
 
 #include "IGraphical.hpp"
 #include "ArgumentsManager.hpp"
+#include "Data.hpp"
 
                             /* DEFINES */
 
@@ -99,21 +100,4 @@
 #define WINDOW_TITLE "Zappy"
 
 /* Enum */
-
-/* Struct */
-
-struct Cell {
-    int x = 0;
-    int y = 0;
-    std::vector<int> resources;
-};
-
-struct Data {
-    int width;
-    int height;
-    size_t frequency;
-    std::vector<std::string> teams;
-    std::vector<std::vector<Cell>> grid;
-    std::string message;
-};
 

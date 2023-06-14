@@ -20,7 +20,7 @@ namespace zappy_gui {
             bool isRunning() const { return _isRunning; };
 
             void findLibraries();
-            void setData(Data* data);
+            void setData(const std::shared_ptr<Data>& data);
 
             void createWindow();
             void displayWindow();
@@ -28,7 +28,7 @@ namespace zappy_gui {
         protected:
             bool _isRunning;
             std::vector<std::string> _libraries;
-            Data* _data;
+            std::shared_ptr<Data> _data;
         private:
             std::shared_ptr<IGraphical> _lib;
             GraphicalLoaderPtr _loader;

@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "Data.hpp"
+
 #define SFML_ENTRY "sfml_entry"
 #define RAYLIB_ENTRY "raylib_entry"
 
@@ -17,4 +19,6 @@ class IGraphical {
         virtual void displayWindow() = 0;
         virtual void manageEvents() = 0;
         virtual bool isWindowRunning() const = 0;
+
+        virtual void setData(const std::shared_ptr<zappy_gui::Data>& data) = 0;
 };

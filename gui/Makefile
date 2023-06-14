@@ -22,6 +22,7 @@ SFML_DIR = Libraries/SFML/
 
 SRC = main.cpp \
 	  ArgumentsManager.cpp \
+	  Data.cpp \
 	  Client/GuiClient.cpp \
 	  Core/Core.cpp \
 

@@ -9,7 +9,7 @@
 
 namespace zappy_gui {
 
-    LibSFML::LibSFML(Data data) : _data(std::move(data)), _windowRunning(false)
+    LibSFML::LibSFML() : _windowRunning(false)
     {
         _videoMode.width = WINDOW_WIDTH;
         _videoMode.height = WINDOW_HEIGHT;
@@ -17,23 +17,28 @@ namespace zappy_gui {
         _window.setFramerateLimit(WINDOW_MAX_FPS);
     }
 
+    LibSFML::~LibSFML()
+    {
+        std::cout << "LibSFML destructor called" << std::endl;
+    }
+
     void LibSFML::openWindow()
     {
         _window.create(_videoMode, WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
         _windowRunning = true;
-        _cellSquares.resize(_data.width * _data.height); // Réserve de l'espace pour tous les carrés
+        _cellSquares.resize(_data->width * _data->height); // Réserve de l'espace pour tous les carrés
 
         if (!_grassTexture.loadFromFile(GRASS))
             throw Exception(Error, "Cannot load grass texture");
 
         // Calculer la taille de chaque carré
-        float cellSizeX = static_cast<float>(_window.getSize().x - CELL_MARGIN * (_data.width - 1)) / _data.width;
-        float cellSizeY = static_cast<float>(_window.getSize().y - CELL_MARGIN * (_data.height - 1)) / _data.height;
+        float cellSizeX = static_cast<float>(_window.getSize().x - CELL_MARGIN * (_data->width - 1)) / _data->width;
+        float cellSizeY = static_cast<float>(_window.getSize().y - CELL_MARGIN * (_data->height - 1)) / _data->height;
 
         // Initialiser les carrés
-        for (int y = 0; y < _data.height; y++) {
-            for (int x = 0; x < _data.width; x++) {
-                int index = y * _data.width + x;
+        for (int y = 0; y < _data->height; y++) {
+            for (int x = 0; x < _data->width; x++) {
+                int index = y * _data->width + x;
                 sf::RectangleShape& cellSquare = _cellSquares[index];
 
                 cellSquare.setSize(sf::Vector2f(cellSizeX, cellSizeY));
@@ -41,8 +46,8 @@ namespace zappy_gui {
                 cellSquare.setFillColor(sf::Color::White);
 
                 // Calculer la position du carré centré avec un espacement
-                float squarePosX = (cellSizeX + CELL_MARGIN) * x + (_window.getSize().x - (_data.width * (cellSizeX + CELL_MARGIN))) / 2.0f;
-                float squarePosY = (cellSizeY + CELL_MARGIN) * y + (_window.getSize().y - (_data.height * (cellSizeY + CELL_MARGIN))) / 2.0f;
+                float squarePosX = (cellSizeX + CELL_MARGIN) * x + (_window.getSize().x - (_data->width * (cellSizeX + CELL_MARGIN))) / 2.0f;
+                float squarePosY = (cellSizeY + CELL_MARGIN) * y + (_window.getSize().y - (_data->height * (cellSizeY + CELL_MARGIN))) / 2.0f;
                 cellSquare.setPosition(squarePosX, squarePosY);
 
                 sf::Sprite sprite;
@@ -67,7 +72,7 @@ namespace zappy_gui {
     void LibSFML::manageEvents()
     {
         if (_window.pollEvent(_event)) {
-            if (_event.type == sf::Event::Closed || _event.key.code == sf::Keyboard::Escape) {
+            if (_event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                 _windowRunning = false;
                 _window.close();
             }
@@ -77,9 +82,9 @@ namespace zappy_gui {
     void LibSFML::loadMap()
     {
         // Dessiner les carrés de la carte
-        for (int y = 0; y < _data.height; y++) {
-            for (int x = 0; x < _data.width; x++) {
-                int index = y * _data.width + x;
+        for (int y = 0; y < _data->height; y++) {
+            for (int x = 0; x < _data->width; x++) {
+                int index = y * _data->width + x;
                 sf::RectangleShape& cellSquare = _cellSquares[index];
                 cellSquare.setFillColor(sf::Color::White);
 
@@ -94,9 +99,14 @@ namespace zappy_gui {
         }
     }
 
-    extern "C" IGraphical *sfml_entry(Data data)
+    void LibSFML::setData(const std::shared_ptr<Data> &data)
     {
-        return new zappy_gui::LibSFML(std::move(data));
+        _data = data;
+    }
+
+    extern "C" IGraphical *sfml_entry()
+    {
+        return new zappy_gui::LibSFML();
     }
 
 }
