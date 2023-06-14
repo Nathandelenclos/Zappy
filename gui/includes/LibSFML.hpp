@@ -10,7 +10,11 @@
 #include "Includes.hpp"
 #include <SFML/Graphics.hpp>
 
+#define GRASS "./assets/grass.png"
+
 namespace zappy_gui {
+
+    constexpr int CELL_MARGIN = 5;
 
     class LibSFML : public IGraphical {
         public:
@@ -31,6 +35,9 @@ namespace zappy_gui {
             sf::RenderWindow _window;
             sf::VideoMode _videoMode;
             sf::Event _event{};
+            std::vector<sf::RectangleShape> _cellSquares;
+            std::vector<sf::Sprite> _cellSprites;
+            sf::Texture _grassTexture;
     };
 
 }

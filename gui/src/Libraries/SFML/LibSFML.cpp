@@ -7,8 +7,6 @@
 
 #include "LibSFML.hpp"
 
-#include <utility>
-
 namespace zappy_gui {
 
     LibSFML::LibSFML(Data data) : _data(std::move(data)), _windowRunning(false)
@@ -23,13 +21,46 @@ namespace zappy_gui {
     {
         _window.create(_videoMode, WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
         _windowRunning = true;
+        _cellSquares.resize(_data.width * _data.height); // Réserve de l'espace pour tous les carrés
+
+        if (!_grassTexture.loadFromFile(GRASS))
+            throw Exception(Error, "Cannot load grass texture");
+
+        // Calculer la taille de chaque carré
+        float cellSizeX = static_cast<float>(_window.getSize().x - CELL_MARGIN * (_data.width - 1)) / _data.width;
+        float cellSizeY = static_cast<float>(_window.getSize().y - CELL_MARGIN * (_data.height - 1)) / _data.height;
+
+        // Initialiser les carrés
+        for (int y = 0; y < _data.height; y++) {
+            for (int x = 0; x < _data.width; x++) {
+                int index = y * _data.width + x;
+                sf::RectangleShape& cellSquare = _cellSquares[index];
+
+                cellSquare.setSize(sf::Vector2f(cellSizeX, cellSizeY));
+                // Définir la couleur du carré
+                cellSquare.setFillColor(sf::Color::White);
+
+                // Calculer la position du carré centré avec un espacement
+                float squarePosX = (cellSizeX + CELL_MARGIN) * x + (_window.getSize().x - (_data.width * (cellSizeX + CELL_MARGIN))) / 2.0f;
+                float squarePosY = (cellSizeY + CELL_MARGIN) * y + (_window.getSize().y - (_data.height * (cellSizeY + CELL_MARGIN))) / 2.0f;
+                cellSquare.setPosition(squarePosX, squarePosY);
+
+                sf::Sprite sprite;
+                sprite.setTexture(_grassTexture);
+                sprite.setScale(cellSizeX / sprite.getTextureRect().width, cellSizeY / sprite.getTextureRect().height);
+                sprite.setPosition(squarePosX, squarePosY);
+
+                // Ajouter le sprite au conteneur
+                _cellSprites.push_back(sprite);
+            }
+        }
     }
 
     void LibSFML::displayWindow()
     {
         manageEvents();
-        loadMap();
         _window.clear(sf::Color::Black);
+        loadMap();
         _window.display();
     }
 
@@ -45,15 +76,20 @@ namespace zappy_gui {
 
     void LibSFML::loadMap()
     {
-        std::cout << "LOADING MAP" << std::endl;
+        // Dessiner les carrés de la carte
         for (int y = 0; y < _data.height; y++) {
             for (int x = 0; x < _data.width; x++) {
-                const Cell& cell = _data.grid[x][y];
-                std::cout << "Cell(" << x << ", " << y << "): ";
-                for (int resource : cell.resources) {
-                    std::cout << resource << " ";
-                }
-                std::cout << std::endl;
+                int index = y * _data.width + x;
+                sf::RectangleShape& cellSquare = _cellSquares[index];
+                cellSquare.setFillColor(sf::Color::White);
+
+                // ...
+                // Mettre à jour les propriétés des carrés (couleur, ressources, etc.)
+                // ...
+
+                _window.draw(cellSquare);
+                sf::Sprite& cellSprite = _cellSprites[index];
+                _window.draw(cellSprite);
             }
         }
     }
