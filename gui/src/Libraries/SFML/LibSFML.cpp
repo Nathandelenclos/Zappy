@@ -65,6 +65,7 @@ namespace zappy_gui {
     {
         manageEvents();
         _window.clear(sf::Color::Black);
+        //Axel: Le menu ici fdp
         loadMap();
         _window.display();
     }
