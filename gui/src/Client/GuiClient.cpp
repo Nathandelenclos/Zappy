@@ -127,17 +127,21 @@ namespace zappy_gui {
 
                 if (x >= 0 && x < _data->width && y >= 0 && y < _data->height) {
                     Cell& cell = _data->grid[x][y];
-                    std::vector<int> resources;
-                    int resource;
+                    std::vector<std::vector<std::vector<int>>>& resources = cell.resources;
+                    resources.resize(7, std::vector<std::vector<int>>(1, std::vector<int>(1)));
 
-                    while (lineStream >> resource)
-                        resources.push_back(resource);
+                    for (int i = 0; i < 7; i++) {
+                        int resource;
+                        lineStream >> resource;
+                        resources[i][0][0] = resource;
+                    }
+
                     cell.x = x;
                     cell.y = y;
-                    cell.resources = resources;
                 }
-            } else
+            } else {
                 continue;
+            }
         }
     }
 

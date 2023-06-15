@@ -27,6 +27,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <iomanip>
+#include <random>
 #include <thread>
 
 /* Class */

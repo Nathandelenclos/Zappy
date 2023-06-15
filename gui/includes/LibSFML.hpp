@@ -21,10 +21,18 @@ namespace zappy_gui {
             explicit LibSFML();
             ~LibSFML() override;
 
+            void printData();
+
             void openWindow() override;
             void displayWindow() override;
             void manageEvents() override;
+
             void loadMap();
+
+            void initGrassOnMap();
+            void initResourcesOnMap();
+
+            static sf::Color getRandomColor();
 
             bool isWindowRunning() const override { return _windowRunning; };
 
@@ -40,6 +48,8 @@ namespace zappy_gui {
             std::vector<sf::RectangleShape> _cellSquares;
             std::vector<sf::Sprite> _cellSprites;
             sf::Texture _grassTexture;
+            std::vector<std::vector<sf::CircleShape>> _circles;
+
     };
 
 }

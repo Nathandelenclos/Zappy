@@ -16,7 +16,7 @@ namespace zappy_gui {
         public:
             int x = 0;
             int y = 0;
-            std::vector<int> resources;
+            std::vector<std::vector<std::vector<int>>> resources;
     };
 
     class Data {
