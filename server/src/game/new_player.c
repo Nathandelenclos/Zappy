@@ -16,6 +16,7 @@ player_t *create_player()
 {
     player_t *player = MALLOC(sizeof(player_t));
     player->type = PLAYER;
+    player->direction = rand() % 4;
     player->inventory = NULL;
     player->level = 1;
     player->map = NULL;

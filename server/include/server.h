@@ -79,8 +79,18 @@ void new_player(server_t *server, client_t *client);
 void randomize_items(server_t *server);
 
 static command_t commands_ai[] = {
-    {"test", 7, debug_cmd},
-    {"data", 2, debug_cmd},
+    {"Forward", 7, forward},
+    {"Right", 7, right},
+    {"Left", 7, left},
+    {"Look", 7, debug_cmd},
+    {"Inventory", 1, debug_cmd},
+    {"Broadcast", 7, debug_cmd},
+    {"Connect_nbr", 0, debug_cmd},
+    {"Fork", 42, debug_cmd},
+    {"Eject", 7, debug_cmd},
+    {"Take", 7, debug_cmd},
+    {"Set", 7, debug_cmd},
+    {"Incantation", 300, debug_cmd},
     {NULL, 0, NULL}
 };
 
