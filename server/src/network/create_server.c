@@ -57,8 +57,8 @@ server_t *create_server(args_t *args)
     server_t *server = MALLOC(sizeof(server_t));
     server->args = args;
     server->is_running = true;
-    server->commands = NULL;
     server->clients = NULL;
+    server->cmd_queue = NULL;
     server->teams = args->teams;
     server = init_networking(server);
     server->map = generate_map(args->width, args->height);

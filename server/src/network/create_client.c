@@ -26,4 +26,5 @@ client_t *create_client(server_t *server)
         &client->len);
     client->sockaddr = address;
     client->state = WAITING_TEAM_NAME;
+    client->commands = NULL;
 }

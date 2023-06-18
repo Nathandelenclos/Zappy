@@ -11,7 +11,6 @@
     #include "my.h"
     #include "list.h"
     #include "item.h"
-    #include "player.h"
 
 typedef struct {
     node *items;

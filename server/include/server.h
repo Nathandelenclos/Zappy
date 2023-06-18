@@ -14,6 +14,8 @@
     #include "player.h"
     #include "utils.h"
     #include "message.h"
+    #include "commands.h"
+    #include "cmd.h"
     #include <stdbool.h>
     #include <arpa/inet.h>
     #include <sys/types.h>
@@ -31,16 +33,24 @@ typedef enum {
     WAITING_COMMAND,
 } STATE_CONNECTION;
 
-typedef struct {
+typedef enum {
+    GUI,
+    AI,
+    NONE,
+} team_type_t;
+
+struct client_s {
     int socket_fd;
     struct sockaddr_in sockaddr;
     socklen_t len;
     player_t *player;
     STATE_CONNECTION state;
     string team;
-} client_t;
+    team_type_t type;
+    node *commands;
+};
 
-typedef struct {
+struct server_s {
     args_t *args;
     int socket_fd;
     struct sockaddr_in sockaddr;
@@ -48,17 +58,34 @@ typedef struct {
     int last_fd;
     bool is_running;
     timestamp_t time;
+    cmd_queue_t *cmd_queue;
     node *clients;
-    node *commands;
     node *teams;
     map_t *map;
-} server_t;
+};
+
+typedef struct {
+    string command;
+    int time;
+    void (*func)(server_t *server, cmd_t *cmd);
+} command_t;
 
 server_t *create_server(args_t *args);
 void handle_client(server_t *server);
 void new_connection(server_t *server);
 client_t *create_client(server_t *server);
 void handle_action(server_t *server);
+void new_player(server_t *server, client_t *client);
 void randomize_items(server_t *server);
+
+static command_t commands_ai[] = {
+    {"test", 7, debug_cmd},
+    {"data", 2, debug_cmd},
+    {NULL, 0, NULL}
+};
+
+static command_t commands_gui[] = {
+    {NULL, 0, NULL}
+};
 
 #endif /* !SERVER_H_ */

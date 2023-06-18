@@ -13,7 +13,11 @@
     #include "map.h"
 
 typedef struct {
-    item_type_t name;
+    item_type_t type;
+    node *inventory;
+    int level;
+    map_t *map;
+    node *commands;
 } player_t;
 
 #endif /* !PLAYER_H_ */

@@ -8,6 +8,7 @@
 #ifndef MESSAGE_H_
     #define MESSAGE_H_
 
+    // Messages
     #define WELCOME "WELCOME\n"
     #define KO "ko\n"
     #define OK "ok\n"
@@ -19,6 +20,7 @@
            "    nameX is the name of the team X\n" \
            "    clientsNb is the number of authorized clients per team\n" \
            "    freq is the reciprocal of time unit for execution of actions"
+    #define GRAPHIC "GRAPHIC"
 
     // Error messages
     #define ERROR_SOCKET "Erreur lors de la surveillance des sockets\n"
