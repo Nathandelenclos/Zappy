@@ -79,7 +79,7 @@ void new_player(server_t *server, client_t *client);
 void randomize_items(server_t *server);
 int get_item_count(node *inventory, item_type_t type);
 void add_item_to_inventory(node **inventory, item_type_t item_type);
-void remove_item_from_inventory(node *inventory, item_type_t item_type);
+void remove_item_from_inventory(node **inventory, item_type_t item_type);
 
 static command_t commands_ai[] = {
     {"Forward", 7, forward},
@@ -92,7 +92,7 @@ static command_t commands_ai[] = {
     {"Fork", 42, debug_cmd},
     {"Eject", 7, debug_cmd},
     {"Take", 7, take},
-    {"Set", 7, debug_cmd},
+    {"Set", 7, set},
     {"Incantation", 300, debug_cmd},
     {NULL, 0, NULL}
 };
