@@ -29,31 +29,6 @@ string read_message(client_t *client)
 }
 
 /**
- * New started command.
- * @param server - The server.
- * @param client - The client.
- * @param command - The command.
- * @param command_str - The command string.
- */
-void new_started_command(server_t *server, client_t *client, command_t command, string command_str)
-{
-    cmd_t *start_cmd = create_cmd(client,my_strdup(command_str),
-        server->time, server->time,
-        command.func_start);
-    if (client->commands != NULL) {
-        cmd_t *last_cmd = client->commands->data;
-        if (last_cmd->state != FINISHED) {
-            start_cmd->state = NOT_STARTED;
-            start_cmd->timestamp_start = last_cmd->timestamp_end;
-            start_cmd->timestamp_end = start_cmd->timestamp_start;
-        }
-    }
-    put_in_list(&client->commands, start_cmd);
-    add_cmd(start_cmd, &server->cmd_queue);
-}
-
-
-/**
  * New command.
  * @param server - The server.
  * @param client - The client.
@@ -61,8 +36,6 @@ void new_started_command(server_t *server, client_t *client, command_t command, 
  */
 void new_command(server_t *server, client_t *client, command_t command, string command_str)
 {
-    if (command.func_start)
-        new_started_command(server, client, command, command_str);
     cmd_t *cmd = create_cmd( client, my_strdup(command_str),
         server->time,
         server->time + ((command.time  * 1000) / server->args->freq),

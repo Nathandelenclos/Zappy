@@ -68,7 +68,6 @@ typedef struct {
     string command;
     int time;
     void (*func)(server_t *server, cmd_t *cmd);
-    void (*func_start)(server_t *server, cmd_t *cmd);
 } command_t;
 
 server_t *create_server(args_t *args);
@@ -81,25 +80,26 @@ void randomize_items(server_t *server);
 int get_item_count(node *inventory, item_type_t type);
 void add_item_to_inventory(node **inventory, item_type_t item_type);
 void remove_item_from_inventory(node **inventory, item_type_t item_type);
+void new_command(server_t *server, client_t *client, command_t command, string command_str);
 
 static command_t commands_ai[] = {
-    {"Forward", 7, forward, NULL},
-    {"Right", 7, right, NULL},
-    {"Left", 7, left, NULL},
-    {"Look", 7, look, NULL},
-    {"Inventory", 1, inventory, NULL},
-    {"Broadcast", 7, debug_cmd, NULL},
-    {"Connect_nbr", 0, debug_cmd, NULL},
-    {"Fork", 42, debug_cmd, NULL},
-    {"Eject", 7, debug_cmd, NULL},
-    {"Take", 7, take, NULL},
-    {"Set", 7, set, NULL},
-    {"Incantation", 300, incantation, incantation_start},
-    {NULL, 0, NULL, NULL}
+    {"Forward", 7, forward},
+    {"Right", 7, right},
+    {"Left", 7, left},
+    {"Look", 7, look},
+    {"Inventory", 1, inventory},
+    {"Broadcast", 7, debug_cmd},
+    {"Connect_nbr", 0, debug_cmd},
+    {"Fork", 42, debug_cmd},
+    {"Eject", 7, debug_cmd},
+    {"Take", 7, take},
+    {"Set", 7, set},
+    {"Incantation", 0, incantation_start},
+    {NULL, 0, NULL}
 };
 
 static command_t commands_gui[] = {
-    {NULL, 0, NULL, NULL}
+    {NULL, 0, NULL}
 };
 
 #endif /* !SERVER_H_ */
