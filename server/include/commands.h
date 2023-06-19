@@ -22,5 +22,7 @@ void look(server_t *server, cmd_t *cmd);
 void inventory(server_t *server, cmd_t *cmd);
 void take(server_t *server, cmd_t *cmd);
 void set(server_t *server, cmd_t *cmd);
+void incantation(server_t *server, cmd_t *cmd);
+void incantation_start(server_t *server, cmd_t *cmd);
 
 #endif
