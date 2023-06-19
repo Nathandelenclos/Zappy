@@ -51,7 +51,7 @@ def broadcast_man(data, answer, client_socket, type):
         data = receive_answer(client_socket)
         myGameData.presence = True
         myGameData.broadcast = False
-    elif type == "asker" and len(answer) > 3 and answer[3] == "present":
+    elif type == "asker" and len(answer) > 4 and answer[3] == "present":
         if answer[4] in myGameData.uuid_present:
             return ()
         myGameData.uuid_present.append(answer[4])

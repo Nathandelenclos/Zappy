@@ -51,13 +51,13 @@ def main():
         print("La connexion au serveur a été refusée.")
 
 if __name__ == "__main__":
-    error_man()
-    main()
-    # try:
-    #     error_man()
-    #     main()
-    # except SystemExit:
-    #     exit(0)
-    # except Exception as error:
-    #     sys.stdout.write(str(error))
-    #     exit(84)
+    # error_man()
+    # main()
+    try:
+        error_man()
+        main()
+    except SystemExit:
+        exit(0)
+    except Exception as error:
+        sys.stdout.write(str(error))
+        exit(84)

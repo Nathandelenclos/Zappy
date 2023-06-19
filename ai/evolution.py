@@ -22,6 +22,42 @@ def can_evolve(client_socket):
     else:
         return (False)
 
+def evolve_in_group(client_socket):
+    print("Broadcast "+ myGameData.team_name +" nb_player")
+    client_socket.send(("Broadcast "+ myGameData.team_name +" nb_player\n").encode())
+    data = receive_answer(client_socket, "asker")
+    for i in range(0, 4):
+        print("Left")
+        client_socket.send(("Left"+"\n").encode())
+        data = receive_answer(client_socket, "asker")
+    print("Broadcast "+ myGameData.team_name +" end nb_player")
+    client_socket.send(("Broadcast "+ myGameData.team_name +" end nb_player\n").encode())
+    data = receive_answer(client_socket, "asker")
+    nb_player = 0
+    for value in myGameData.available.values():
+        nb_player += value
+    print("lvl"+str(myGameData.lvl))
+    printGreen("Number of players: " + str(myGameData.available["lvl"+str(myGameData.lvl)]))
+    if myGameData.available["lvl"+str(myGameData.lvl)] >= 5:
+        gathering_mode_and_incantation(client_socket)
+    elif (nb_player < 5 and myGameData.fork_done < 5):
+        print("Fork")
+        client_socket.send(("Fork\n").encode())
+        data = receive_answer(client_socket)
+        myGameData.fork_done += 1
+    elif (nb_player >= 5):
+        printGreen("wait others to evolve")
+        for i in range(0, 12):
+            print("Left")
+            client_socket.send(("Left"+"\n").encode())
+            data = receive_answer(client_socket, "asker")
+    else:
+        printGreen("wait clients to connect")
+        for i in range(0, 12):
+            print("Left")
+            client_socket.send(("Left"+"\n").encode())
+            data = receive_answer(client_socket, "asker")
+
 def go_evolve(client_socket):
     global myGameData
     if myGameData.lvl == 1:
@@ -35,43 +71,11 @@ def go_evolve(client_socket):
             data = receive_answer(client_socket)
             if data != "Elevation underway":
                 printGreen("Evolution failed")
+                # myGameData.mode = "gather"
         else:
             printGreen("Item not found in inventory")
     elif myGameData.presence != True and myGameData.broadcast == True:
-        print("Broadcast "+ myGameData.team_name +" nb_player")
-        client_socket.send(("Broadcast "+ myGameData.team_name +" nb_player\n").encode())
-        data = receive_answer(client_socket, "asker")
-        for i in range(0, 4):
-            print("Left")
-            client_socket.send(("Left"+"\n").encode())
-            data = receive_answer(client_socket, "asker")
-        print("Broadcast "+ myGameData.team_name +" end nb_player")
-        client_socket.send(("Broadcast "+ myGameData.team_name +" end nb_player\n").encode())
-        data = receive_answer(client_socket, "asker")
-        nb_player = 0
-        for value in myGameData.available.values():
-            nb_player += value
-        print("lvl"+str(myGameData.lvl))
-        printGreen(str(myGameData.available["lvl"+str(myGameData.lvl)]))
-        if myGameData.available["lvl"+str(myGameData.lvl)] >= 5:
-            gathering_mode_and_incantation(client_socket)
-        elif (nb_player < 5 and myGameData.fork_done < 5):
-            print("Fork")
-            client_socket.send(("Fork\n").encode())
-            data = receive_answer(client_socket)
-            myGameData.fork_done += 1
-        elif (nb_player >= 5):
-            printGreen("wait others to evolve")
-            for i in range(0, 12):
-                print("Left")
-                client_socket.send(("Left"+"\n").encode())
-                data = receive_answer(client_socket, "asker")
-        else:
-            printGreen("wait clients to connect")
-            for i in range(0, 12):
-                print("Left")
-                client_socket.send(("Left"+"\n").encode())
-                data = receive_answer(client_socket, "asker")
+        evolve_in_group(client_socket)
 
 def gathering_mode(client_socket):
     global myGameData
