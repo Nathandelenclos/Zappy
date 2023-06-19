@@ -22,6 +22,17 @@ typedef enum {
     THYSTAME
 } item_type_t;
 
+static const string item_type_str[] = {
+    "player",
+    "food",
+    "linemate",
+    "deraumere",
+    "sibur",
+    "mendiane",
+    "phiras",
+    "thystame"
+};
+
 typedef struct {
     item_type_t type;
     double density;

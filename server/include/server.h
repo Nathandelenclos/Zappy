@@ -82,7 +82,7 @@ static command_t commands_ai[] = {
     {"Forward", 7, forward},
     {"Right", 7, right},
     {"Left", 7, left},
-    {"Look", 7, debug_cmd},
+    {"Look", 7, look},
     {"Inventory", 1, debug_cmd},
     {"Broadcast", 7, debug_cmd},
     {"Connect_nbr", 0, debug_cmd},

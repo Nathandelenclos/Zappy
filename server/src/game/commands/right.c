@@ -7,6 +7,11 @@
 
 #include "server.h"
 
+/**
+ * Right cmd.
+ * @param server - The server.
+ * @param cmd - The cmd.
+ */
 void right(server_t *server, cmd_t *cmd)
 {
     client_t *client = cmd->client;
