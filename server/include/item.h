@@ -30,7 +30,8 @@ static const string item_type_str[] = {
     "sibur",
     "mendiane",
     "phiras",
-    "thystame"
+    "thystame",
+    NULL
 };
 
 typedef struct {
