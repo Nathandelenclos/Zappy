@@ -117,7 +117,7 @@ void print_look(server_t *server, cmd_t *cmd, node *tiles)
             items = items->next;
         }
         if (tiles->next)
-            dprintf(cmd->client->socket_fd, ",");
+            dprintf(cmd->client->socket_fd, ", ");
         tiles = tiles->next;
     }
     dprintf(cmd->client->socket_fd, "]\n");

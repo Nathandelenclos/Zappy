@@ -20,5 +20,6 @@ void right(server_t *server, cmd_t *cmd);
 void left(server_t *server, cmd_t *cmd);
 void look(server_t *server, cmd_t *cmd);
 void inventory(server_t *server, cmd_t *cmd);
+void take(server_t *server, cmd_t *cmd);
 
 #endif

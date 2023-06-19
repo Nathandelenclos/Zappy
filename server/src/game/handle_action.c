@@ -34,11 +34,11 @@ string read_message(client_t *client)
  * @param client - The client.
  * @param command - The command.
  */
-void new_command(server_t *server, client_t *client, command_t command)
+void new_command(server_t *server, client_t *client, command_t command, string command_str)
 {
     cmd_t *cmd = create_cmd(
         client,
-        my_strdup(command.command),
+        my_strdup(command_str),
         server->time,
         server->time + ((command.time  * 1000) / server->args->freq),
         command.func);
@@ -65,7 +65,7 @@ void find_command(server_t *server, client_t *client, string command)
     command_t *commands = client->type == GUI ? commands_gui : commands_ai;
     for (int i = 0; commands[i].command != NULL; i++) {
         if (strstr(command, commands[i].command) != NULL) {
-            new_command(server, client, commands[i]);
+            new_command(server, client, commands[i], command);
             return;
         }
     }
