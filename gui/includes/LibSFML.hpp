@@ -28,6 +28,7 @@ namespace zappy_gui {
             void manageEvents() override;
 
             void loadMap();
+            void loadMenu();
 
             void initGrassOnMap();
             void initResourcesOnMap();
@@ -49,6 +50,10 @@ namespace zappy_gui {
             std::vector<sf::Sprite> _cellSprites;
             sf::Texture _grassTexture;
             std::vector<std::vector<sf::CircleShape>> _circles;
+            sf::Texture _menutext;
+            sf::Sprite quitPrint;
+            sf::Sprite boutonPrint;
+            bool _menu;
 
     };
 
