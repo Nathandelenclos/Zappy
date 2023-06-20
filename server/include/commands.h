@@ -15,5 +15,6 @@ typedef struct client_s client_t;
 typedef char *string;
 
 void debug_cmd(server_t *server, cmd_t *cmd);
+void msz(server_t *server, cmd_t *cmd);
 
 #endif
