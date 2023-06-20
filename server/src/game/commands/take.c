@@ -7,38 +7,6 @@
 
 #include "server.h"
 
-/**
- * Add item to inventory.
- * @param inventory - The inventory.
- * @param item_type - The item type.
- */
-void add_item_to_inventory(node **inventory, item_type_t item_type)
-{
-    item_t *item = MALLOC(sizeof(item_t));
-    item->type = item_type;
-    put_in_list(inventory, item);
-}
-
-/**
- * Get item count.
- * @param inventory - The inventory.
- * @param item_type - The item type.
- * @return int - The item count.
- */
-void remove_item_from_inventory(node **inventory, item_type_t item_type)
-{
-    node *tmp = *inventory;
-    item_t *item = NULL;
-
-    while (tmp != NULL) {
-        item = tmp->data;
-        if (item->type == item_type) {
-            delete_in_list(inventory, item);
-            return;
-        }
-        tmp = tmp->next;
-    }
-}
 
 /**
  * Take cmd.

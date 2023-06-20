@@ -86,6 +86,7 @@ void new_player(server_t *server, client_t *client);
 void randomize_items(server_t *server);
 int get_item_count(node *inventory, item_type_t type);
 void add_item_to_inventory(node **inventory, item_type_t item_type);
+void add_items_to_inventory(node **inventory, item_type_t item_type, int quantity);
 void remove_item_from_inventory(node **inventory, item_type_t item_type);
 void new_command(server_t *server, client_t *client, command_t command, string command_str);
 
