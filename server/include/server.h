@@ -43,6 +43,7 @@ typedef struct {
     string name;
     node *clients;
     int max_players;
+    node *eggs_places;
     team_type_t type;
 } team_t;
 

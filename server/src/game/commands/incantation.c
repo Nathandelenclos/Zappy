@@ -28,6 +28,22 @@ node *get_players_on_tile(cmd_t *cmd)
     return players;
 }
 
+node *get_players_on_tile_with_level(cmd_t *cmd, int level)
+{
+    node *players = get_players_on_tile(cmd);
+    node *players_level = NULL;
+    node *tmp = players;
+    player_t *player = NULL;
+    while (tmp) {
+        player = tmp->data;
+        if (player->level == level) {
+            put_in_end(&players_level, player);
+        }
+        tmp = tmp->next;
+    }
+    return players_level;
+}
+
 /**
  * Check if the incantation is possible.
  * @param cmd - The cmd.
@@ -66,7 +82,10 @@ bool check_incantation(cmd_t *cmd)
 void incantation(server_t *server, cmd_t *cmd)
 {
     if (check_incantation(cmd)) {
-        cmd->client->player->level++;
+        node *players = get_players_on_tile_with_level(cmd,
+            cmd->client->player->level);
+        for (node *tmp = players; tmp; tmp = tmp->next)
+            ((player_t *)tmp->data)->level++;
         dprintf(cmd->client->socket_fd, "Current level: %d\n",
             cmd->client->player->level);
     } else {
@@ -82,7 +101,13 @@ void incantation(server_t *server, cmd_t *cmd)
 void incantation_start(server_t *server, cmd_t *cmd)
 {
     if (check_incantation(cmd)) {
-        dprintf(cmd->client->socket_fd, "Elevation underway\n");
+        node *players = get_players_on_tile_with_level(cmd,
+            cmd->client->player->level);
+        for (node *tmp = players; tmp; tmp = tmp->next) {
+            node *client = search_in_list_by(server->clients, tmp->data,
+                search_by_player);
+            dprintf(((client_t *)client->data)->socket_fd, "Elevation underway\n");
+        }
         command_t end = {"incantation_end", 300, incantation};
         new_command(server, cmd->client, end, cmd->cmd);
     } else {

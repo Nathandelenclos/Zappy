@@ -13,7 +13,7 @@
  * @param server - The server.
  * @param type - The type of the item.
  */
-void random_place(server_t *server, item_type_t type)
+map_t *random_place(server_t *server, item_type_t type)
 {
     int x = rand() % server->args->width;
     int y = rand() % server->args->height;
@@ -24,8 +24,26 @@ void random_place(server_t *server, item_type_t type)
         tile = tile->right;
     for (int i = 0; i < y; i++)
         tile = tile->down;
-
     put_in_list(&tile->tile->items, item);
+    return tile;
+}
+
+/**
+ * Randomize the egg place.
+ * @param server - The server.
+ */
+void randomize_egg(server_t *server)
+{
+    team_t *team;
+    double quantity = server->args->clients_nb;
+    for (node *tmp = server->teams; tmp; tmp = tmp->next) {
+        double quantity_team = quantity;
+        team = tmp->data;
+        while (quantity_team > 0) {
+            put_in_list(&team->eggs_places, random_place(server, EGG));
+            quantity_team--;
+        }
+    }
 }
 
 /**
@@ -42,4 +60,5 @@ void randomize_items(server_t *server)
             quantity--;
         }
     }
+    randomize_egg(server);
 }

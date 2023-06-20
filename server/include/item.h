@@ -19,7 +19,8 @@ typedef enum {
     SIBUR,
     MENDIANE,
     PHIRAS,
-    THYSTAME
+    THYSTAME,
+    EGG
 } item_type_t;
 
 static const string item_type_str[] = {
@@ -31,6 +32,7 @@ static const string item_type_str[] = {
     "mendiane",
     "phiras",
     "thystame",
+    "egg",
     NULL
 };
 

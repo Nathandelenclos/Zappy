@@ -32,15 +32,8 @@ player_t *create_player()
 void new_player(server_t *server, client_t *client)
 {
     client->player = create_player();
-    map_t *map = server->map;
-    int x = rand() % server->args->width;
-    int y = rand() % server->args->height;
-    for (int i = 0; i < x; ++i) {
-        map = map->right;
-    }
-    for (int i = 0; i < y; ++i) {
-        map = map->down;
-    }
-    put_in_list(&map->tile->items, client->player);
-    client->player->map = map;
+    map_t *place = client->team->eggs_places->data;
+    remove_item_from_inventory(&place->tile->items, EGG);
+    put_in_list(&place->tile->items, client->player);
+    client->player->map = place;
 }
