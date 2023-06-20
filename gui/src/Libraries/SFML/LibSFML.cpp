@@ -11,6 +11,7 @@ namespace zappy_gui {
 
     LibSFML::LibSFML() : _windowRunning(false)
     {
+        _menu = true;
         _videoMode.width = WINDOW_WIDTH;
         _videoMode.height = WINDOW_HEIGHT;
         _videoMode.bitsPerPixel = WINDOW_FPS;
@@ -194,8 +195,37 @@ namespace zappy_gui {
         _window.clear(sf::Color::Black);
         //Axel: Le menu ici fdp
         updateParticles(0.016f);
-        loadMap();
+        if (_menu == false)
+            loadMap();
+        else
+            loadMenu();
         _window.display();
+    }
+
+    void LibSFML::loadMenu()
+    {
+        sf::Texture bouton;
+        sf::Texture quit;
+        sf::Texture logo;
+        _menutext.loadFromFile("assets/menu.jpg");
+        bouton.loadFromFile("assets/bouton.png");
+        quit.loadFromFile("assets/quit.png");
+        logo.loadFromFile("assets/zappy.png");
+        sf::Sprite logoPrint(logo);
+        sf::Sprite menuPrint(_menutext);
+        logoPrint.setScale(1.5, 1.5);
+        logoPrint.setPosition(750, 100);
+        quitPrint.setTexture(quit);
+        boutonPrint.setTexture(bouton);
+        quitPrint.setScale(2.8, 1.5);
+        quitPrint.setPosition(750, 600);
+        boutonPrint.setScale(2.8, 1.5);
+        menuPrint.setScale(4, 3);
+        boutonPrint.setPosition(750, 400);
+        _window.draw(menuPrint);
+        _window.draw(logoPrint);
+        _window.draw(quitPrint);
+        _window.draw(boutonPrint);
     }
 
     void LibSFML::manageEvents()
@@ -205,6 +235,19 @@ namespace zappy_gui {
                 _windowRunning = false;
                 _window.close();
             }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
+                _menu = false;
+            if (_event.type == sf::Event::MouseButtonPressed) {
+                if (_event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
+                    if (boutonPrint.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                        _menu = false;
+                    } if (quitPrint.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
+                        _windowRunning = false;
+                        _window.close();
+                    }
+                }
+            }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
                 printData();
         }
@@ -212,6 +255,7 @@ namespace zappy_gui {
 
     void LibSFML::loadMap()
     {
+        // Dessiner les carrés de la carte
         for (int y = 0; y < _data->height; y++) {
             for (int x = 0; x < _data->width; x++) {
                 int index = y * _data->width + x;

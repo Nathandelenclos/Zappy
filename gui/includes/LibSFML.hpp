@@ -40,6 +40,7 @@ namespace zappy_gui {
 
             void loadMap();
             void animatePlayer();
+            void loadMenu();
 
             void initGrassOnMap();
             void initResourcesOnMap();
@@ -64,6 +65,11 @@ namespace zappy_gui {
             sf::Texture _grassTexture;
             sf::Texture _waterTexture;
             std::vector<std::vector<sf::CircleShape>> _circles;
+            sf::Texture _menutext;
+            sf::Sprite quitPrint;
+            sf::Sprite boutonPrint;
+            bool _menu;
+
             std::map<int, std::vector<ParticleData>> _particles;
             std::vector<sf::Texture> _textures;
     };
