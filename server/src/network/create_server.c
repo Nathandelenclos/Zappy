@@ -97,6 +97,8 @@ server_t *create_server(args_t *args)
     server->teams = create_teams(args);
     server = init_networking(server);
     server->map = generate_map(args->width, args->height);
+    server->map_width = args->width;
+    server->map_height = args->height;
     server->time = 0;
     randomize_items(server);
     return server;

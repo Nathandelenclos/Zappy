@@ -69,6 +69,8 @@ struct server_s {
     node *clients;
     node *teams;
     map_t *map;
+    int map_width;
+    int map_height;
 };
 
 typedef struct {
@@ -107,6 +109,7 @@ static command_t commands_ai[] = {
 };
 
 static command_t commands_gui[] = {
+    {"msz", 0, msz},
     {NULL, 0, NULL}
 };
 

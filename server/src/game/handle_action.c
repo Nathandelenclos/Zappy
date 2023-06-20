@@ -38,14 +38,16 @@ void new_command(server_t *server, client_t *client, command_t command, string c
 {
     cmd_t *cmd = create_cmd( client, my_strdup(command_str),
         server->time,
-        server->time + ((command.time  * 1000) / server->args->freq),
+        server->time + (command.time != 0 ?
+            (((command.time  * 1000) / server->args->freq)) : 0),
         command.func);
     if (client->commands != NULL) {
         cmd_t *last_cmd = client->commands->data;
         if (last_cmd->state != FINISHED) {
             cmd->state = NOT_STARTED;
             cmd->timestamp_start = last_cmd->timestamp_end;
-            cmd->timestamp_end = cmd->timestamp_start + ((command.time  * 1000) / server->args->freq);
+            cmd->timestamp_end = cmd->timestamp_start + (command.time != 0
+                    ? ((command.time * 1000) / server->args->freq) : 0);
         }
     }
     put_in_list(&client->commands, cmd);
