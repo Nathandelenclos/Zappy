@@ -2,11 +2,10 @@
 ** EPITECH PROJECT, 2023
 ** YEP-400-LIL-4-1-zappy
 ** File description:
-** game/commands/right.c
+** game/commands/take.c
 */
 
 #include "server.h"
-
 
 /**
  * Take cmd.

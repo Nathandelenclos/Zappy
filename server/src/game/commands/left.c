@@ -16,6 +16,6 @@ void left(server_t *server, cmd_t *cmd)
 {
     client_t *client = cmd->client;
     int dir = client->player->direction;
-    client->player->direction = (dir + 3) % 4;
+    client->player->direction = (dir + 1) % 4;
     dprintf(client->socket_fd, "ok\n");
 }
