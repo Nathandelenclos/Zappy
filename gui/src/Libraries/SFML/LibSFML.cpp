@@ -28,7 +28,6 @@ namespace zappy_gui {
         _window.create(_videoMode, WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
         _windowRunning = true;
         _cellSquares.resize(_data->width * _data->height);
-        _circles.resize(_data->width * _data->height);
 
         if (!_grassTexture.loadFromFile(GRASS))
             throw Exception(Error, "Cannot load grass texture");
@@ -263,9 +262,6 @@ namespace zappy_gui {
                 _window.draw(cellSquare);
                 sf::Sprite& cellSprite = _cellSprites[index];
                 _window.draw(cellSprite);
-                for (const sf::CircleShape& circle : _circles[index]) {
-                    _window.draw(circle);
-                }
             }
         }
         renderParticles(_window);

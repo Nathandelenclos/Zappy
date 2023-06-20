@@ -64,7 +64,6 @@ namespace zappy_gui {
             std::vector<sf::Sprite> _cellSprites;
             sf::Texture _grassTexture;
             sf::Texture _waterTexture;
-            std::vector<std::vector<sf::CircleShape>> _circles;
             sf::Texture _menutext;
             sf::Sprite quitPrint;
             sf::Sprite boutonPrint;

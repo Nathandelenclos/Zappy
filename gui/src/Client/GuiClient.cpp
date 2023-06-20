@@ -126,9 +126,9 @@ namespace zappy_gui {
 
     std::string GuiClient::receiveResponse() const
     {
-        char buffer[4096] = {0};
+        char buffer[100000] = {0};
 
-        if (read(_socket, buffer, 4096) == -1)
+        if (read(_socket, buffer, 100000) == -1)
             throw Exception(Error, ERROR ERROR_READ);
         return (buffer);
     }
@@ -137,7 +137,7 @@ namespace zappy_gui {
         std::istringstream iss(data);
         std::string line;
 
-        while (getline(iss, line) && !line.empty()) {
+        while (getline(iss, line)) {
             std::istringstream lineStream(line);
             std::string command;
             lineStream >> command;
