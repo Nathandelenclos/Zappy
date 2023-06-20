@@ -35,5 +35,6 @@ void new_player(server_t *server, client_t *client)
     map_t *place = client->team->eggs_places->data;
     remove_item_from_inventory(&place->tile->items, EGG);
     put_in_list(&place->tile->items, client->player);
+    delete_in_list(&client->team->eggs_places, place);
     client->player->map = place;
 }
