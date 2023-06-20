@@ -54,27 +54,18 @@ namespace zappy_gui {
         for (const auto& player : _data->players) {
             sf::Texture playerTexture;
             std::string spritePath;
+            std::cout << "Player " << player.playerPos.n << " team: " << player.playerTeam << std::endl;
 
-            switch (player.playerTeam) {
-                case 1:
-                    spritePath = PLAYER_1;
-                    break;
-                case 2:
-                    spritePath = PLAYER_2;
-                    break;
-                    // Add more cases for other teams if needed
-                default:
-                    // Invalid team, skip player
-                    continue;
-            }
+            std::cout << "Player " << player.playerPos.n << " added to map" << std::endl;
 
-            if (!playerTexture.loadFromFile(spritePath)) {
+            if (!playerTexture.loadFromFile("assets/player1.png")) {
                 throw Exception(Error, "Cannot load player texture");
             }
 
             sf::Sprite playerSprite(playerTexture);
             playerSprite.setOrigin(playerTexture.getSize().x / 2, playerTexture.getSize().y / 2);
             playerSprite.setPosition(player.playerPos.x, player.playerPos.y);
+            std::cout << "Player " << player.playerPos.n << " position: " << player.playerPos.x << " " << player.playerPos.y << std::endl;
 
             _playerSpritesMap[player.playerPos.n] = playerSprite;
         }
@@ -310,12 +301,8 @@ namespace zappy_gui {
         for (auto& player : _data->players) {
             auto spriteIterator = _playerSpritesMap.find(player.playerPos.n);
             if (spriteIterator == _playerSpritesMap.end()) {
-                std::cout << "Player prout not found" << std::endl;
-
                 continue;
             }
-            std::cout << "Player sprite not found" << std::endl;
-
             sf::Sprite& playerSprite = spriteIterator->second;
 
             // Augmenter la taille de la sprite
