@@ -24,5 +24,7 @@ void take(server_t *server, cmd_t *cmd);
 void set(server_t *server, cmd_t *cmd);
 void incantation(server_t *server, cmd_t *cmd);
 void incantation_start(server_t *server, cmd_t *cmd);
+void connect_nbr(server_t *server, cmd_t *cmd);
+void fork_cmd(server_t *server, cmd_t *cmd);
 
-#endif
+#endif /* !COMMANDS_H_ */

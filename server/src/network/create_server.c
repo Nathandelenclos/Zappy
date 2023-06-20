@@ -56,7 +56,7 @@ team_t *create_graphic_team(void)
     team_t *team = MALLOC(sizeof(team_t));
     team->name = strdup("GRAPHIC");
     team->clients = NULL;
-    team->max_players = 0;
+    team->eggs_places = NULL;
     team->type = GUI;
     return team;
 }
@@ -74,7 +74,6 @@ node *create_teams(args_t *args)
         team = MALLOC(sizeof(team_t));
         team->name = my_strdup(tmp->data);
         team->clients = NULL;
-        team->max_players = args->clients_nb;
         team->eggs_places = NULL;
         team->type = AI;
         put_in_list(&teams, team);

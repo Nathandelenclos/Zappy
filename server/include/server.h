@@ -42,7 +42,6 @@ typedef enum {
 typedef struct {
     string name;
     node *clients;
-    int max_players;
     node *eggs_places;
     team_type_t type;
 } team_t;
@@ -97,8 +96,8 @@ static command_t commands_ai[] = {
     {"Look", 7, look},
     {"Inventory", 1, inventory},
     {"Broadcast", 7, debug_cmd},
-    {"Connect_nbr", 0, debug_cmd},
-    {"Fork", 42, debug_cmd},
+    {"Connect_nbr", 0, connect_nbr},
+    {"Fork", 42, fork_cmd},
     {"Eject", 7, debug_cmd},
     {"Take", 7, take},
     {"Set", 7, set},

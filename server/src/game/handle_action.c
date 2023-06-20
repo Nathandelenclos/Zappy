@@ -99,6 +99,10 @@ void new_ai_client(server_t *server, client_t *client, string action)
         return;
     }
     client->team = team->data;
+    if (len_list(client->team->eggs_places) <= 0) {
+        dprintf(client->socket_fd, KO);
+        return;
+    }
     client->state = WAITING_COMMAND;
     new_player(server, client);
     dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,

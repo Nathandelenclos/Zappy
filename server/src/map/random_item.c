@@ -39,6 +39,8 @@ void randomize_egg(server_t *server)
     for (node *tmp = server->teams; tmp; tmp = tmp->next) {
         double quantity_team = quantity;
         team = tmp->data;
+        if (team->type == GUI)
+            continue;
         while (quantity_team > 0) {
             put_in_list(&team->eggs_places, random_place(server, EGG));
             quantity_team--;
