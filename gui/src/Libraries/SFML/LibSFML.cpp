@@ -190,7 +190,6 @@ namespace zappy_gui {
         _window.clear(sf::Color::Black);
         //Axel: Le menu ici fdp
         updateParticles(0.016f);
-        loadMap();
         if (_menu == false)
             loadMap();
         else
