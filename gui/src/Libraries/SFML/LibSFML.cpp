@@ -36,6 +36,11 @@ namespace zappy_gui {
             throw Exception(Error, "Cannot load water texture");*/
         initGrassOnMap();
         initResourcesOnMap();
+        initPlayersOnMap();
+    }
+
+    void LibSFML::initPlayersOnMap()
+    {
     }
 
     void LibSFML::initGrassOnMap()
@@ -222,6 +227,11 @@ namespace zappy_gui {
             }
         }
         renderParticles(_window);
+        animatePlayer();
+    }
+
+    void LibSFML::animatePlayer()
+    {
     }
 
     void LibSFML::renderParticles(sf::RenderWindow& window)

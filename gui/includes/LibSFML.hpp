@@ -13,6 +13,8 @@
 #define GRASS "./assets/grass.png"
 #define WATER_TEXTURE_PATH "./assets/water.png"
 
+#define PLAYER_WALKING_TEXTURE_PATH "./assets/player/player_walking"
+
 namespace zappy_gui {
 
     constexpr int CELL_MARGIN = 5;
@@ -37,9 +39,11 @@ namespace zappy_gui {
             void manageEvents() override;
 
             void loadMap();
+            void animatePlayer();
 
             void initGrassOnMap();
             void initResourcesOnMap();
+            void initPlayersOnMap();
 
             void updateParticles(float at);
             void renderParticles(sf::RenderWindow& window);
@@ -61,6 +65,7 @@ namespace zappy_gui {
             sf::Texture _waterTexture;
             std::vector<std::vector<sf::CircleShape>> _circles;
             std::map<int, std::vector<ParticleData>> _particles;
+            std::vector<sf::Texture> _textures;
     };
 
 }
