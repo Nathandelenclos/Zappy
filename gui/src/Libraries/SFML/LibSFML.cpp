@@ -193,11 +193,10 @@ namespace zappy_gui {
     {
         manageEvents();
         _window.clear(sf::Color::Black);
-        //Axel: Le menu ici fdp
-        updateParticles(0.016f);
-        if (_menu == false)
+        if (_menu == false) {
+            updateParticles(0.016f);
             loadMap();
-        else
+        } else
             loadMenu();
         _window.display();
     }
@@ -248,7 +247,7 @@ namespace zappy_gui {
                     }
                 }
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && _menu == false)
                 printData();
         }
     }
