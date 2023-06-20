@@ -9,9 +9,8 @@
 
 namespace zappy_gui {
 
-    LibSFML::LibSFML() : _windowRunning(false)
+    LibSFML::LibSFML() : _windowRunning(false), _menu(true)
     {
-        _menu = true;
         _videoMode.width = WINDOW_WIDTH;
         _videoMode.height = WINDOW_HEIGHT;
         _videoMode.bitsPerPixel = WINDOW_FPS;
@@ -193,10 +192,10 @@ namespace zappy_gui {
     {
         manageEvents();
         _window.clear(sf::Color::Black);
-        if (_menu == false) {
-            updateParticles(0.016f);
+        updateParticles(0.016f);
+        if (!_menu)
             loadMap();
-        } else
+        else
             loadMenu();
         _window.display();
     }
@@ -247,7 +246,7 @@ namespace zappy_gui {
                     }
                 }
             }
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab) && _menu == false)
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
                 printData();
         }
     }
