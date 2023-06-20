@@ -22,24 +22,62 @@ namespace zappy_gui {
         std::cout << "LibSFML destructor called" << std::endl;
     }
 
-    void LibSFML::openWindow()
+    void LibSFML::updateData(bool updateMap)
+    {
+        if (updateMap) {
+            _cellSquares.clear();
+            _cellSprites.clear();
+            _particles.clear();
+            _cellSquares.resize(_data->width * _data->height);
+            initGrassOnMap();
+            initResourcesOnMap();
+        }
+        initPlayersOnMap();
+
+    }
+
+    void LibSFML::openWindow(bool updateMap)
     {
         printData();
         _window.create(_videoMode, WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
         _windowRunning = true;
-        _cellSquares.resize(_data->width * _data->height);
 
         if (!_grassTexture.loadFromFile(GRASS))
             throw Exception(Error, "Cannot load grass texture");
         /*if (!_waterTexture.loadFromFile(WATER_TEXTURE_PATH))
             throw Exception(Error, "Cannot load water texture");*/
-        initGrassOnMap();
-        initResourcesOnMap();
-        initPlayersOnMap();
+        updateData(updateMap);
     }
 
     void LibSFML::initPlayersOnMap()
     {
+        for (const auto& player : _data->players) {
+            sf::Texture playerTexture;
+            std::string spritePath;
+
+            switch (player.playerTeam) {
+                case 1:
+                    spritePath = PLAYER_1;
+                    break;
+                case 2:
+                    spritePath = PLAYER_2;
+                    break;
+                    // Add more cases for other teams if needed
+                default:
+                    // Invalid team, skip player
+                    continue;
+            }
+
+            if (!playerTexture.loadFromFile(spritePath)) {
+                throw Exception(Error, "Cannot load player texture");
+            }
+
+            sf::Sprite playerSprite(playerTexture);
+            playerSprite.setOrigin(playerTexture.getSize().x / 2, playerTexture.getSize().y / 2);
+            playerSprite.setPosition(player.playerPos.x, player.playerPos.y);
+
+            _playerSpritesMap[player.playerPos.n] = playerSprite;
+        }
     }
 
     void LibSFML::initGrassOnMap()
@@ -192,9 +230,10 @@ namespace zappy_gui {
         manageEvents();
         _window.clear(sf::Color::Black);
         updateParticles(0.016f);
-        if (!_menu)
+        if (!_menu) {
             loadMap();
-        else
+            animatePlayer(_window);
+        } else
             loadMenu();
         _window.display();
     }
@@ -234,7 +273,7 @@ namespace zappy_gui {
             }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::P))
                 _menu = false;
-            if (_event.type == sf::Event::MouseButtonPressed) {
+            if (_event.type == sf::Event::MouseButtonPressed && _menu == true) {
                 if (_event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2i mousePosition = sf::Mouse::getPosition(_window);
                     if (boutonPrint.getGlobalBounds().contains(mousePosition.x, mousePosition.y)) {
@@ -257,7 +296,6 @@ namespace zappy_gui {
             for (int x = 0; x < _data->width; x++) {
                 int index = y * _data->width + x;
                 sf::RectangleShape& cellSquare = _cellSquares[index];
-                cellSquare.setFillColor(sf::Color::White);
 
                 _window.draw(cellSquare);
                 sf::Sprite& cellSprite = _cellSprites[index];
@@ -265,12 +303,33 @@ namespace zappy_gui {
             }
         }
         renderParticles(_window);
-        animatePlayer();
     }
 
-    void LibSFML::animatePlayer()
+    void LibSFML::animatePlayer(sf::RenderWindow& window)
     {
+        for (auto& player : _data->players) {
+            auto spriteIterator = _playerSpritesMap.find(player.playerPos.n);
+            if (spriteIterator == _playerSpritesMap.end()) {
+                std::cout << "Player prout not found" << std::endl;
+
+                continue;
+            }
+            std::cout << "Player sprite not found" << std::endl;
+
+            sf::Sprite& playerSprite = spriteIterator->second;
+
+            // Augmenter la taille de la sprite
+            float scaleMultiplier = 3.5f; // Modifier la valeur selon vos besoins
+            playerSprite.setScale(scaleMultiplier, scaleMultiplier);
+
+            playerSprite.setRotation(playerSprite.getRotation() + 1.0f);
+            playerSprite.setPosition(player.playerPos.x, player.playerPos.y);
+
+            window.draw(playerSprite);
+        }
     }
+
+
 
     void LibSFML::renderParticles(sf::RenderWindow& window)
     {

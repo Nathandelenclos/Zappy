@@ -15,7 +15,8 @@
 class IGraphical {
     public:
         virtual ~IGraphical() = default;
-        virtual void openWindow() = 0;
+        virtual void updateData(bool updateMap) = 0;
+        virtual void openWindow(bool updateMap) = 0;
         virtual void displayWindow() = 0;
         virtual void manageEvents() = 0;
         virtual bool isWindowRunning() const = 0;

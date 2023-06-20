@@ -88,6 +88,7 @@ namespace zappy_gui {
         playerData.playerLvl = {n, level};
         playerData.playerTeam = teamName;
         data->players.push_back(playerData);
+        std::cout << "Player " << n << " joined the game" << std::endl;
     }
 
     void Parsing::parsePpo(std::istringstream& lineStream, const std::shared_ptr<Data>& data)

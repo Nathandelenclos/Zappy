@@ -20,9 +20,10 @@ int main(int argc, char **argv)
             //guiClient->isRunning();
             int v_select = 0;
             fd_set readFds;
+            bool update = false;
 
             std::shared_ptr<zappy_gui::Core> core(new zappy_gui::Core());
-            core->setData(guiClient->getData());
+            core->setData(guiClient->getData(), update, guiClient->getUpdate());
             core->createWindow();
             struct timeval timeout = {0, 0};
 
@@ -34,11 +35,13 @@ int main(int argc, char **argv)
                 v_select = select(guiClient->getSocket() + 1, &readFds, nullptr, nullptr, &timeout);
                 if (v_select == -1)
                     throw zappy_gui::Exception(Error, "Select failed");
-                core->displayWindow();
                 if (FD_ISSET(guiClient->getSocket(), &readFds)) {
-                    guiClient->analyseResponse();
-                    core->setData(guiClient->getData());
+                    if (guiClient->analyseResponse() && !core->needUpdate())
+                        update = true;
+                    core->setData(guiClient->getData(), update, guiClient->getUpdate());
                 }
+                core->displayWindow();
+                update = false;
             }
         } else {
             guiClient->connectionStatus();

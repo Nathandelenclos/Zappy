@@ -13,7 +13,8 @@
 #define GRASS "./assets/grass.png"
 #define WATER_TEXTURE_PATH "./assets/water.png"
 
-#define PLAYER_WALKING_TEXTURE_PATH "./assets/player/player_walking"
+#define PLAYER_1 "./assets/player1.png"
+#define PLAYER_2 "./assets/player2.png"
 
 namespace zappy_gui {
 
@@ -34,12 +35,13 @@ namespace zappy_gui {
 
             void printData();
 
-            void openWindow() override;
+            void updateData(bool updateMap) override;
+            void openWindow(bool updateMap) override;
             void displayWindow() override;
             void manageEvents() override;
 
             void loadMap();
-            void animatePlayer();
+            void animatePlayer(sf::RenderWindow& window);
             void loadMenu();
 
             void initGrassOnMap();
@@ -68,6 +70,7 @@ namespace zappy_gui {
             sf::Sprite quitPrint;
             sf::Sprite boutonPrint;
             bool _menu;
+            std::unordered_map<int, sf::Sprite> _playerSpritesMap;
 
             std::map<int, std::vector<ParticleData>> _particles;
             std::vector<sf::Texture> _textures;

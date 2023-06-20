@@ -21,6 +21,7 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include <utility>
+#include <unordered_map>
 
 #include <sys/socket.h>
 #include <sys/select.h>

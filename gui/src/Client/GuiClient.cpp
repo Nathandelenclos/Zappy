@@ -9,8 +9,7 @@
 
 namespace zappy_gui {
 
-    GuiClient::GuiClient(int port, std::string machine) : _port(port), _machine(std::move(machine)), _socket(0),
-                                                          _status(0) {
+    GuiClient::GuiClient(int port, std::string machine) : _port(port), _machine(std::move(machine)), _socket(0), _status(0), _updateMap(true) {
         _data = std::make_shared<Data>();
         _parsing = std::make_shared<Parsing>();
         _commands.emplace_back(MSZ);
@@ -67,12 +66,13 @@ namespace zappy_gui {
         }
     }
 
-    void GuiClient::analyseResponse() {
+    bool GuiClient::analyseResponse() {
         std::string response = receiveResponse();
         if (response.empty() || response == EMPTY)
-            return;
+            return (false);
         std::cout << response << std::endl;
         parseData(response);
+        return (true);
     }
 
     bool GuiClient::isRunning() {
@@ -157,6 +157,7 @@ namespace zappy_gui {
     }
 
     void GuiClient::parseData(const std::string &data) {
+        _updateMap = false;
         std::istringstream iss(data);
         std::string line;
         getline(iss, line);
@@ -168,8 +169,10 @@ namespace zappy_gui {
             _parsing->parseMsz(lineStream, _data);
         } else if (command == BCT) {
             _parsing->parseBct(lineStream, _data);
+            _updateMap = true;
         } else if (command == MCT) {
             _parsing->parseMct(lineStream, _data);
+            _updateMap = true;
         } else if (command == TNA) {
             _parsing->parseTna(lineStream, _data);
         } else if (command == PNW) {

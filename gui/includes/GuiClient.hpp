@@ -25,7 +25,7 @@ namespace zappy_gui {
             void handleUserInput(const std::string& input);
             void handleGuiInput();
 
-            void analyseResponse();
+            bool analyseResponse();
 
             std::string receiveResponse() const;
 
@@ -36,6 +36,7 @@ namespace zappy_gui {
             static void dataLoading();
             std::shared_ptr<Data> getData() const { return _data; };
             int getSocket() const { return _socket; };
+            bool getUpdate() const { return _updateMap; };
 
         protected:
             int _port;
@@ -46,6 +47,7 @@ namespace zappy_gui {
             std::shared_ptr<Data> _data;
             std::shared_ptr<Parsing> _parsing;
             std::vector<std::string> _commands;
+            bool _updateMap;
     };
 
 }
