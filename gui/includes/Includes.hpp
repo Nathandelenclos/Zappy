@@ -49,7 +49,7 @@
 #define ERROR_SOCKET "socket creation failed"
 #define ERROR_INET "invalid address"
 #define ERROR_SEND "send failed"
-#define ERROR_RECV "failed to receive data from the socket"
+#define ERROR_READ "failed to receive data from the socket"
 #define EXPECTED_WELCOME "Server did not send the expected WELCOME message."
 
 /* Path to libraries */
@@ -87,10 +87,34 @@
 #define EXIT "exit"
 #define BYE "bye"
 #define QUIT "quit"
+#define EMPTY "\n"
+
 #define MSZ "msz"
-#define SGT "sgt"
 #define BCT "bct"
+#define MCT "mct"
 #define TNA "tna"
+#define PNW "pnw"
+#define PPO "ppo"
+#define PLV "plv"
+#define PIN "pin"
+#define PEX "pex"
+#define PBC "pbc"
+#define PIC "pic"
+#define PIE "pie"
+#define PFK "pfk"
+#define PDR "pdr"
+#define PGT "pgt"
+#define PDI "pdi"
+#define ENW "enw"
+#define EBO "ebo"
+#define EDI "edi"
+#define SGT "sgt"
+#define SST "sst"
+#define SEG "seg"
+#define SMG "smg"
+#define SUC "suc"
+#define SBP "sbp"
+
 
 /* SFML */
 
@@ -99,6 +123,7 @@
 #define WINDOW_FPS 60
 #define WINDOW_MAX_FPS 144
 #define WINDOW_TITLE "Zappy"
+#define WINDOW_PADDING 100
 
 /* Enum */
 

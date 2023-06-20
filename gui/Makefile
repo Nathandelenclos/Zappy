@@ -24,6 +24,7 @@ SRC = main.cpp \
 	  ArgumentsManager.cpp \
 	  Data.cpp \
 	  Client/GuiClient.cpp \
+	  Client/Parsing.cpp \
 	  Core/Core.cpp \
 
 SRC_LIST = $(addprefix $(SRC_DIR), $(SRC))

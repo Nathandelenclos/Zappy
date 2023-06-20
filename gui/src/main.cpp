@@ -17,8 +17,8 @@ int main(int argc, char **argv)
         std::shared_ptr<zappy_gui::GuiClient> guiClient(new zappy_gui::GuiClient(argumentsManager->getPort(), argumentsManager->getMachine()));
         guiClient->connectToServer();
         if (guiClient->startCommunication()) {
+            //guiClient->isRunning();
             int v_select = 0;
-            int maxFd = guiClient->getSocket();
             fd_set readFds;
 
             std::shared_ptr<zappy_gui::Core> core(new zappy_gui::Core());
@@ -28,14 +28,17 @@ int main(int argc, char **argv)
 
             while (core->isRunning()) {
                 FD_ZERO(&readFds);
-                FD_SET(STDIN_FILENO, &readFds);
-                FD_SET(maxFd, &readFds);
+                FD_SET(guiClient->getSocket(), &readFds);
                 timeout.tv_usec = 1;
 
-                v_select = select(maxFd + 1, &readFds, nullptr, nullptr, &timeout);
+                v_select = select(guiClient->getSocket() + 1, &readFds, nullptr, nullptr, &timeout);
                 if (v_select == -1)
                     throw zappy_gui::Exception(Error, "Select failed");
                 core->displayWindow();
+                if (FD_ISSET(guiClient->getSocket(), &readFds)) {
+                    guiClient->analyseResponse();
+                    core->setData(guiClient->getData());
+                }
             }
         } else {
             guiClient->connectionStatus();
