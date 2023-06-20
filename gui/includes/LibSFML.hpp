@@ -11,10 +11,19 @@
 #include <SFML/Graphics.hpp>
 
 #define GRASS "./assets/grass.png"
+#define WATER_TEXTURE_PATH "./assets/water.png"
 
 namespace zappy_gui {
 
     constexpr int CELL_MARGIN = 5;
+
+    struct ParticleData {
+        sf::RectangleShape particle;
+        sf::Vector2f velocity;
+        float angle{};
+        float angularVelocity{};
+        sf::Vector2f acceleration;
+    };
 
     class LibSFML : public IGraphical {
         public:
@@ -32,7 +41,8 @@ namespace zappy_gui {
             void initGrassOnMap();
             void initResourcesOnMap();
 
-            static sf::Color getRandomColor();
+            void updateParticles(float at);
+            void renderParticles(sf::RenderWindow& window);
 
             bool isWindowRunning() const override { return _windowRunning; };
 
@@ -48,8 +58,9 @@ namespace zappy_gui {
             std::vector<sf::RectangleShape> _cellSquares;
             std::vector<sf::Sprite> _cellSprites;
             sf::Texture _grassTexture;
+            sf::Texture _waterTexture;
             std::vector<std::vector<sf::CircleShape>> _circles;
-
+            std::map<int, std::vector<ParticleData>> _particles;
     };
 
 }

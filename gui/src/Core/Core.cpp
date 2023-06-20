@@ -60,6 +60,7 @@ namespace zappy_gui {
 
     void Core::displayWindow()
     {
+        _lib->setData(_data);
         _lib->displayWindow();
         if (!_lib->isWindowRunning())
             _isRunning = false;

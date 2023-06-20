@@ -27,42 +27,45 @@ namespace zappy_gui {
         printData();
         _window.create(_videoMode, WINDOW_TITLE, sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
         _windowRunning = true;
-        _cellSquares.resize(_data->width * _data->height); // Réserve de l'espace pour tous les carrés
+        _cellSquares.resize(_data->width * _data->height);
         _circles.resize(_data->width * _data->height);
 
         if (!_grassTexture.loadFromFile(GRASS))
             throw Exception(Error, "Cannot load grass texture");
+        /*if (!_waterTexture.loadFromFile(WATER_TEXTURE_PATH))
+            throw Exception(Error, "Cannot load water texture");*/
         initGrassOnMap();
         initResourcesOnMap();
     }
 
     void LibSFML::initGrassOnMap()
     {
-        // Calculer la taille de chaque carré
-        float cellSizeX = static_cast<float>(_window.getSize().x - CELL_MARGIN * (_data->width - 1)) / _data->width;
-        float cellSizeY = static_cast<float>(_window.getSize().y - CELL_MARGIN * (_data->height - 1)) / _data->height;
+        float availableWidth = static_cast<float>(_window.getSize().x) - (2 * WINDOW_PADDING);
+        float availableHeight = static_cast<float>(_window.getSize().y) - (2 * WINDOW_PADDING);
 
-        // Initialiser les carrés
+        float cellSizeX = availableWidth / static_cast<float>(_data->width);
+        float cellSizeY = availableHeight / static_cast<float>(_data->height);
+
+        float offsetX = (static_cast<float>(_window.getSize().x) - (static_cast<float>(_data->width) * (cellSizeX + CELL_MARGIN))) / 2.0f;
+        float offsetY = (static_cast<float>(_window.getSize().y) - (static_cast<float>(_data->height) * (cellSizeY + CELL_MARGIN))) / 2.0f;
+
         for (int y = 0; y < _data->height; y++) {
             for (int x = 0; x < _data->width; x++) {
                 int index = y * _data->width + x;
                 sf::RectangleShape& cellSquare = _cellSquares[index];
 
                 cellSquare.setSize(sf::Vector2f(cellSizeX, cellSizeY));
-                // Définir la couleur du carré
                 cellSquare.setFillColor(sf::Color::White);
 
-                // Calculer la position du carré centré avec un espacement
-                float squarePosX = (cellSizeX + CELL_MARGIN) * x + (_window.getSize().x - (_data->width * (cellSizeX + CELL_MARGIN))) / 2.0f;
-                float squarePosY = (cellSizeY + CELL_MARGIN) * y + (_window.getSize().y - (_data->height * (cellSizeY + CELL_MARGIN))) / 2.0f;
+                float squarePosX = (cellSizeX + CELL_MARGIN) * static_cast<float>(x) + offsetX;
+                float squarePosY = (cellSizeY + CELL_MARGIN) * static_cast<float>(y) + offsetY;
                 cellSquare.setPosition(squarePosX, squarePosY);
 
                 sf::Sprite sprite;
                 sprite.setTexture(_grassTexture);
-                sprite.setScale(cellSizeX / sprite.getTextureRect().width, cellSizeY / sprite.getTextureRect().height);
+                sprite.setScale(cellSizeX / static_cast<float>(sprite.getTextureRect().width), cellSizeY / static_cast<float>(sprite.getTextureRect().height));
                 sprite.setPosition(squarePosX, squarePosY);
 
-                // Ajouter le sprite au conteneur
                 _cellSprites.push_back(sprite);
             }
         }
@@ -70,7 +73,6 @@ namespace zappy_gui {
 
     void LibSFML::initResourcesOnMap()
     {
-        // Initialize the circles
         std::random_device rd;
         std::mt19937 gen(rd());
 
@@ -83,9 +85,9 @@ namespace zappy_gui {
                 float cellSizeY = cellSquare.getSize().y;
                 float centerX = cellSquare.getPosition().x + cellSizeX / 2.0f;
                 float centerY = cellSquare.getPosition().y + cellSizeY / 2.0f;
-                float circleRadius = std::min(cellSizeX, cellSizeY) / 6.0f;
+                float particleSize = std::min(cellSizeX, cellSizeY) / 12.0f;
 
-                std::uniform_real_distribution<float> dis(-circleRadius / 2.0f, circleRadius / 2.0f);
+                std::uniform_real_distribution<float> dis(-particleSize / 2.0f, particleSize / 2.0f);
                 std::vector<std::vector<std::vector<int>>>& resources = _data->grid[y][x].resources;
 
                 for (int i = 0; i < 7; i++) {
@@ -93,42 +95,88 @@ namespace zappy_gui {
                         int resourceQuantity = resources[i][0][0];
 
                         if (resourceQuantity > 0) {
-                            sf::CircleShape circle(circleRadius);
+                            sf::RectangleShape particle(sf::Vector2f(particleSize, particleSize));
 
                             float offsetX = dis(gen);
                             float offsetY = dis(gen);
-                            circle.setPosition(centerX - circleRadius + offsetX, centerY - circleRadius + offsetY);
+                            particle.setPosition(centerX - particleSize / 2.0f + offsetX, centerY - particleSize / 2.0f + offsetY);
+
+                            sf::Vector2f velocity(0.0f, 0.0f);
+                            float angle = dis(gen) * 360.0f;
+                            float angularVelocity = dis(gen) * 90.0f;
+                            sf::Vector2f acceleration(0.0f, 9.8f);
 
                             switch (i) {
                                 case 0: // Food
-                                    circle.setFillColor(sf::Color::Red);
+                                    particle.setFillColor(sf::Color::Red);
                                     break;
                                 case 1: // Linemate
-                                    circle.setFillColor(sf::Color::Green);
+                                    particle.setFillColor(sf::Color::Green);
                                     break;
                                 case 2: // Deraumere
-                                    circle.setFillColor(sf::Color::Blue);
+                                    particle.setFillColor(sf::Color::Blue);
                                     break;
                                 case 3: // Sibur
-                                    circle.setFillColor(sf::Color::Yellow);
+                                    particle.setFillColor(sf::Color::Yellow);
                                     break;
                                 case 4: // Mendiane
-                                    circle.setFillColor(sf::Color(255, 165, 0)); // Orange
+                                    particle.setFillColor(sf::Color(255, 165, 0)); // Orange
                                     break;
                                 case 5: // Phiras
-                                    circle.setFillColor(sf::Color::Cyan);
+                                    particle.setFillColor(sf::Color::Cyan);
                                     break;
                                 case 6: // Thystame
-                                    circle.setFillColor(sf::Color::Magenta);
+                                    particle.setFillColor(sf::Color::Magenta);
                                     break;
                                 default:
-                                    circle.setFillColor(sf::Color::Transparent);
+                                    particle.setFillColor(sf::Color::Transparent);
                                     break;
                             }
-
-                            _circles[index].push_back(circle);
+                            ParticleData particleData;
+                            particleData.particle = particle;
+                            particleData.velocity = velocity;
+                            particleData.angle = angle;
+                            particleData.angularVelocity = angularVelocity;
+                            particleData.acceleration = acceleration;
+                            _particles[index].push_back(particleData);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    void LibSFML::updateParticles(float dt)
+    {
+        for (auto& particles : _particles) {
+            int index = particles.first;
+            sf::RectangleShape& cellSquare = _cellSquares[index];
+            sf::Vector2f cellSquarePos = cellSquare.getPosition();
+            sf::Vector2f cellSquareSize = cellSquare.getSize();
+
+            for (auto& particleData : particles.second) {
+                sf::RectangleShape& particle = particleData.particle;
+                sf::Vector2f& velocity = particleData.velocity;
+                float& angularVelocity = particleData.angularVelocity;
+                sf::Vector2f& acceleration = particleData.acceleration;
+
+                sf::Vector2f displacement = velocity * dt + 0.5f * acceleration * dt * dt;
+                particle.move(displacement);
+
+                velocity += acceleration * dt;
+
+                float rotation = angularVelocity * dt;
+                particle.rotate(rotation);
+
+                sf::Vector2f particlePos = particle.getPosition();
+                sf::FloatRect particleBounds = particle.getGlobalBounds();
+
+                if (particlePos.x < cellSquarePos.x || particlePos.x + particleBounds.width > cellSquarePos.x + cellSquareSize.x) {
+                    velocity.x *= -1;
+                }
+
+                if (particlePos.y < cellSquarePos.y || particlePos.y + particleBounds.height > cellSquarePos.y + cellSquareSize.y) {
+                    velocity.y *= -1;
                 }
             }
         }
@@ -140,6 +188,7 @@ namespace zappy_gui {
         manageEvents();
         _window.clear(sf::Color::Black);
         //Axel: Le menu ici fdp
+        updateParticles(0.016f);
         loadMap();
         _window.display();
     }
@@ -151,12 +200,13 @@ namespace zappy_gui {
                 _windowRunning = false;
                 _window.close();
             }
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
+                printData();
         }
     }
 
     void LibSFML::loadMap()
     {
-        // Dessiner les carrés de la carte
         for (int y = 0; y < _data->height; y++) {
             for (int x = 0; x < _data->width; x++) {
                 int index = y * _data->width + x;
@@ -171,14 +221,17 @@ namespace zappy_gui {
                 }
             }
         }
+        renderParticles(_window);
     }
 
-    sf::Color LibSFML::getRandomColor()
+    void LibSFML::renderParticles(sf::RenderWindow& window)
     {
-        int r = rand() % 256;
-        int g = rand() % 256;
-        int b = rand() % 256;
-        return sf::Color(r, g, b);
+        for (const auto& particles : _particles) {
+            for (const auto& particleData : particles.second) {
+                const sf::RectangleShape& particle = particleData.particle;
+                window.draw(particle);
+            }
+        }
     }
 
     void LibSFML::setData(const std::shared_ptr<Data> &data)
@@ -188,33 +241,86 @@ namespace zappy_gui {
 
     void LibSFML::printData()
     {
-        std::cout << "Width: " << _data->width << std::endl;
-        std::cout << "Height: " << _data->height << std::endl;
-        std::cout << "Frequency: " << _data->frequency << std::endl;
-
-        std::cout << "Teams: ";
-        for (const std::string& team : _data->teams) {
-            std::cout << team << " ";
+        std::cout << "Server data:\n";
+        std::cout << "Width: " << _data->width << "\n";
+        std::cout << "Height: " << _data->height << "\n";
+        if (_data->teams.empty()) {
+            std::cout << "No teams data available\n";
+        } else {
+            std::cout << "Teams:\n";
+            for (const auto& team : _data->teams) {
+                std::cout << team << "\n";
+            }
         }
-        std::cout << std::endl;
+        std::cout << "End game: " << _data->endGame << "\n";
 
-        std::cout << "Grid: " << std::endl;
-        for (const std::vector<Cell>& row : _data->grid) {
-            for (const Cell& cell : row) {
-                std::cout << "Cell (" << cell.x << ", " << cell.y << "): ";
-                std::cout << "Resources: ";
-                for (const std::vector<std::vector<int>>& resource : cell.resources) {
-                    for (const std::vector<int>& quantity : resource) {
-                        for (int value : quantity) {
-                            std::cout << value << " ";
+        std::cout << "Map data:\n";
+        if (_data->grid.empty()) {
+            std::cout << "No map data available\n";
+        } else {
+            for (const auto& row : _data->grid) {
+                for (const auto& cell : row) {
+                    std::cout << "Cell at (" << cell.x << ", " << cell.y << "):\n";
+                    if (cell.resources.empty()) {
+                        std::cout << "No resources data available\n";
+                    } else {
+                        std::cout << "Resources:\n";
+                        for (const auto& resource : cell.resources) {
+                            for (const auto& subResource : resource) {
+                                for (const auto& value : subResource) {
+                                    std::cout << value << " ";
+                                }
+                            }
+                            std::cout << "\n";
                         }
                     }
                 }
-                std::cout << std::endl;
             }
         }
 
-        std::cout << "Message: " << _data->message << std::endl;
+        std::cout << "Server response:\n";
+        if (_data->messageFromServer.empty()) {
+            std::cout << "No message from server available\n";
+        } else {
+            std::cout << _data->messageFromServer << "\n";
+        }
+
+        std::cout << "Players data:\n";
+        if (_data->players.empty()) {
+            std::cout << "No players data available\n";
+        } else {
+            for (const auto& player : _data->players) {
+                std::cout << "Player ID: " << player.playerPos.n << "\n";
+                std::cout << "Player position: (" << player.playerPos.x << ", " << player.playerPos.y << ")\n";
+                std::cout << "Player level: " << player.playerLvl.level << "\n";
+                std::cout << "Player inventory:\n";
+                for (const auto& value : player.playerInv.inventory) {
+                    std::cout << value << " ";
+                }
+                std::cout << "\n";
+            }
+        }
+
+        std::cout << "Egg data:\n";
+        if (_data->eggs.empty()) {
+            std::cout << "No eggs data available\n";
+        } else {
+            for (const auto& egg : _data->eggs) {
+                std::cout << "Egg new: (" << egg.eggNew.x << ", " << egg.eggNew.y << ")\n";
+                std::cout << "Egg born: " << egg.eggBorn.eggId << "\n";
+                std::cout << "Egg die: " << egg.eggDie.eggId << "\n";
+            }
+        }
+
+        std::cout << "Time unit data:\n";
+        std::cout << "SgtData: " << _data->sgtData.timeUnit << "\n";
+        if (_data->sstData.empty()) {
+            std::cout << "No sstData available\n";
+        } else {
+            for (const auto& sst : _data->sstData) {
+                std::cout << "SstData: " << sst.timeUnit << "\n";
+            }
+        }
     }
 
 
