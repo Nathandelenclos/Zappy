@@ -59,13 +59,11 @@ void broadcast(server_t *server, cmd_t *cmd)
         for (int i = 0; i < 8; ++i) {
             int isInAngle = isPointInAngle(A1, A2, pair_angle_broadcast[i][0], pair_angle_broadcast[i][1]);
             int res =  ((1 + ((int)client_tmp->player->direction) * 2) + i) % 8;
-
             if (isInAngle) {
                 dprintf(client_tmp->socket_fd, "%d\n", res == 0 ? 8 : res);
                 isInAngles = true;
                 break;
             }
-
         }
         dprintf(client_tmp->socket_fd, "%s\n", isInAngles ? "True" : "False");
     }

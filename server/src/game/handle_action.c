@@ -33,6 +33,7 @@ string read_message(client_t *client)
  * @param server - The server.
  * @param client - The client.
  * @param command - The command.
+ * @param command_str - The command str.
  */
 void new_command(server_t *server, client_t *client, command_t command, string command_str)
 {

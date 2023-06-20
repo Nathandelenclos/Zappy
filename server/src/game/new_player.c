@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2023
 ** YEP-400-LIL-4-1-zappy
 ** File description:
-** message.h
+** game/new_player.h
 */
 
 #include "server.h"
@@ -38,4 +38,6 @@ void new_player(server_t *server, client_t *client)
     put_in_list(&place->tile->items, client->player);
     delete_in_list(&client->team->eggs_places, place);
     client->player->map = place;
+    command_t command = {"eat", 126, eats};
+    new_command(server, client, command, "start");
 }

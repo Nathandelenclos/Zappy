@@ -21,6 +21,7 @@
            "    clientsNb is the number of authorized clients per team\n" \
            "    freq is the reciprocal of time unit for execution of actions"
     #define GRAPHIC "GRAPHIC"
+    #define DEAD "dead\n"
 
     // Error messages
     #define ERROR_SOCKET "Erreur lors de la surveillance des sockets\n"

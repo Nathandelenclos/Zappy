@@ -29,6 +29,8 @@ void fork_cmd(server_t *server, cmd_t *cmd);
 void broadcast(server_t *server, cmd_t *cmd);
 void msz(server_t *server, cmd_t *cmd);
 
+void eats(server_t *server, cmd_t *cmd);
+
 typedef struct {
     double x;
     double y;
