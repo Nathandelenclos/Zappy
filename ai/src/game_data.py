@@ -2,7 +2,7 @@ import uuid
 
 
 class Game_data:
-    """
+    """!
     Class to store all of the game data
     """
     def __init__(self):

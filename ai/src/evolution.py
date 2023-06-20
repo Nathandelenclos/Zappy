@@ -5,10 +5,10 @@ from search_item import *
 
 
 def can_evolve(client_socket):
-    """
+    """!
     Check if the player can evolve
-    :param client_socket: client socket
-    :return: True if the player can evolve, False otherwise
+    @param client_socket: client socket
+    @return: True if the player can evolve, False otherwise
     """
     global myGameData
     can_lvl_up = 0
@@ -30,10 +30,10 @@ def can_evolve(client_socket):
 
 
 def evolve_in_group(client_socket):
-    """
+    """!
     Evolve in group
-    :param client_socket: client socket
-    :return: None
+    @param client_socket: client socket
+    @return: None
     """
     print("Broadcast " + myGameData.team_name + " nb_player")
     client_socket.send(
@@ -76,10 +76,10 @@ def evolve_in_group(client_socket):
 
 
 def go_evolve(client_socket):
-    """
+    """!
     Go to evolving spot
-    :param client_socket: client socket
-    :return: None
+    @param client_socket: client socket
+    @return: None
     """
     global myGameData
     if myGameData.lvl == 1:
@@ -93,9 +93,11 @@ def go_evolve(client_socket):
             data = receive_answer(client_socket)
             if data != "Elevation underway":
                 printGreen("Evolution failed")
-                myGameData.mode = "food"
+                myGameData.mode = None
         else:
             printGreen("Item not found in inventory")
+            nbr = int(myGameData.inventory["linemate"])
+            myGameData.inventory["linemate"] = str(nbr - 1)
             myGameData.mode = None
     elif myGameData.presence != True and myGameData.broadcast == True:
         evolve_in_group(client_socket)
@@ -103,12 +105,13 @@ def go_evolve(client_socket):
 
 
 def gathering_mode(client_socket):
-    """
+    """!
     Trigger gathering mode
-    :param client_socket: client socket
-    :return: True if the player can gather to evolve, False otherwise
+    @param client_socket: client socket
+    @return: True if the player can gather to evolve, False otherwise
     """
     global myGameData
+    printGreen("Number of player needed: " + str(myGameData.evolution_infos["lvl" + str(myGameData.lvl)][0]))
     while myGameData.nb_arrived < int(
             myGameData.evolution_infos["lvl" + str(myGameData.lvl)][0]):
         client_socket.send(
@@ -124,26 +127,24 @@ def gathering_mode(client_socket):
 
 
 def gathering_mode_and_incantation(client_socket):
-    """
+    """!
     Trigger gathering mode and incantation
-    :param client_socket: client socket
-    :return: None
+    @param client_socket: client socket
+    @return: None
     """
     if gathering_mode(client_socket) == True:
+        client_socket.send(
+            ("Broadcast " + myGameData.team_name + " stop\n").encode())
+        print("Broadcast " + myGameData.team_name + " stop")
+        data = receive_answer(client_socket, "asker")
         take_all_on_tile(client_socket)
         drop_items_on_tile(client_socket)
-        print("Incantation")
+        print(f'Incantation', file=sys.stderr)
         client_socket.send(("Incantation\n").encode())
         data = receive_answer(client_socket)
-        if data == "Elevation underway":
-            data = receive_answer(client_socket)
-            if data == "ko":
-                printGreen("Evolution failed")
-                myGameData.mode = None
-            else:
-                printGreen("Evolution is a success")
-                myGameData.lvl += 1
-                myGameData.mode = "food"
-        else:
+        if data != "Elevation underway":
             printGreen("Evolution failed")
             myGameData.mode = None
+        # else:
+        #     printGreen("Evolution failed")
+        #     myGameData.mode = None

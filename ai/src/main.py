@@ -9,10 +9,10 @@ from evolution import *
 
 
 def check_inventory(client_socket):
-    """
+    """!
     Check the inventory
-    :param client_socket: client socket
-    :return: None
+    @param client_socket: client socket
+    @return: None
     """
     global myGameData
     print("Inventory")
@@ -28,24 +28,26 @@ def check_inventory(client_socket):
 
 
 def action_choice(client_socket):
-    """
+    """!
     Choose the action to do
-    :param client_socket: client socket
-    :return: None
+    @param client_socket: client socket
+    @return: None
     """
     global myGameData
     check_inventory(client_socket)
+    sys.stderr.write("level " + str(myGameData.lvl) + "\n")
     if (int(myGameData.inventory["food"]) < 20 and myGameData.mode == None):
         search_item(client_socket, "food", 30)
     elif myGameData.mode != "gather":
         if (can_evolve(client_socket) == True and myGameData.mode == None):
             go_evolve(client_socket)
+    printGreen("Mode: " + str(myGameData.mode))
 
 
 def main():
-    """
+    """!
     Main function
-    :return: None
+    @return: None
     """
     global myGameData
 
@@ -59,9 +61,10 @@ def main():
         myGameData.available_connection = free_places
         print(free_places)
         map_size = read_server(client_socket).split()
-        myGameData.map_size_x = map_size[0]
-        myGameData.map_size_y = map_size[1]
-        print(map_size[0] + " " + map_size[1])
+        if len(map_size) >= 2:
+            myGameData.map_size_x = map_size[0]
+            myGameData.map_size_y = map_size[1]
+            print(map_size[0] + " " + map_size[1])
         while (1):
             action_choice(client_socket)
     except ConnectionRefusedError:
@@ -69,6 +72,7 @@ def main():
 
 
 if __name__ == "__main__":
+    sys.stderr.write("AI\n")
     # error_man()
     # main()
     try:

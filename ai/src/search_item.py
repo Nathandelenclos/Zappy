@@ -7,11 +7,11 @@ from main import check_inventory
 
 
 def find_path(data, item):
-    """
+    """!
     Find the path to the item
-    :param data: Values returned by the server when the look command is used
-    :param item: Item to find
-    :return: List of instructions to get to the item
+    @param data: Values returned by the server when the look command is used
+    @param item: Item to find
+    @return: List of instructions to get to the item
     """
     global myGameData
     data = data.replace('[', ' ')
@@ -62,12 +62,12 @@ def find_path(data, item):
 
 
 def search_choice(client_socket, data, item):
-    """
+    """!
     Search the item and add the instructions to the auto_command list
-    :param client_socket:
-    :param data:
-    :param item:
-    :return:
+    @param client_socket:
+    @param data:
+    @param item:
+    @return:
     """
     global myGameData
     add_command = []
@@ -84,12 +84,12 @@ def search_choice(client_socket, data, item):
 
 
 def search_item(client_socket, item, quantity):
-    """
+    """!
     Search the item and add the instructions to the auto_command list
-    :param client_socket: client socket
-    :param item: item to search
-    :param quantity: quantity of item to search
-    :return: None
+    @param client_socket: client socket
+    @param item: item to search
+    @param quantity: quantity of item to search
+    @return: None
     """
     global myGameData
     while (quantity > int(myGameData.inventory[item])):
@@ -107,10 +107,10 @@ def search_item(client_socket, item, quantity):
 
 
 def drop_items_on_tile(client_socket):
-    """
+    """!
     Drop all items on the tile
-    :param client_socket: client socket
-    :return: None
+    @param client_socket: client socket
+    @return: None
     """
     global myGameData
     lvl = "lvl" + str(myGameData.lvl + 1)
@@ -127,10 +127,10 @@ def drop_items_on_tile(client_socket):
 
 
 def take_all_on_tile(client_socket):
-    """
+    """!
     Take all items on the tile
-    :param client_socket: client socket
-    :return: None
+    @param client_socket: client socket
+    @return: None
     """
     global myGameData
     print("Look")

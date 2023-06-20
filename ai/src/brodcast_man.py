@@ -3,7 +3,7 @@ from game_data import *
 
 
 def join(answer, client_socket):
-    """
+    """!
     Join an evolution place
     :param answer: broadcast message
     :param client_socket: client socke
@@ -48,7 +48,7 @@ def join(answer, client_socket):
 
 
 def broadcast_man(data, answer, client_socket, type):
-    """
+    """!
     Manage broadcast message
     :param data: message received
     :param answer: message received split
@@ -61,12 +61,17 @@ def broadcast_man(data, answer, client_socket, type):
         return ()
     print(data)
     message = data.split(", ")
+    if (myGameData.has_arrived == True):
+        return
     if message[1] == myGameData.team_name + " nb_player" and myGameData.presence == False:
         print("Broadcast " + myGameData.team_name + " present " + myGameData.uuid_str + " " + str(myGameData.lvl))
         client_socket.send(("Broadcast " + myGameData.team_name + " present " + myGameData.uuid_str + " " + str(myGameData.lvl) + "\n").encode())
         data = receive_answer(client_socket)
         myGameData.presence = True
         myGameData.broadcast = False
+    elif message[1] == myGameData.team_name + " stop" and myGameData.has_arrived == False:
+        myGameData.broadcast = True
+        myGameData.mode = None
     elif type == "asker" and len(answer) > 4 and answer[3] == "present":
         if answer[4] in myGameData.uuid_present:
             return ()
@@ -84,7 +89,7 @@ def broadcast_man(data, answer, client_socket, type):
 
 
 def answer_management(data, client_socket, type):
-    """
+    """!
     Manage answer from server
     :param data: message received
     :param client_socket: client socket
@@ -96,9 +101,12 @@ def answer_management(data, client_socket, type):
         print("YOU DIED x)")
         client_socket.close()
         print("Connexion fermée.")
-        return (-1)
+        printGreen(str(myGameData.lvl))
+        exit(0)
     else:
         answer = data.split()
+        if len(answer) == 0:
+            return 0
         if answer[0] == "message":
             broadcast_man(data, answer, client_socket, type)
             return (1)
@@ -108,21 +116,26 @@ def answer_management(data, client_socket, type):
             data = receive_answer(client_socket)
             if data == "ko":
                 printGreen("Evolution failed")
+                myGameData.has_arrived = False
+                myGameData.mode = None
+                myGameData.broadcast = True
             else:
                 printGreen("Evolution is a success")
                 myGameData.lvl += 1
                 myGameData.broadcast = True
+                myGameData.has_arrived = False
+                myGameData.mode = None
             return (0)
         print(data)
         return (0)
 
 
 def receive_answer(client_socket, type=""):
-    """
+    """!
     Receive answer from server
-    :param client_socket: client socket
-    :param type: Type of message
-    :return: message received
+    @param client_socket: client socket
+    @param type: Type of message
+    @return: message received
     """
     answer = 1
     while (answer != 0):
@@ -132,10 +145,10 @@ def receive_answer(client_socket, type=""):
 
 
 def read_server(client_socket):
-    """
+    """!
     Read message from server
-    :param client_socket: client socket
-    :return: message received
+    @param client_socket: client socket
+    @return: message received
     """
     msg = ""
     while (1):

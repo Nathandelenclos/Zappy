@@ -5,9 +5,9 @@ from game_data import *
 
 
 def error_man():
-    """
+    """!
     Manage error
-    :return: None
+    @return: None
     """
     global myGameData
 
