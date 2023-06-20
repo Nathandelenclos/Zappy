@@ -94,9 +94,6 @@ void new_ai_client(server_t *server, client_t *client, string action)
 {
     client->type = AI;
     node *team = search_in_list_by(server->teams, action, search_by_team);
-    for (node *tmp = team; tmp; tmp = tmp->next) {
-        dprintf(client->socket_fd, "%s\n", ((team_t *)tmp->data)->name);
-    }
     if (team == NULL) {
         dprintf(client->socket_fd, KO);
         return;
@@ -117,6 +114,12 @@ void action(server_t *server, client_t *client)
 {
     string action = read_message(client);
     if (action == NULL) {
+        if (client->type == AI && client->player != NULL) {
+            put_in_list(&client->team->eggs_places, client->player->map);
+            add_item_to_inventory(&client->player->map->tile->items, EGG);
+            delete_in_list(&client->player->map->tile->items, client);
+            delete_in_list(&server->clients, client);
+        }
         return;
     }
     if (client->state == WAITING_TEAM_NAME) {
@@ -144,6 +147,7 @@ void handle_action(server_t *server)
         client_t *client = (client_t *) tmp->data;
         if (FD_ISSET(client->socket_fd, &server->readfds)) {
             action(server, client);
+            return;
         }
     }
 }

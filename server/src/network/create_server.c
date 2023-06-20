@@ -75,6 +75,7 @@ node *create_teams(args_t *args)
         team->name = my_strdup(tmp->data);
         team->clients = NULL;
         team->max_players = args->clients_nb;
+        team->eggs_places = NULL;
         team->type = AI;
         put_in_list(&teams, team);
     }
