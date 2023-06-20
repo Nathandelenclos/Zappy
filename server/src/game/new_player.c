@@ -22,6 +22,7 @@ player_t *create_player()
     player->level = 1;
     player->map = NULL;
     player->commands = NULL;
+    player->alive = true;
     return player;
 }
 

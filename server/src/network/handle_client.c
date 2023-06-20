@@ -34,7 +34,8 @@ void exec_queue(server_t *server)
         return;
     cmd_t *cmd = server->cmd_queue->data;
     while (cmd->timestamp_end <= server->time) {
-        cmd->func(server, cmd);
+        if (cmd->client->player->alive)
+            cmd->func(server, cmd);
         cmd->state = FINISHED;
         update_state(cmd->client);
         server->cmd_queue = server->cmd_queue->next;

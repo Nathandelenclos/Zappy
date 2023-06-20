@@ -8,30 +8,6 @@
 
 /**
  * Add a command to the queue sorted by timestamp.
- * @param new_node - Command to add.
- * @param queue - Queue to add the command to.
- */
-static void add_sorted(node *new_node, cmd_queue_t **queue)
-{
-    node *tmp = *queue;
-
-    if (((cmd_t*)tmp->data)->timestamp_end >
-    ((cmd_t*)new_node->data)->timestamp_end) {
-        new_node->next = tmp;
-        *queue = new_node;
-        return;
-    }
-    while (tmp->next != NULL &&
-    ((cmd_t*)tmp->data)->timestamp_end <
-    ((cmd_t*)new_node->data)->timestamp_end) {
-        tmp = tmp->next;
-    }
-    new_node->next = tmp->next;
-    tmp->next = new_node;
-}
-
-/**
- * Add a command to the queue sorted by timestamp.
  * @param cmd - Command.
  * @param queue - Address of the queue to add the command to.
  */
@@ -77,19 +53,4 @@ cmd_t *create_cmd(client_t *client_socket, string cmd, timestamp_t timestamp_sta
     new_cmd->cmd = cmd;
     new_cmd->state = STARTED;
     return (new_cmd);
-}
-
-/**
- * Pop the first command of the queue.
- * @param queue - Queue to pop the command from.
- * @return The popped command.
- */
-cmd_queue_t *pop_first(cmd_queue_t **queue)
-{
-    cmd_queue_t *tmp = queue;
-
-    if (queue == NULL)
-        return NULL;
-    *queue = (*queue)->next;
-    return tmp;
 }
