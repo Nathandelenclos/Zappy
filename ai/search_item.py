@@ -7,6 +7,12 @@ from main import check_inventory
 
 
 def find_path(data, item):
+    """
+    Find the path to the item
+    :param data: Values returned by the server when the look command is used
+    :param item: Item to find
+    :return: List of instructions to get to the item
+    """
     global myGameData
     data = data.replace('[', ' ')
     data = data.replace(']', ' ')
@@ -15,7 +21,7 @@ def find_path(data, item):
     count = 0
     for i in range(0, len(splitData)):
         if splitData[i].find(item) != -1:
-            break;
+            break
         count += 1
     if count == len(splitData):
         return ["Forward" for f in range(0, myGameData.lvl)]
@@ -54,7 +60,15 @@ def find_path(data, item):
             instructions.append("Take " + item)
         return instructions
 
+
 def search_choice(client_socket, data, item):
+    """
+    Search the item and add the instructions to the auto_command list
+    :param client_socket:
+    :param data:
+    :param item:
+    :return:
+    """
     global myGameData
     add_command = []
     add_command = find_path(data, item)
@@ -68,11 +82,19 @@ def search_choice(client_socket, data, item):
         client_socket.send(command.encode())
         data = receive_answer(client_socket)
 
+
 def search_item(client_socket, item, quantity):
+    """
+    Search the item and add the instructions to the auto_command list
+    :param client_socket: client socket
+    :param item: item to search
+    :param quantity: quantity of item to search
+    :return: None
+    """
     global myGameData
     while (quantity > int(myGameData.inventory[item])):
         print("Look")
-        client_socket.send(("Look"+"\n").encode())
+        client_socket.send(("Look" + "\n").encode())
         myGameData.last_command = "Look"
         myGameData.mode = item
         data = receive_answer(client_socket)
@@ -83,21 +105,33 @@ def search_item(client_socket, item, quantity):
                 search_item(client_socket, "food", 30)
     myGameData.mode = None
 
+
 def drop_items_on_tile(client_socket):
+    """
+    Drop all items on the tile
+    :param client_socket: client socket
+    :return: None
+    """
     global myGameData
-    lvl = "lvl"+str(myGameData.lvl+1)
+    lvl = "lvl" + str(myGameData.lvl + 1)
     stones_needed = myGameData.evolution_infos[lvl].copy()
     stones_needed.pop(0)
     index = 0
     for stone in stones_needed:
         stone_name = myGameData.stones_in_game[index]
         for i in range(0, stone):
-            print("Set "+stone_name)
-            client_socket.send(("Set "+stone_name+"\n").encode())
+            print("Set " + stone_name)
+            client_socket.send(("Set " + stone_name + "\n").encode())
             receive_answer(client_socket)
         index += 1
 
+
 def take_all_on_tile(client_socket):
+    """
+    Take all items on the tile
+    :param client_socket: client socket
+    :return: None
+    """
     global myGameData
     print("Look")
     client_socket.send(("Look\n").encode())
@@ -111,7 +145,7 @@ def take_all_on_tile(client_socket):
         if items_to_take[0] == "player":
             items_to_take.pop(0)
         else:
-            print("Take "+items_to_take[0])
-            client_socket.send(("Take "+items_to_take[0]+"\n").encode())
+            print("Take " + items_to_take[0])
+            client_socket.send(("Take " + items_to_take[0] + "\n").encode())
             data = receive_answer(client_socket)
             items_to_take.pop(0)
