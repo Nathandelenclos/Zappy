@@ -20,6 +20,8 @@ typedef struct map_s map_t;
 
 struct map_s {
     tile_t *tile;
+    int pos_x;
+    int pos_y;
     struct map_s *up;
     struct map_s *down;
     struct map_s *left;
@@ -27,7 +29,7 @@ struct map_s {
 };
 
 map_t *create_tile(void);
-void generate_x_tiles(map_t *tile, int x);
+void generate_x_tiles(map_t *tile, int x, int y);
 void link_up_down(map_t *first, map_t *second);
 map_t *generate_map(int x, int y);
 
