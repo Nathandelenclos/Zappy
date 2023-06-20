@@ -8,6 +8,27 @@
 #include "server.h"
 
 /**
+ * Get the players on the tile.
+ * @param server - The server.
+ * @param cmd - The cmd.
+ * @return The players.
+ */
+node *get_players_on_tile(cmd_t *cmd)
+{
+    node *players = NULL;
+    node *tmp = cmd->client->player->map->tile->items;
+    item_t *item = NULL;
+    while (tmp) {
+        item = tmp->data;
+        if (item->type == PLAYER) {
+            put_in_end(&players, item);
+        }
+        tmp = tmp->next;
+    }
+    return players;
+}
+
+/**
  * Check if the incantation is possible.
  * @param cmd - The cmd.
  * @return - True if possible, false otherwise.
@@ -16,8 +37,21 @@ bool check_incantation(cmd_t *cmd)
 {
     node *items = cmd->client->player->map->tile->items;
     player_t *player = cmd->client->player;
-    for (int i = 0; i < 8; ++i) {
-        if (evolutions[player->level - 1][i] > get_item_count(items, i)) {
+    int level = player->level;
+    node *players = get_players_on_tile(cmd);
+    player_t *tmp_player;
+    int player_count = 0;
+    for (node *tmp = players; tmp; tmp = tmp->next) {
+        tmp_player = tmp->data;
+        if (tmp_player->level == level) {
+            player_count++;
+        }
+    }
+    if (evolutions[level][0] > player_count) {
+        return false;
+    }
+    for (int i = 1; i < 8; ++i) {
+        if (evolutions[level][i] > get_item_count(items, i)) {
             return false;
         }
     }
@@ -33,7 +67,8 @@ void incantation(server_t *server, cmd_t *cmd)
 {
     if (check_incantation(cmd)) {
         cmd->client->player->level++;
-        dprintf(cmd->client->socket_fd, OK);
+        dprintf(cmd->client->socket_fd, "Current level: %d\n",
+            cmd->client->player->level);
     } else {
         dprintf(cmd->client->socket_fd, KO);
     }

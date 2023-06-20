@@ -6,6 +6,7 @@
 */
 
 #include <string.h>
+#include <server.h>
 
 /**
  * Search by string.
@@ -15,5 +16,11 @@
  */
 int search_by_string(void * data, void *arg)
 {
-    return (strcmp((char *)data, (char *)arg) == 0);
+    return strcmp((string)data, (string)arg);
+}
+
+
+int search_by_team(void *data, void *arg)
+{
+    return strcmp(((team_t *)data)->name, (string)arg);
 }

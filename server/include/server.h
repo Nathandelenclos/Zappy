@@ -39,13 +39,20 @@ typedef enum {
     NONE,
 } team_type_t;
 
+typedef struct {
+    string name;
+    node *clients;
+    int max_players;
+    team_type_t type;
+} team_t;
+
 struct client_s {
     int socket_fd;
     struct sockaddr_in sockaddr;
     socklen_t len;
     player_t *player;
     STATE_CONNECTION state;
-    string team;
+    team_t *team;
     team_type_t type;
     node *commands;
 };

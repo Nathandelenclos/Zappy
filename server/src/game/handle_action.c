@@ -77,6 +77,7 @@ void find_command(server_t *server, client_t *client, string command)
  */
 void new_graphic_client(server_t *server, client_t *client)
 {
+    client->team = search_in_list_by(server->teams, "GRAPHIC", search_by_team)->data;
     client->type = GUI;
     client->state = WAITING_COMMAND;
     dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
@@ -92,12 +93,15 @@ void new_graphic_client(server_t *server, client_t *client)
 void new_ai_client(server_t *server, client_t *client, string action)
 {
     client->type = AI;
-    node *team = search_in_list_by(server->teams, action, search_by_string);
-    client->team = team == NULL ? NULL : team->data;
-    if (client->team == NULL) {
+    node *team = search_in_list_by(server->teams, action, search_by_team);
+    for (node *tmp = team; tmp; tmp = tmp->next) {
+        dprintf(client->socket_fd, "%s\n", ((team_t *)tmp->data)->name);
+    }
+    if (team == NULL) {
         dprintf(client->socket_fd, KO);
         return;
     }
+    client->team = team->data;
     client->state = WAITING_COMMAND;
     new_player(server, client);
     dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,

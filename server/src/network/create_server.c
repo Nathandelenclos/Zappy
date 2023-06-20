@@ -48,6 +48,41 @@ server_t *init_networking(server_t *server)
 }
 
 /**
+ * Create graphic team.
+ * @return - Return graphic team.
+ */
+team_t *create_graphic_team(void)
+{
+    team_t *team = MALLOC(sizeof(team_t));
+    team->name = strdup("GRAPHIC");
+    team->players = NULL;
+    team->max_players = 0;
+    team->type = GUI;
+    return team;
+}
+
+/**
+ * Create teams.
+ * @param args - Arguments.
+ * @return - Return teams.
+ */
+node *create_teams(args_t *args)
+{
+    node *teams = NULL;
+    team_t *team = NULL;
+    for (node *tmp = args->teams; tmp; tmp = tmp->next) {
+        team = MALLOC(sizeof(team_t));
+        team->name = my_strdup(tmp->data);
+        team->players = NULL;
+        team->max_players = args->clients_nb;
+        team->type = AI;
+        put_in_list(&teams, team);
+    }
+    put_in_list(&teams, create_graphic_team());
+    return teams;
+}
+
+/**
  * Create server.
  * @param port - Port to listen.
  * @return - Return server fd.
@@ -59,7 +94,7 @@ server_t *create_server(args_t *args)
     server->is_running = true;
     server->clients = NULL;
     server->cmd_queue = NULL;
-    server->teams = args->teams;
+    server->teams = create_teams(args);
     server = init_networking(server);
     server->map = generate_map(args->width, args->height);
     server->time = 0;
