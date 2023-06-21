@@ -10,6 +10,9 @@ def can_evolve(client_socket):
     stones_needed = myGameData.evolution_infos[lvl].copy()
     stones_needed.pop(0)
     index = 0
+    if myGameData.lvl == 5:
+        print(stones_needed)
+        print("\n\n\n\n")
     for stone in stones_needed:
         stone_name = myGameData.stones_in_game[index]
         my_stone = int(myGameData.inventory[stone_name])
@@ -38,14 +41,16 @@ def evolve_in_group(client_socket):
         nb_player += value
     print("lvl"+str(myGameData.lvl))
     printGreen("Number of players: " + str(myGameData.available["lvl"+str(myGameData.lvl)]))
-    if myGameData.available["lvl"+str(myGameData.lvl)] >= 5:
+    if myGameData.available["lvl"+str(myGameData.lvl)] >= 3:
+        # while (len(myGameData.uuid_present) > 0):
+        #     myGameData.uuid_present.pop()
         gathering_mode_and_incantation(client_socket)
-    elif (nb_player < 5 and myGameData.fork_done < 5):
-        print("Fork")
-        client_socket.send(("Fork\n").encode())
-        data = receive_answer(client_socket)
-        myGameData.fork_done += 1
-    elif (nb_player >= 5):
+    # elif (nb_player < 5 and myGameData.fork_done < 5):
+    #     print("Fork")
+    #     client_socket.send(("Fork\n").encode())
+    #     data = receive_answer(client_socket)
+    #     myGameData.fork_done += 1
+    elif (nb_player >= 3):
         printGreen("wait others to evolve")
         for i in range(0, 12):
             print("Left")
@@ -66,43 +71,42 @@ def go_evolve(client_socket):
         client_socket.send(("Set linemate\n").encode())
         data = receive_answer(client_socket)
         if data == "ok":
-            print("Incantation")
+            print("Incantation lvl"+str(myGameData.lvl))
             client_socket.send(("Incantation\n").encode())
             data = receive_answer(client_socket)
-            if data != "Elevation underway":
+            if data == "ko":
                 printGreen("Evolution failed")
-                # myGameData.mode = "gather"
         else:
             printGreen("Item not found in inventory")
-    elif myGameData.presence != True and myGameData.broadcast == True:
-        evolve_in_group(client_socket)
+    # elif myGameData.presence != True and myGameData.broadcast == True:
+    else:
+        if myGameData.broadcast == True:
+            evolve_in_group(client_socket)
 
 def gathering_mode(client_socket):
     global myGameData
-    while myGameData.nb_arrived < 5:
+    while myGameData.nb_arrived < 3:
         client_socket.send(("Broadcast " + myGameData.team_name + " gather\n").encode())
         print("Broadcast " + myGameData.team_name + " gather")
         data = receive_answer(client_socket, "asker")
         printGreen(str(myGameData.nb_arrived))
-        for i in range(0, 4):
-                print("Left")
-                client_socket.send(("Left"+"\n").encode())
-                data = receive_answer(client_socket, "asker")
+        for i in range(0, 3):
+            print("Left")
+            client_socket.send(("Left"+"\n").encode())
+            data = receive_answer(client_socket, "asker")
     return (True)
 
 def gathering_mode_and_incantation(client_socket):
     if gathering_mode(client_socket) == True:
         take_all_on_tile(client_socket)
         drop_items_on_tile(client_socket)
-        print("Incantation")
+        print("Incantation lvl"+str(myGameData.lvl))
         client_socket.send(("Incantation\n").encode())
+        myGameData.available["lvl"+str(myGameData.lvl)] = 0
         data = receive_answer(client_socket)
-        if data == "Elevation underway":
-            data = receive_answer(client_socket)
-            if data == "ko":
-                printGreen("Evolution failed")
-            else:
-                printGreen("Evolution is a success")
-                myGameData.lvl += 1
-        else:
+        if data == "ko":
             printGreen("Evolution failed")
+            myGameData.broadcast = True
+            myGameData.mode = None
+            myGameData.has_arrived = False
+        myGameData.nb_arrived = 0

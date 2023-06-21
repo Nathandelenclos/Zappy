@@ -2,6 +2,7 @@ import sys
 import socket
 import re
 from game_data import *
+from utils import *
 from brodcast_man import receive_answer
 from main import check_inventory
 
@@ -15,7 +16,7 @@ def find_path(data, item):
     count = 0
     for i in range(0, len(splitData)):
         if splitData[i].find(item) != -1:
-            break;
+            break
         count += 1
     if count == len(splitData):
         return ["Forward" for f in range(0, myGameData.lvl)]
@@ -63,7 +64,7 @@ def search_choice(client_socket, data, item):
         add_command.pop(0)
     while (len(myGameData.auto_command) > 0):
         command = myGameData.auto_command[0] + "\n"
-        print(command, end="")
+        print(myGameData.auto_command[0])
         myGameData.auto_command.pop(0)
         client_socket.send(command.encode())
         data = receive_answer(client_socket)
@@ -71,6 +72,8 @@ def search_choice(client_socket, data, item):
 def search_item(client_socket, item, quantity):
     global myGameData
     while (quantity > int(myGameData.inventory[item])):
+        if myGameData.mode == "gather":
+            return
         print("Look")
         client_socket.send(("Look"+"\n").encode())
         myGameData.last_command = "Look"

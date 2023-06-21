@@ -5,7 +5,7 @@ class Game_data:
     def __init__(self):
         self.broadcast = True
         self.fork_done = 0
-        self.presence = False
+        # self.presence = False
         self.mode = None
         self.last_answer = None
         self.last_command = None

@@ -22,10 +22,18 @@ def check_inventory(client_socket):
 
 def action_choice(client_socket):
     global myGameData
+    if myGameData.has_arrived == True:
+        receive_answer(client_socket)
+        return()
+    # if myGameData.mode != None:
+    #     printRed(myGameData.mode)
+    # else:
+    #     printRed("None")
     check_inventory(client_socket)
     if (int(myGameData.inventory["food"]) < 20 and myGameData.mode == None):
         search_item(client_socket, "food", 30)        
-    elif myGameData.mode != "gather":
+    elif myGameData.mode == None:
+        printRed("PASS ELIF ACTION CHOICE")
         if (can_evolve(client_socket) == True and myGameData.mode == None):
             go_evolve(client_socket)
 

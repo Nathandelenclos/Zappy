@@ -1,6 +1,9 @@
 def printGreen(data):
     print("\033[92m" + data + "\033[0m")
 
+def printRed(data):
+    print("\033[91m" + data + "\033[0m")
+
 def man_help():
     print("USAGE:  ./zappy_ai -p port -n name -h machine")
     print("\tport\tis the port number")
