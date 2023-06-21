@@ -1,5 +1,8 @@
 .idea
 zappy_server
+zappy_ai
+zappy_gui
 *.o
 unit_tests
 vgcore.*
+ai/src/__pycache__/*
