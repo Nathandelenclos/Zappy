@@ -8,7 +8,7 @@ def printGreen(data):
 
 def printRed(data):
     """!
-    Print in green
+    Print in red
     @param data: data to print
     @return: None
     """
