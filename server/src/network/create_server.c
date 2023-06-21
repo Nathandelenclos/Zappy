@@ -54,7 +54,7 @@ server_t *init_networking(server_t *server)
 team_t *create_graphic_team(void)
 {
     team_t *team = MALLOC(sizeof(team_t));
-    team->name = strdup("GRAPHIC");
+    team->name = my_strdup("GRAPHIC");
     team->clients = NULL;
     team->eggs_places = NULL;
     team->type = GUI;

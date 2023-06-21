@@ -26,6 +26,7 @@ typedef struct {
     map_t *map;
     node *commands;
     direction_t direction;
+    bool alive;
 } player_t;
 
 typedef struct {

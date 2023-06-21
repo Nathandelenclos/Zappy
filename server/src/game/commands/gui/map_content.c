@@ -25,22 +25,26 @@ void msz(server_t *server, cmd_t *cmd)
 void mct(server_t *server, cmd_t *cmd)
 {
     map_t *map = server->map;
+    char buffer[10000] = {0};
+    int offset = 0;
 
     for (int y = 0; y < server->args->height; y++) {
         for (int x = 0; x < server->args->width; x++) {
-            dprintf(cmd->client->socket_fd, "bct %d %d %d %d %d %d %d %d %d\n",
-                    x, y,
-                    get_item_count(map->tile->items, FOOD),
-                    get_item_count(map->tile->items, LINEMATE),
-                    get_item_count(map->tile->items, DERAUMERE),
-                    get_item_count(map->tile->items, SIBUR),
-                    get_item_count(map->tile->items, MENDIANE),
-                    get_item_count(map->tile->items, PHIRAS),
-                    get_item_count(map->tile->items, THYSTAME));
+            offset += snprintf(buffer + offset, sizeof(buffer) - offset,
+                               "bct %d %d %d %d %d %d %d %d %d\n",
+                               x, y,
+                               get_item_count(map->tile->items, FOOD),
+                               get_item_count(map->tile->items, LINEMATE),
+                               get_item_count(map->tile->items, DERAUMERE),
+                               get_item_count(map->tile->items, SIBUR),
+                               get_item_count(map->tile->items, MENDIANE),
+                               get_item_count(map->tile->items, PHIRAS),
+                               get_item_count(map->tile->items, THYSTAME));
             map = map->right;
         }
         map = map->down;
     }
+    write(cmd->client->socket_fd, buffer, offset);
 }
 
 /**

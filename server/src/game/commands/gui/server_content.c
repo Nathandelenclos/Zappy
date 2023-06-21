@@ -19,6 +19,8 @@ void tna(server_t *server, cmd_t *cmd)
     (void)cmd;
     while (team != NULL) {
         tmp = (team_t *)team->data;
+        if (strcmp(tmp->name, "GRAPHIC") == 0)
+            continue;
         dprintf(cmd->client->socket_fd, "tna %s\n", tmp->name);
         team = team->next;
     }

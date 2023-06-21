@@ -33,6 +33,7 @@ string read_message(client_t *client)
  * @param server - The server.
  * @param client - The client.
  * @param command - The command.
+ * @param command_str - The command str.
  */
 void new_command(server_t *server, client_t *client, command_t command, string command_str)
 {
@@ -41,7 +42,7 @@ void new_command(server_t *server, client_t *client, command_t command, string c
         server->time + (command.time != 0 ?
             (((command.time  * 1000) / server->args->freq)) : 0),
         command.func);
-    if (client->commands != NULL) {
+    if (client && client->commands) {
         cmd_t *last_cmd = client->commands->data;
         if (last_cmd->state != FINISHED) {
             cmd->state = NOT_STARTED;
@@ -50,7 +51,26 @@ void new_command(server_t *server, client_t *client, command_t command, string c
                     ? ((command.time * 1000) / server->args->freq) : 0);
         }
     }
-    put_in_list(&client->commands, cmd);
+    if (client)
+        put_in_list(&client->commands, cmd);
+    add_cmd(cmd, &server->cmd_queue);
+}
+
+/**
+ * New command.
+ * @param server - The server.
+ * @param client - The client.
+ * @param command - The command.
+ * @param command_str - The command str.
+ */
+void new_event(server_t *server, client_t *client, command_t command)
+{
+    cmd_t *cmd = create_cmd( client, my_strdup(""),
+        server->time,
+        server->time + (command.time != 0 ?
+            (((command.time  * 1000) / server->args->freq)) : 0),
+        command.func);
+    cmd->state = NOT_FOLLOWED;
     add_cmd(cmd, &server->cmd_queue);
 }
 
@@ -79,12 +99,42 @@ void find_command(server_t *server, client_t *client, string command)
  */
 void new_graphic_client(server_t *server, client_t *client)
 {
-    client->team = search_in_list_by(server->teams, "GRAPHIC", search_by_team)->data;
+    char buffer[10000] = {0};
+    int offset = 0;
+    map_t *map = server->map;
+
+    client->team = search_in_list_by(server->teams, "GRAPHIC",
+                                     search_by_team)->data;
     client->type = GUI;
     client->state = WAITING_COMMAND;
-    dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
-        server->args->width, server->args->height);
     server->gui = client;
+    offset += snprintf(buffer + offset, sizeof(buffer) - offset,
+                       "msz %d %d\nsgt %d\n", server->args->width,
+                       server->args->height, server->args->freq);
+    for (int y = 0; y < server->args->height; y++) {
+        for (int x = 0; x < server->args->width; x++) {
+            offset += snprintf(buffer + offset, sizeof(buffer) - offset,
+                               "bct %d %d %d %d %d %d %d %d %d\n",
+                               x, y,
+                               get_item_count(map->tile->items, FOOD),
+                               get_item_count(map->tile->items, LINEMATE),
+                               get_item_count(map->tile->items, DERAUMERE),
+                               get_item_count(map->tile->items, SIBUR),
+                               get_item_count(map->tile->items, MENDIANE),
+                               get_item_count(map->tile->items, PHIRAS),
+                               get_item_count(map->tile->items, THYSTAME));
+            map = map->right;
+        }
+        map = map->down;
+    }
+    for (node *teams = server->teams; teams; teams = teams->next) {
+        team_t *team = teams->data;
+        if (strcmp(team->name, "GRAPHIC") == 0)
+            continue;
+        offset += snprintf(buffer + offset, sizeof(buffer) - offset,
+                           "tna %s\n", team->name);
+    }
+    write(client->socket_fd, buffer, offset);
 }
 
 /**
