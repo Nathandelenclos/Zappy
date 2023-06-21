@@ -116,7 +116,7 @@ namespace zappy_gui {
             PdrData playerDrt;
             PgtData playerGtt;
             PdiData playerDit;
-            int playerTeam;
+            std::string playerTeam;
     };
 
     class EnwData {

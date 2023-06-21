@@ -15,6 +15,8 @@ namespace zappy_gui {
         lineStream >> width >> height;
         data->width = width;
         data->height = height;
+        if (data->width != data->height)
+            throw Exception(Error, "Map must be a square");
         data->grid.resize(data->width, std::vector<Cell>(data->height));
     }
 
@@ -81,7 +83,7 @@ namespace zappy_gui {
         int y;
         int orientation;
         int level;
-        int teamName;
+        std::string teamName;
         lineStream >> n >> x >> y >> orientation >> level >> teamName;
         Players playerData;
         playerData.playerPos = {n, x, y, orientation};

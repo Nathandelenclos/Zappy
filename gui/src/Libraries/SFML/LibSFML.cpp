@@ -44,30 +44,49 @@ namespace zappy_gui {
 
         if (!_grassTexture.loadFromFile(GRASS))
             throw Exception(Error, "Cannot load grass texture");
-        /*if (!_waterTexture.loadFromFile(WATER_TEXTURE_PATH))
-            throw Exception(Error, "Cannot load water texture");*/
         updateData(updateMap);
     }
+
+    void LibSFML::initPlayer(const Players& player)
+    {
+        sf::CircleShape playerCircle(PLAYER_RADIUS);
+        playerCircle.setFillColor(sf::Color::White);
+        playerCircle.setOutlineColor(sf::Color::Black);
+        playerCircle.setOutlineThickness(2.0f);
+
+        float availableWidth = static_cast<float>(_window.getSize().x) - (2 * WINDOW_PADDING);
+        float availableHeight = static_cast<float>(_window.getSize().y) - (2 * WINDOW_PADDING);
+
+        float CELL_SIZE_X = availableWidth / static_cast<float>(_data->width);
+        float CELL_SIZE_Y = availableHeight / static_cast<float>(_data->height);
+
+        float offsetX = (static_cast<float>(_window.getSize().x) - (_data->width * (CELL_SIZE_X + CELL_MARGIN))) / 2.0f;
+        float offsetY = (static_cast<float>(_window.getSize().y) - (_data->height * (CELL_SIZE_Y + CELL_MARGIN))) / 2.0f;
+
+        float squareX = player.playerPos.x * (CELL_SIZE_X + CELL_MARGIN) + offsetX;
+        float squareY = player.playerPos.y * (CELL_SIZE_Y + CELL_MARGIN) + offsetY;
+
+        playerCircle.setPosition(squareX, squareY);
+
+        _playerSpritesMap[player.playerPos.n] = playerCircle;
+
+        sf::Text teamNumber(player.playerTeam, _font, 20);
+        teamNumber.setFillColor(sf::Color::Black);
+        teamNumber.setStyle(sf::Text::Bold);
+
+        sf::FloatRect textBounds = teamNumber.getGlobalBounds();
+        float textPosX = squareX - (textBounds.width / 2.0f);
+        float textPosY = squareY - PLAYER_RADIUS - textBounds.height - 5.0f;
+        teamNumber.setPosition(textPosX, textPosY);
+
+        _playerTeamNumbers[player.playerPos.n] = teamNumber;
+    }
+
 
     void LibSFML::initPlayersOnMap()
     {
         for (const auto& player : _data->players) {
-            sf::Texture playerTexture;
-            std::string spritePath;
-            std::cout << "Player " << player.playerPos.n << " team: " << player.playerTeam << std::endl;
-
-            std::cout << "Player " << player.playerPos.n << " added to map" << std::endl;
-
-            if (!playerTexture.loadFromFile("assets/player1.png")) {
-                throw Exception(Error, "Cannot load player texture");
-            }
-
-            sf::Sprite playerSprite(playerTexture);
-            playerSprite.setOrigin(playerTexture.getSize().x / 2, playerTexture.getSize().y / 2);
-            playerSprite.setPosition(player.playerPos.x, player.playerPos.y);
-            std::cout << "Player " << player.playerPos.n << " position: " << player.playerPos.x << " " << player.playerPos.y << std::endl;
-
-            _playerSpritesMap[player.playerPos.n] = playerSprite;
+            initPlayer(player);
         }
     }
 
@@ -88,8 +107,7 @@ namespace zappy_gui {
                 sf::RectangleShape& cellSquare = _cellSquares[index];
 
                 cellSquare.setSize(sf::Vector2f(cellSizeX, cellSizeY));
-                cellSquare.setFillColor(sf::Color::White);
-
+                cellSquare.setFillColor(sf::Color(139, 69, 19));
                 float squarePosX = (cellSizeX + CELL_MARGIN) * static_cast<float>(x) + offsetX;
                 float squarePosY = (cellSizeY + CELL_MARGIN) * static_cast<float>(y) + offsetY;
                 cellSquare.setPosition(squarePosX, squarePosY);
@@ -179,6 +197,7 @@ namespace zappy_gui {
         }
     }
 
+
     void LibSFML::updateParticles(float dt)
     {
         for (auto& particles : _particles) {
@@ -223,7 +242,7 @@ namespace zappy_gui {
         updateParticles(0.016f);
         if (!_menu) {
             loadMap();
-            animatePlayer(_window);
+            animatePlayer();
         } else
             loadMenu();
         _window.display();
@@ -290,40 +309,39 @@ namespace zappy_gui {
 
                 _window.draw(cellSquare);
                 sf::Sprite& cellSprite = _cellSprites[index];
+
+                // Calculer les positions ajustées des sprites en fonction des marges et des décalages
+                float squarePosX = cellSquare.getPosition().x - CELL_MARGIN / 2.0f;
+                float squarePosY = cellSquare.getPosition().y - CELL_MARGIN / 2.0f;
+                cellSprite.setPosition(squarePosX, squarePosY);
+
                 _window.draw(cellSprite);
             }
         }
-        renderParticles(_window);
+
+        renderParticles();
     }
 
-    void LibSFML::animatePlayer(sf::RenderWindow& window)
+    void LibSFML::animatePlayer()
     {
-        for (auto& player : _data->players) {
-            auto spriteIterator = _playerSpritesMap.find(player.playerPos.n);
-            if (spriteIterator == _playerSpritesMap.end()) {
-                continue;
-            }
-            sf::Sprite& playerSprite = spriteIterator->second;
+        for (const auto & player : _data->players) {
+            sf::CircleShape& playerCircle = _playerSpritesMap[player.playerPos.n];
+            sf::Text& teamNumber = _playerTeamNumbers[player.playerPos.n];
 
-            // Augmenter la taille de la sprite
-            float scaleMultiplier = 3.5f; // Modifier la valeur selon vos besoins
-            playerSprite.setScale(scaleMultiplier, scaleMultiplier);
-
-            playerSprite.setRotation(playerSprite.getRotation() + 1.0f);
-            playerSprite.setPosition(player.playerPos.x, player.playerPos.y);
-
-            window.draw(playerSprite);
+            playerCircle.setPosition(player.playerPos.x, player.playerPos.y);
+            teamNumber.setPosition(player.playerPos.x, player.playerPos.y - (PLAYER_RADIUS + 5.0f));
+            _window.draw(playerCircle);
+            _window.draw(teamNumber);
         }
     }
 
 
-
-    void LibSFML::renderParticles(sf::RenderWindow& window)
+    void LibSFML::renderParticles()
     {
         for (const auto& particles : _particles) {
             for (const auto& particleData : particles.second) {
                 const sf::RectangleShape& particle = particleData.particle;
-                window.draw(particle);
+                _window.draw(particle);
             }
         }
     }

@@ -19,6 +19,7 @@
 namespace zappy_gui {
 
     constexpr int CELL_MARGIN = 5;
+    constexpr float PLAYER_RADIUS = 8.0f;
 
     struct ParticleData {
         sf::RectangleShape particle;
@@ -41,15 +42,16 @@ namespace zappy_gui {
             void manageEvents() override;
 
             void loadMap();
-            void animatePlayer(sf::RenderWindow& window);
+            void animatePlayer();
             void loadMenu();
 
             void initGrassOnMap();
             void initResourcesOnMap();
             void initPlayersOnMap();
+            void initPlayer(const Players& player);
 
             void updateParticles(float at);
-            void renderParticles(sf::RenderWindow& window);
+            void renderParticles();
 
             bool isWindowRunning() const override { return _windowRunning; };
 
@@ -70,10 +72,12 @@ namespace zappy_gui {
             sf::Sprite quitPrint;
             sf::Sprite boutonPrint;
             bool _menu;
-            std::unordered_map<int, sf::Sprite> _playerSpritesMap;
+            std::unordered_map<int, sf::CircleShape> _playerSpritesMap;
+            std::unordered_map<int, sf::Text> _playerTeamNumbers;
 
             std::map<int, std::vector<ParticleData>> _particles;
             std::vector<sf::Texture> _textures;
+            sf::Font _font;
     };
 
 }
