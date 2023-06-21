@@ -28,6 +28,15 @@ map_t *random_place(server_t *server, item_type_t type)
     return tile;
 }
 
+node *random_places(server_t *server, item_type_t type, int quantity)
+{
+    node *places = NULL;
+    for (int i = 0; i < quantity; ++i) {
+        put_in_list(&places, random_place(server, type));
+    }
+    return places;
+}
+
 /**
  * Randomize the egg place.
  * @param server - The server.
@@ -63,4 +72,6 @@ void randomize_items(server_t *server)
         }
     }
     randomize_egg(server);
+    command_t command = {"resource", 20, resource};
+    new_event(server, NULL, command);
 }

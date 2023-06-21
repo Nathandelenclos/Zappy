@@ -40,5 +40,5 @@ void new_player(server_t *server, client_t *client)
     delete_in_list(&client->team->eggs_places, place);
     client->player->map = place;
     command_t command = {"eat", 126, eats};
-    new_command(server, client, command, "start");
+    new_event(server, client, command);
 }

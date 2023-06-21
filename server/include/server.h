@@ -91,6 +91,9 @@ void add_item_to_inventory(node **inventory, item_type_t item_type);
 void add_items_to_inventory(node **inventory, item_type_t item_type, int quantity);
 void remove_item_from_inventory(node **inventory, item_type_t item_type);
 void new_command(server_t *server, client_t *client, command_t command, string command_str);
+map_t *random_place(server_t *server, item_type_t type);
+node *random_places(server_t *server, item_type_t type, int quantity);
+void new_event(server_t *server, client_t *client, command_t command);
 
 static const command_t commands_ai[] = {
     {"Forward", 7, forward},

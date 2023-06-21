@@ -42,7 +42,7 @@ void new_command(server_t *server, client_t *client, command_t command, string c
         server->time + (command.time != 0 ?
             (((command.time  * 1000) / server->args->freq)) : 0),
         command.func);
-    if (client->commands != NULL) {
+    if (client && client->commands) {
         cmd_t *last_cmd = client->commands->data;
         if (last_cmd->state != FINISHED) {
             cmd->state = NOT_STARTED;
@@ -51,7 +51,26 @@ void new_command(server_t *server, client_t *client, command_t command, string c
                     ? ((command.time * 1000) / server->args->freq) : 0);
         }
     }
-    put_in_list(&client->commands, cmd);
+    if (client)
+        put_in_list(&client->commands, cmd);
+    add_cmd(cmd, &server->cmd_queue);
+}
+
+/**
+ * New command.
+ * @param server - The server.
+ * @param client - The client.
+ * @param command - The command.
+ * @param command_str - The command str.
+ */
+void new_event(server_t *server, client_t *client, command_t command)
+{
+    cmd_t *cmd = create_cmd( client, my_strdup(""),
+        server->time,
+        server->time + (command.time != 0 ?
+            (((command.time  * 1000) / server->args->freq)) : 0),
+        command.func);
+    cmd->state = NOT_FOLLOWED;
     add_cmd(cmd, &server->cmd_queue);
 }
 

@@ -14,6 +14,8 @@
 void update_state(client_t *client)
 {
     cmd_t *last = NULL;
+    if (!client)
+        return;
     for (node *tmp = client->commands; tmp; tmp = tmp->next) {
         last = tmp->data;
         if (tmp->next == NULL)
@@ -34,7 +36,7 @@ void exec_queue(server_t *server)
         return;
     cmd_t *cmd = server->cmd_queue->data;
     while (cmd->timestamp_end <= server->time) {
-        if (cmd->client->player->alive)
+        if (cmd->state == NOT_FOLLOWED || !cmd->client || cmd->client->player->alive)
             cmd->func(server, cmd);
         cmd->state = FINISHED;
         update_state(cmd->client);

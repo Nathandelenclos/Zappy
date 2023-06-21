@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2023
 ** YEP-400-LIL-4-1-zappy
 ** File description:
-** message.h
+** game/events/resource.h
 */
 
 #include "server.h"
@@ -25,6 +25,6 @@ void eats(server_t *server, cmd_t *cmd)
         return;
     }
     remove_item_from_inventory(&cmd->client->player->inventory, FOOD);
-    command_t command = {NULL, 126, eats};
-    new_command(server, cmd->client, command, "eat");
+    command_t command = {"eat", 126, eats};
+    new_event(server, cmd->client, command);
 }
