@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['take_5fall_5fon_5ftile_103',['take_all_on_tile',['../namespacesearch__item.html#ae3db380ffbc6d0304205ab81a0f1aa47',1,'search_item']]]
+  ['needupdate_434',['needUpdate',['../classzappy__gui_1_1Core.html#a37a5d28adb46c72f2dab9a2a3b236f2c',1,'zappy_gui::Core']]]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['brodcast_5fman_2epy_71',['brodcast_man.py',['../brodcast__man_8py.html',1,'']]]
+  ['argumentsmanager_2ecpp_358',['ArgumentsManager.cpp',['../ArgumentsManager_8cpp.html',1,'']]],
+  ['argumentsmanager_2ehpp_359',['ArgumentsManager.hpp',['../ArgumentsManager_8hpp.html',1,'']]]
 ];

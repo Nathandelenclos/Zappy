@@ -1,10 +1,25 @@
 var searchData=
 [
-  ['game_5fdata_22',['game_data',['../namespacegame__data.html',1,'']]],
-  ['game_5fdata_23',['Game_data',['../classgame__data_1_1Game__data.html',1,'game_data']]],
-  ['game_5fdata_2epy_24',['game_data.py',['../game__data_8py.html',1,'']]],
-  ['gathering_5fmode_25',['gathering_mode',['../namespaceevolution.html#adfb68d0e1d28981d28183c6f15b0e9b0',1,'evolution']]],
-  ['gathering_5fmode_5fand_5fincantation_26',['gathering_mode_and_incantation',['../namespaceevolution.html#a1195026dcf51fd11a90724cbc3f117eb',1,'evolution']]],
-  ['go_5fevolve_27',['go_evolve',['../namespaceevolution.html#a902ec856ae10676ccdf60a3aebf5f43c',1,'evolution']]],
-  ['go_5fto_5fitem_28',['go_to_item',['../namespacesearch__item.html#ae7acf5033b54c9448074b438d7b9ad08',1,'search_item']]]
+  ['game_5fdata_90',['game_data',['../namespacegame__data.html',1,'']]],
+  ['game_5fdata_91',['Game_data',['../classgame__data_1_1Game__data.html',1,'game_data']]],
+  ['game_5fdata_2epy_92',['game_data.py',['../game__data_8py.html',1,'']]],
+  ['gathering_5fmode_93',['gathering_mode',['../namespaceevolution.html#adfb68d0e1d28981d28183c6f15b0e9b0',1,'evolution']]],
+  ['gathering_5fmode_5fand_5fincantation_94',['gathering_mode_and_incantation',['../namespaceevolution.html#a1195026dcf51fd11a90724cbc3f117eb',1,'evolution']]],
+  ['getdata_95',['getData',['../classzappy__gui_1_1GuiClient.html#aae1bbb2dabb7fcfbb729533a459619f2',1,'zappy_gui::GuiClient']]],
+  ['getexceptioncode_96',['getExceptionCode',['../classzappy__gui_1_1Exception.html#a54be95c398c01b4a5dd56fcfedddaf01',1,'zappy_gui::Exception']]],
+  ['getmachine_97',['getMachine',['../classzappy__gui_1_1ArgumentsManager.html#aeb60a1896899b595a77b4a655ce196cb',1,'zappy_gui::ArgumentsManager']]],
+  ['getport_98',['getPort',['../classzappy__gui_1_1ArgumentsManager.html#aa290067db950b3fe0df39fb03d52f809',1,'zappy_gui::ArgumentsManager']]],
+  ['getsfmlinstance_99',['getSFMLInstance',['../classzappy__gui_1_1DLoader.html#a0b67ee4e8e7848573871adefe2ea95b8',1,'zappy_gui::DLoader']]],
+  ['getsocket_100',['getSocket',['../classzappy__gui_1_1GuiClient.html#a5ea4d39068a680efd1c33c55132c0ef7',1,'zappy_gui::GuiClient']]],
+  ['getupdate_101',['getUpdate',['../classzappy__gui_1_1GuiClient.html#a63c9a70c9857c0b1981a62e1e0aafd7f',1,'zappy_gui::GuiClient']]],
+  ['go_5fevolve_102',['go_evolve',['../namespaceevolution.html#a902ec856ae10676ccdf60a3aebf5f43c',1,'evolution']]],
+  ['go_5fto_5fitem_103',['go_to_item',['../namespacesearch__item.html#ae7acf5033b54c9448074b438d7b9ad08',1,'search_item']]],
+  ['graphic_104',['GRAPHIC',['../Includes_8hpp.html#ae6bf8b6749336942d74c4a95b5e6d5e3',1,'Includes.hpp']]],
+  ['graphicalloader_105',['GraphicalLoader',['../namespacezappy__gui.html#ab714a48f18bbe44a50083afd59d0f76b',1,'zappy_gui']]],
+  ['graphicalloaderptr_106',['GraphicalLoaderPtr',['../namespacezappy__gui.html#a37b76c6ae642f3f6415791cdb636c903',1,'zappy_gui']]],
+  ['grass_107',['GRASS',['../LibSFML_8hpp.html#a0f6b2c5e6a922165582784ca418d0d17',1,'LibSFML.hpp']]],
+  ['grid_108',['grid',['../classzappy__gui_1_1Data.html#a6b63dbe74a2bfc13e42243fe6ae2c32d',1,'zappy_gui::Data']]],
+  ['guiclient_109',['GuiClient',['../classzappy__gui_1_1GuiClient.html#a306d1d75d343091ce80004b16d067192',1,'zappy_gui::GuiClient::GuiClient()'],['../classzappy__gui_1_1GuiClient.html',1,'GuiClient']]],
+  ['guiclient_2ecpp_110',['GuiClient.cpp',['../GuiClient_8cpp.html',1,'']]],
+  ['guiclient_2ehpp_111',['GuiClient.hpp',['../GuiClient_8hpp.html',1,'']]]
 ];

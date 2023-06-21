@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['join_94',['join',['../namespacebrodcast__man.html#ae79151954a813d189582a6b972cb6a4c',1,'brodcast_man']]]
+  ['handleguiinput_419',['handleGuiInput',['../classzappy__gui_1_1GuiClient.html#ab680ecb7a751fc30bc25ede69996c0ce',1,'zappy_gui::GuiClient']]],
+  ['handleuserinput_420',['handleUserInput',['../classzappy__gui_1_1GuiClient.html#a3db1649b6c6258bc53c8337ec8b2976d',1,'zappy_gui::GuiClient']]]
 ];

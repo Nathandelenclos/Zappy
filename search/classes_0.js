@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['game_5fdata_63',['Game_data',['../classgame__data_1_1Game__data.html',1,'game_data']]]
+  ['argumentsmanager_318',['ArgumentsManager',['../classzappy__gui_1_1ArgumentsManager.html',1,'zappy_gui']]]
 ];

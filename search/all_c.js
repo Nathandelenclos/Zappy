@@ -1,10 +1,19 @@
 var searchData=
 [
-  ['main_37',['main',['../namespacemain.html',1,'main'],['../namespacemain.html#af613cea4cba4fb7de8e40896b3368945',1,'main.main()']]],
-  ['main_2epy_38',['main.py',['../main_8py.html',1,'']]],
-  ['man_5fhelp_39',['man_help',['../namespaceutils.html#a86fae7e03dec398089f79b39b4d559d4',1,'utils']]],
-  ['map_5fsize_5fx_40',['map_size_x',['../classgame__data_1_1Game__data.html#ada667c3562bb4c3e26040fd1940e667b',1,'game_data::Game_data']]],
-  ['map_5fsize_5fy_41',['map_size_y',['../classgame__data_1_1Game__data.html#a824cb9e02fa63d8692cea916ab32bedb',1,'game_data::Game_data']]],
-  ['mode_42',['mode',['../classgame__data_1_1Game__data.html#a1a6b6fb557d8d37d59700faf4e4c9167',1,'game_data::Game_data']]],
-  ['mygamedata_43',['myGameData',['../namespacegame__data.html#ad50656a10a3202cdecc21ff0a1f7bf84',1,'game_data']]]
+  ['machine_5ferror_142',['MACHINE_ERROR',['../Exception_8hpp.html#a4ce326e11b3780598d6127a4e03b2298',1,'Exception.hpp']]],
+  ['magenta_143',['MAGENTA',['../Includes_8hpp.html#a6f699060902f800f12aaae150f3a708e',1,'Includes.hpp']]],
+  ['main_144',['main',['../main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main():&#160;main.cpp'],['../namespacemain.html#af613cea4cba4fb7de8e40896b3368945',1,'main.main()'],['../namespacemain.html',1,'main']]],
+  ['main_2ecpp_145',['main.cpp',['../main_8cpp.html',1,'']]],
+  ['main_2epy_146',['main.py',['../main_8py.html',1,'']]],
+  ['man_5fhelp_147',['man_help',['../namespaceutils.html#a86fae7e03dec398089f79b39b4d559d4',1,'utils']]],
+  ['manageevents_148',['manageEvents',['../classzappy__gui_1_1LibSFML.html#a783bc625de29d4cef45f0c1a4d706921',1,'zappy_gui::LibSFML::manageEvents()'],['../classIGraphical.html#a9a056c2c384bedcb03a2b74667f62cb0',1,'IGraphical::manageEvents()']]],
+  ['map_149',['map',['../classzappy__gui_1_1Data.html#a8d2e983b3589967f85e48d794ceacbd3',1,'zappy_gui::Data']]],
+  ['map_5fsize_5fx_150',['map_size_x',['../classgame__data_1_1Game__data.html#ada667c3562bb4c3e26040fd1940e667b',1,'game_data::Game_data']]],
+  ['map_5fsize_5fy_151',['map_size_y',['../classgame__data_1_1Game__data.html#a824cb9e02fa63d8692cea916ab32bedb',1,'game_data::Game_data']]],
+  ['mct_152',['MCT',['../Includes_8hpp.html#a3810fa205f48ff7554cef11b55c63367',1,'Includes.hpp']]],
+  ['message_153',['message',['../classzappy__gui_1_1SmgData.html#a36bd74109f547f7f8198faf5a12d2879',1,'zappy_gui::SmgData::message()'],['../classzappy__gui_1_1PbcData.html#a36bd74109f547f7f8198faf5a12d2879',1,'zappy_gui::PbcData::message()']]],
+  ['messagefromserver_154',['messageFromServer',['../classzappy__gui_1_1Data.html#a99119efb2dd470db29d2832a6ebe7cba',1,'zappy_gui::Data']]],
+  ['mode_155',['mode',['../classgame__data_1_1Game__data.html#a1a6b6fb557d8d37d59700faf4e4c9167',1,'game_data::Game_data']]],
+  ['msz_156',['MSZ',['../Includes_8hpp.html#a9b05b79cdcf95a83d56e43cd02167c35',1,'Includes.hpp']]],
+  ['mygamedata_157',['myGameData',['../namespacegame__data.html#ad50656a10a3202cdecc21ff0a1f7bf84',1,'game_data']]]
 ];
