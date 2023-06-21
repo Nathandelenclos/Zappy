@@ -19,16 +19,17 @@ void set(server_t *server, cmd_t *cmd)
             if (get_item_count(cmd->client->player->inventory, i) > 0) {
                 add_item_to_inventory(&cmd->client->player->map->tile->items, i);
                 remove_item_from_inventory(&cmd->client->player->inventory, i);
-                if (server->gui != NULL)
-dprintf(server->gui->socket_fd, "pdr %d %d\n",
+                if (server->gui != NULL) {
+                    dprintf(server->gui->socket_fd, "pdr %d %d\n",
                         cmd->client->socket_fd, i);
-                dprintf(cmd->client->socket_fd, "ok\n");
+                }
+                dprintf(cmd->client->socket_fd, OK);
                 return;
             } else {
-                dprintf(cmd->client->socket_fd, "ko\n");
+                dprintf(cmd->client->socket_fd, KO);
                 return;
             }
         }
     }
-    dprintf(cmd->client->socket_fd, "ko\n");
+    dprintf(cmd->client->socket_fd, KO);
 }

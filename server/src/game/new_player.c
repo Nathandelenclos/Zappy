@@ -18,7 +18,7 @@ player_t *create_player()
     player->type = PLAYER;
     player->direction = rand() % 4;
     player->inventory = NULL;
-    add_items_to_inventory(&player->inventory, FOOD, 10);
+    add_items_to_inventory(&player->inventory, FOOD, FOOD_QUANTITY);
     player->level = 1;
     player->map = NULL;
     player->commands = NULL;

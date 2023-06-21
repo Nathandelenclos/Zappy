@@ -88,12 +88,19 @@ void randomize_items(server_t *server);
 int get_item_count(node *inventory, item_type_t type);
 void add_item_to_inventory(node **inventory, item_type_t item_type);
 void add_items_to_inventory(node **inventory, item_type_t item_type, int quantity);
-void remove_item_from_inventory(node **inventory, item_type_t item_type);
+bool remove_item_from_inventory(node **inventory, item_type_t item_type);
 void new_command(server_t *server, client_t *client, command_t command, string command_str);
 int parse_cmd_arg(char *cmd, bool first_use);
 map_t *random_place(server_t *server, item_type_t type);
 node *random_places(server_t *server, item_type_t type, int quantity);
 void new_event(server_t *server, client_t *client, command_t command);
+string read_message(client_t *client);
+void find_command(server_t *server, client_t *client, string command);
+node *player_to_client(server_t *server, node *players);
+void pause_activity(server_t *server, node *clients);
+void resume_activity(server_t *server, node *clients);
+node *get_players_on_tile_with_level(cmd_t *cmd, int level);
+node *get_players_on_tile(cmd_t *cmd);
 
 static const command_t commands_ai[] = {
     {"Forward", 7, forward},
@@ -104,7 +111,6 @@ static const command_t commands_ai[] = {
     {"Broadcast", 7, broadcast},
     {"Connect_nbr", 0, connect_nbr},
     {"Fork", 42, fork_cmd},
-    {"Eject", 7, debug_cmd},
     {"Take", 7, take},
     {"Set", 7, set},
     {"Incantation", 0, incantation_start},

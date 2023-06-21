@@ -11,6 +11,9 @@
 #include <server.h>
 #include <signal.h>
 
+/**
+ * Free all and sign int.
+ */
 void sigint_handler(int sig)
 {
     (void )sig;

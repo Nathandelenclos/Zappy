@@ -52,5 +52,6 @@ cmd_t *create_cmd(client_t *client_socket, string cmd, timestamp_t timestamp_sta
     new_cmd->func = func;
     new_cmd->cmd = cmd;
     new_cmd->state = STARTED;
+    new_cmd->ticks = 0;
     return (new_cmd);
 }

@@ -38,7 +38,7 @@ void add_items_to_inventory(node **inventory, item_type_t item_type, int quantit
  * @param item_type - The item type.
  * @return int - The item count.
  */
-void remove_item_from_inventory(node **inventory, item_type_t item_type)
+bool remove_item_from_inventory(node **inventory, item_type_t item_type)
 {
     node *tmp = *inventory;
     item_t *item = NULL;
@@ -46,9 +46,9 @@ void remove_item_from_inventory(node **inventory, item_type_t item_type)
     while (tmp != NULL) {
         item = tmp->data;
         if (item->type == item_type) {
-            delete_in_list(inventory, item);
-            return;
+            return delete_in_list(inventory, item);
         }
         tmp = tmp->next;
     }
+    return false;
 }

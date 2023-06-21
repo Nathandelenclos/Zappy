@@ -29,7 +29,5 @@ int search_by_player(void *data, void *arg)
 {
     client_t *client = (client_t *)data;
     player_t *player = (player_t *)arg;
-    if (client->player == player)
-        return 0;
-    return 1;
+    return client->player != player;
 }

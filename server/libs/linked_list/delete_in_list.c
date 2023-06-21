@@ -17,7 +17,8 @@
  */
 bool delete_in_list(node **head_ref, void *key)
 {
-    node *temp = *head_ref, *prev;
+    node *temp = *head_ref;
+    node *prev;
     if (temp != NULL && temp->data == key) {
         *head_ref = temp->next;
         FREE(temp);

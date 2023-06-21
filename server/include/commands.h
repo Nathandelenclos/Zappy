@@ -30,6 +30,8 @@ void connect_nbr(server_t *server, cmd_t *cmd);
 void fork_cmd(server_t *server, cmd_t *cmd);
 void broadcast(server_t *server, cmd_t *cmd);
 void msz(server_t *server, cmd_t *cmd);
+void eject(server_t *server, cmd_t *cmd);
+
 void mct(server_t *server, cmd_t *cmd);
 void bct(server_t *server, cmd_t *cmd);
 void tna(server_t *server, cmd_t *cmd);

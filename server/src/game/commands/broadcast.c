@@ -27,10 +27,10 @@ node *get_all_ia_client(server_t *server)
 }
 
 /**
- *
- * @param client
- * @param cell
- * @return
+ * Get the distance between two points.
+ * @param client - The client.
+ * @param cell - The cell.
+ * @return - The distance.
  */
 int to_direction(client_t *client, int cell)
 {
@@ -46,10 +46,19 @@ int to_direction(client_t *client, int cell)
     return cell;
 }
 
+/**
+ * Broadcast a message to all IA clients.
+ * @param server - The server.
+ * @param cmd - The cmd.
+ */
 void broadcast(server_t *server, cmd_t *cmd)
 {
     client_t *client = cmd->client;
     node *client_ai = get_all_ia_client(server);
+    if (strlen(cmd->cmd) <= 10) {
+        dprintf(client->socket_fd, KO);
+        return;
+    }
     for (node *tmp = client_ai; tmp; tmp = tmp->next) {
         client_t *client_tmp = tmp->data;
         if (client_tmp == client)
@@ -69,6 +78,9 @@ void broadcast(server_t *server, cmd_t *cmd)
         dprintf(client_tmp->socket_fd, "message %d, %s\n",
             to_direction(client_tmp, cell), strlen(cmd->cmd) <= 10 ? "" : cmd->cmd + 10);
     }
-    dprintf(server->gui->socket_fd, "pbc %d %s\n", client->socket_fd,
+    if (server->gui) {
+        dprintf(server->gui->socket_fd, "pbc %d %s\n", client->socket_fd,
             strlen(cmd->cmd) <= 10 ? "" : cmd->cmd + 10);
+    }
+    dprintf(client->socket_fd, OK);
 }
