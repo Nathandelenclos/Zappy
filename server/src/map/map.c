@@ -15,11 +15,13 @@ map_t *create_tile(void)
 {
     map_t *tile = MALLOC(sizeof(map_t));
 
-    if (tile == NULL)
+    if (tile == NULL) {
         return NULL;
+    }
     tile->tile = MALLOC(sizeof(tile_t));
-    if (tile->tile == NULL)
+    if (tile->tile == NULL) {
         return NULL;
+    }
     tile->tile->items = NULL;
     tile->up = NULL;
     tile->down = NULL;
@@ -69,8 +71,9 @@ void link_up_down(map_t *first, map_t *second)
     while (tmp_first->down == NULL && tmp_second->up == NULL) {
         tmp_first->down = tmp_second;
         tmp_second->up = tmp_first;
-        if (tmp_first->right == NULL || tmp_second->right == NULL)
+        if (tmp_first->right == NULL || tmp_second->right == NULL) {
             break;
+        }
         tmp_first = tmp_first->right;
         tmp_second = tmp_second->right;
     }
@@ -86,8 +89,9 @@ map_t *generate_map(int x, int y)
 {
     map_t **tmp_map = MALLOC(sizeof(map_t *) * y);
 
-    if (x <= 0 || y <= 0)
+    if (x <= 0 || y <= 0) {
         return NULL;
+    }
     for (int i = 0; i < y; ++i) {
         tmp_map[i] = create_tile();
         generate_x_tiles(tmp_map[i], x, i);

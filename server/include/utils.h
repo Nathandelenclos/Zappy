@@ -28,5 +28,7 @@ void help();
 args_t *args_init();
 args_t *args_parsed(args_t *args, int argc, char **argv);
 int search_by_string(void * data, void *arg);
+int search_by_team(void *data, void *arg);
+int search_by_player(void *data, void *arg);
 
 #endif //ZAPPY_UTILS_H

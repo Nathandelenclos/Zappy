@@ -18,7 +18,9 @@ typedef struct server_s server_t;
 typedef enum {
     NOT_STARTED,
     STARTED,
-    FINISHED
+    PAUSE,
+    FINISHED,
+    NOT_FOLLOWED
 } STATE_CMD;
 
 typedef struct cmd_s {
@@ -27,6 +29,7 @@ typedef struct cmd_s {
     client_t *client;
     string cmd;
     STATE_CMD state;
+    int ticks;
     void (*func)(server_t *server, struct cmd_s *cmd);
 } cmd_t;
 
