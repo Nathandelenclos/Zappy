@@ -28,6 +28,14 @@ void connect_nbr(server_t *server, cmd_t *cmd);
 void fork_cmd(server_t *server, cmd_t *cmd);
 void broadcast(server_t *server, cmd_t *cmd);
 void msz(server_t *server, cmd_t *cmd);
+void mct(server_t *server, cmd_t *cmd);
+void bct(server_t *server, cmd_t *cmd);
+void tna(server_t *server, cmd_t *cmd);
+void ppo(server_t *server, cmd_t *cmd);
+void plv(server_t *server, cmd_t *cmd);
+void pin(server_t *server, cmd_t *cmd);
+void sgt(server_t *server, cmd_t *cmd);
+void sst(server_t *server, cmd_t *cmd);
 
 typedef struct {
     double x;

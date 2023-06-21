@@ -69,8 +69,7 @@ struct server_s {
     node *clients;
     node *teams;
     map_t *map;
-    int map_width;
-    int map_height;
+    client_t *gui;
 };
 
 typedef struct {
@@ -91,6 +90,7 @@ void add_item_to_inventory(node **inventory, item_type_t item_type);
 void add_items_to_inventory(node **inventory, item_type_t item_type, int quantity);
 void remove_item_from_inventory(node **inventory, item_type_t item_type);
 void new_command(server_t *server, client_t *client, command_t command, string command_str);
+int parse_cmd_arg(char *cmd, bool first_use);
 
 static command_t commands_ai[] = {
     {"Forward", 7, forward},
@@ -110,6 +110,14 @@ static command_t commands_ai[] = {
 
 static command_t commands_gui[] = {
     {"msz", 0, msz},
+    {"bct", 0, bct},
+    {"mct", 0, mct},
+    {"tna", 0, tna},
+    {"ppo", 0, ppo},
+    {"plv", 0, plv},
+    {"pin", 0, pin},
+    {"sgt", 0, sgt},
+    {"sst", 0, sst},
     {NULL, 0, NULL}
 };
 

@@ -19,6 +19,9 @@ void take(server_t *server, cmd_t *cmd)
             if (get_item_count(cmd->client->player->map->tile->items, i) > 0) {
                 add_item_to_inventory(&cmd->client->player->inventory, i);
                 remove_item_from_inventory(&cmd->client->player->map->tile->items, i);
+                if (server->gui != NULL)
+dprintf(server->gui->socket_fd, "pgt %d %d\n",
+                    cmd->client->socket_fd, i);
                 dprintf(cmd->client->socket_fd, "ok\n");
                 return;
             } else {

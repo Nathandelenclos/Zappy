@@ -84,6 +84,7 @@ void new_graphic_client(server_t *server, client_t *client)
     client->state = WAITING_COMMAND;
     dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
         server->args->width, server->args->height);
+    server->gui = client;
 }
 
 /**

@@ -34,8 +34,22 @@ void new_player(server_t *server, client_t *client)
 {
     client->player = create_player();
     map_t *place = client->team->eggs_places->data;
+    int index = 0;
+    node *tmp = client->team->eggs_places;
+
+    while (tmp != client->team->eggs_places) {
+        index++;
+        tmp = tmp->next;
+    }
+    if (server->gui != NULL)
+dprintf(server->gui->socket_fd, "ebo %d\n", index);
     remove_item_from_inventory(&place->tile->items, EGG);
     put_in_list(&place->tile->items, client->player);
     delete_in_list(&client->team->eggs_places, place);
     client->player->map = place;
+    if (server->gui != NULL)
+dprintf(server->gui->socket_fd, "pnw %d %d %d %d %d %s\n",
+            client->socket_fd, client->player->map->pos_x,
+        client->player->map->pos_y, client->player->direction,
+        client->player->level, client->team->name);
 }
