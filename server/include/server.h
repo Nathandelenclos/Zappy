@@ -39,13 +39,20 @@ typedef enum {
     NONE,
 } team_type_t;
 
+typedef struct {
+    string name;
+    node *clients;
+    node *eggs_places;
+    team_type_t type;
+} team_t;
+
 struct client_s {
     int socket_fd;
     struct sockaddr_in sockaddr;
     socklen_t len;
     player_t *player;
     STATE_CONNECTION state;
-    string team;
+    team_t *team;
     team_type_t type;
     node *commands;
 };
@@ -62,6 +69,7 @@ struct server_s {
     node *clients;
     node *teams;
     map_t *map;
+    client_t *gui;
 };
 
 typedef struct {
@@ -77,14 +85,42 @@ client_t *create_client(server_t *server);
 void handle_action(server_t *server);
 void new_player(server_t *server, client_t *client);
 void randomize_items(server_t *server);
+int get_item_count(node *inventory, item_type_t type);
+void add_item_to_inventory(node **inventory, item_type_t item_type);
+void add_items_to_inventory(node **inventory, item_type_t item_type, int quantity);
+void remove_item_from_inventory(node **inventory, item_type_t item_type);
+void new_command(server_t *server, client_t *client, command_t command, string command_str);
+int parse_cmd_arg(char *cmd, bool first_use);
+map_t *random_place(server_t *server, item_type_t type);
+node *random_places(server_t *server, item_type_t type, int quantity);
+void new_event(server_t *server, client_t *client, command_t command);
 
-static command_t commands_ai[] = {
-    {"test", 7, debug_cmd},
-    {"data", 2, debug_cmd},
+static const command_t commands_ai[] = {
+    {"Forward", 7, forward},
+    {"Right", 7, right},
+    {"Left", 7, left},
+    {"Look", 7, look},
+    {"Inventory", 1, inventory},
+    {"Broadcast", 7, broadcast},
+    {"Connect_nbr", 0, connect_nbr},
+    {"Fork", 42, fork_cmd},
+    {"Eject", 7, debug_cmd},
+    {"Take", 7, take},
+    {"Set", 7, set},
+    {"Incantation", 0, incantation_start},
     {NULL, 0, NULL}
 };
 
-static command_t commands_gui[] = {
+static const command_t commands_gui[] = {
+    {"msz", 0, msz},
+    {"bct", 0, bct},
+    {"mct", 0, mct},
+    {"tna", 0, tna},
+    {"ppo", 0, ppo},
+    {"plv", 0, plv},
+    {"pin", 0, pin},
+    {"sgt", 0, sgt},
+    {"sst", 0, sst},
     {NULL, 0, NULL}
 };
 

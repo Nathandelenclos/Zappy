@@ -29,6 +29,7 @@ CFLAGS += -I include/ -I ./libs/ -I ./libs/linked_list/ -I ./libs/my/
 LDFLAGS += -L./libs/
 LDFLAGS += -llist
 LDFLAGS += -lmy
+LDFLAGS += -lm
 
 TESTCFLAGS = $(CFLAGS) $(LDFLAGS) --coverage -lcriterion
 

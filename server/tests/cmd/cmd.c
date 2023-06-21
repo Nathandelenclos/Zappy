@@ -6,22 +6,23 @@
 */
 #include <criterion/criterion.h>
 #include "../../include/cmd.h"
+#include "../../include/server.h"
 
 Test(cmd, create_cmd)
 {
     client_t *client_socket = MALLOC(sizeof(client_t));
-    cmd_t *cmd = create_cmd(client_socket, 0, 0, NULL);
+    cmd_t *cmd = create_cmd(client_socket, NULL, 0, 0, NULL);
 
-    cr_assert_eq(cmd->client_socket, client_socket);
+    cr_assert_eq(cmd->client, client_socket);
     cr_assert_eq(cmd->timestamp_start, 0);
     cr_assert_eq(cmd->timestamp_end, 0);
-    cr_assert_eq(cmd->state, NOT_STARTED);
+    cr_assert_eq(cmd->state, STARTED);
 }
 
 Test(cmd, add_cmd)
 {
     client_t *client_socket = MALLOC(sizeof(client_t));
-    cmd_t *cmd = create_cmd(client_socket, 0, 0, NULL);
+    cmd_t *cmd = create_cmd(client_socket, NULL, 0, 0, NULL);;
     cmd_queue_t *queue = NULL;
 
     add_cmd(cmd, &queue);
@@ -31,8 +32,8 @@ Test(cmd, add_cmd)
 Test(cmd, add_cmd_sorted)
 {
     client_t *client_socket = MALLOC(sizeof(client_t));
-    cmd_t *cmd1 = create_cmd(client_socket, 0, 0, NULL);
-    cmd_t *cmd2 = create_cmd(client_socket, 1, 1, NULL);
+    cmd_t *cmd1 = create_cmd(client_socket, NULL, 0, 0, NULL);
+    cmd_t *cmd2 = create_cmd(client_socket, NULL, 1, 1, NULL);
     cmd_queue_t *queue = NULL;
 
     add_cmd(cmd1, &queue);
@@ -44,8 +45,8 @@ Test(cmd, add_cmd_sorted)
 Test(cmd, add_cmd_sorted2)
 {
     client_t *client_socket = MALLOC(sizeof(client_t));
-    cmd_t *cmd1 = create_cmd(client_socket, 1, 1, NULL);
-    cmd_t *cmd2 = create_cmd(client_socket, 0, 0, NULL);
+    cmd_t *cmd1 = create_cmd(client_socket, NULL, 1, 1, NULL);;
+    cmd_t *cmd2 = create_cmd(client_socket, NULL, 0, 0, NULL);;
     cmd_queue_t *queue = NULL;
 
     add_cmd(cmd1, &queue);
@@ -57,9 +58,9 @@ Test(cmd, add_cmd_sorted2)
 Test(cmd, add_cmd_sorted_advanced)
 {
     client_t *client_socket = MALLOC(sizeof(client_t));
-    cmd_t *cmd1 = create_cmd(client_socket, 0, 0, NULL);
-    cmd_t *cmd2 = create_cmd(client_socket, 1, 1, NULL);
-    cmd_t *cmd3 = create_cmd(client_socket, 2, 2, NULL);
+    cmd_t *cmd1 = create_cmd(client_socket, NULL, 0, 0, NULL);;
+    cmd_t *cmd2 = create_cmd(client_socket, NULL, 1, 1, NULL);;
+    cmd_t *cmd3 = create_cmd(client_socket, NULL, 2, 2, NULL);;
     cmd_queue_t *queue = NULL;
 
     add_cmd(cmd2, &queue);
@@ -73,12 +74,12 @@ Test(cmd, add_cmd_sorted_advanced)
 Test(cmd, add_cmd_sorted_advanced_2)
 {
     client_t *client_socket = MALLOC(sizeof(client_t));
-    cmd_t *cmd1 = create_cmd(client_socket, 0, 0, NULL);
-    cmd_t *cmd1_2 = create_cmd(client_socket, 0, 0, NULL);
-    cmd_t *cmd2 = create_cmd(client_socket, 1, 1, NULL);
-    cmd_t *cmd2_2 = create_cmd(client_socket, 1, 1, NULL);
-    cmd_t *cmd3 = create_cmd(client_socket, 2, 2, NULL);
-    cmd_t *cmd3_2 = create_cmd(client_socket, 2, 2, NULL);
+    cmd_t *cmd1 = create_cmd(client_socket, NULL, 0, 0, NULL);;
+    cmd_t *cmd1_2 = create_cmd(client_socket, NULL, 0, 0, NULL);;
+    cmd_t *cmd2 = create_cmd(client_socket, NULL, 1, 1, NULL);;
+    cmd_t *cmd2_2 = create_cmd(client_socket, NULL, 1, 1, NULL);;
+    cmd_t *cmd3 = create_cmd(client_socket, NULL, 2, 2, NULL);;
+    cmd_t *cmd3_2 = create_cmd(client_socket, NULL, 2, 2, NULL);;
     cmd_queue_t *queue = NULL;
 
     add_cmd(cmd2, &queue);
