@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-BINARY = zappy_gui
+BINARY = ../zappy_gui
 
 DELTA = $$(echo "$$(tput cols)-47"|bc)
 INDEX = 1

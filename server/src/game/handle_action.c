@@ -93,7 +93,6 @@ void action(server_t *server, client_t *client)
         }
         return;
     }
-    printf("%s\n", action);
     if (client->state == WAITING_TEAM_NAME) {
         if (strcmp(action, GRAPHIC) == 0) {
             new_graphic_client(server, client);

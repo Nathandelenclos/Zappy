@@ -6,7 +6,7 @@
 ##
 
 PROJECT	=	Zappy AI
-NAME	=	../zappy_ai
+NAME	=	zappy_ai
 
 TESTS	=	$(shell find ./tests -type f -name "*.c")
 
@@ -21,7 +21,7 @@ INPUT_DOC	=	./src
 SHELL	=	/bin/bash
 PRINT	=	printf "$(PROJECT):\t" ; printf
 RM	=	rm -f
-CC	=	chmod 755 zappy_ai
+CC	=	cat zappy_bin > ../zappy_ai && chmod 755 ../zappy_ai
 
 RESET	=	\033[0m
 RED	=	\033[0;31m
@@ -50,6 +50,7 @@ clean:
 fclean: clean
 	@ $(PRINT) "$(YELLOW)%-40b$(RESET)" "Deleting $(NAME)"
 	@ $(RM) -r ./doc
+	@ $(RM) ../zappy_ai
 	@ printf "$(GREEN)Done$(RESET)\n"
 
 re: fclean all
