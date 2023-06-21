@@ -40,8 +40,8 @@ void exec_queue(server_t *server)
     }
     cmd_t *cmd = server->cmd_queue->data;
     while (cmd->timestamp_end <= server->time) {
-        if (cmd->state == NOT_FOLLOWED || !cmd->client ||
-            cmd->client->player->alive) {
+        if (cmd->state == NOT_FOLLOWED || !cmd->client || cmd->client->type == GUI
+        || cmd->client->player->alive) {
             cmd->func(server, cmd);
         }
         cmd->state = FINISHED;

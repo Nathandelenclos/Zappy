@@ -32,6 +32,15 @@ void broadcast(server_t *server, cmd_t *cmd);
 void msz(server_t *server, cmd_t *cmd);
 void eject(server_t *server, cmd_t *cmd);
 
+void mct(server_t *server, cmd_t *cmd);
+void bct(server_t *server, cmd_t *cmd);
+void tna(server_t *server, cmd_t *cmd);
+void ppo(server_t *server, cmd_t *cmd);
+void plv(server_t *server, cmd_t *cmd);
+void pin(server_t *server, cmd_t *cmd);
+void sgt(server_t *server, cmd_t *cmd);
+void sst(server_t *server, cmd_t *cmd);
+
 void eats(server_t *server, cmd_t *cmd);
 void resource(server_t *server, cmd_t *cmd);
 

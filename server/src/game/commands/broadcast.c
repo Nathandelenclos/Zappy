@@ -78,5 +78,9 @@ void broadcast(server_t *server, cmd_t *cmd)
         dprintf(client_tmp->socket_fd, "message %d, %s\n",
             to_direction(client_tmp, cell), strlen(cmd->cmd) <= 10 ? "" : cmd->cmd + 10);
     }
+    if (server->gui) {
+        dprintf(server->gui->socket_fd, "pbc %d %s\n", client->socket_fd,
+            strlen(cmd->cmd) <= 10 ? "" : cmd->cmd + 10);
+    }
     dprintf(client->socket_fd, OK);
 }

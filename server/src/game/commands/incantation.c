@@ -48,6 +48,11 @@ void incantation(server_t *server, cmd_t *cmd)
             dprintf(tmp_client->socket_fd, "Current level: %d\n",
                 tmp_client->player->level);
         }
+        if (server->gui != NULL) {
+            dprintf(server->gui->socket_fd, "pie %d %d 1\n",
+                cmd->client->player->map->pos_x,
+                cmd->client->player->map->pos_y);
+        }
     } else {
         for (node *tmp = clients; tmp; tmp = tmp->next) {
             tmp_client = tmp->data;
@@ -90,6 +95,11 @@ void incantation_start(server_t *server, cmd_t *cmd)
     command_t mate = {"incantation_mate", 300, incantation_mate};
     client_t *client_tmp;
     if (check_incantation(cmd)) {
+        if (server->gui != NULL) {
+            dprintf(server->gui->socket_fd, "pic %d %d %d",
+                cmd->client->player->map->pos_x, cmd->client->player->map->pos_y,
+                cmd->client->player->level);
+        }
         node *players = get_players_on_tile_with_level(cmd,
             cmd->client->player->level);
         node *clients = player_to_client(server, players);
@@ -102,6 +112,10 @@ void incantation_start(server_t *server, cmd_t *cmd)
             put_in_list(&client_mate, client_tmp);
             pause_activity(server, client_mate);
             FREE(client_mate);
+            if (server->gui != NULL) {
+                dprintf(server->gui->socket_fd, " %d",
+                    client_tmp->socket_fd);
+            }
             dprintf(client_tmp->socket_fd, ELEVATION_UNDERWAY);
             new_command(server, client_tmp, mate, "incantation_mate");
         }
