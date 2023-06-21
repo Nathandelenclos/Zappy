@@ -5,9 +5,9 @@ from game_data import *
 def join(answer, client_socket):
     """!
     Join an evolution place
-    :param answer: broadcast message
-    :param client_socket: client socke
-    :return: None
+    @param answer: broadcast message
+    @param client_socket: client socke
+    @return: None
     """
     global myGameData
     if myGameData.has_arrived == True:
@@ -53,11 +53,11 @@ def join(answer, client_socket):
 def broadcast_man(data, answer, client_socket, type):
     """!
     Manage broadcast message
-    :param data: message received
-    :param answer: message received split
-    :param client_socket: client socket
-    :param type: Players type of play
-    :return: None
+    @param data: message received
+    @param answer: message received split
+    @param client_socket: client socket
+    @param type: Players type of play
+    @return: None
     """
     global myGameData
     if answer[2] != myGameData.team_name:
@@ -84,10 +84,10 @@ def broadcast_man(data, answer, client_socket, type):
 def answer_management(data, client_socket, type):
     """!
     Manage answer from server
-    :param data: message received
-    :param client_socket: client socket
-    :param type: Players type of play
-    :return: -1 if dead, 0 if ok, 1 if message
+    @param data: message received
+    @param client_socket: client socket
+    @param type: Players type of play
+    @return: -1 if dead, 0 if ok, 1 if message
     """
     global myGameData
     if data == "dead":
@@ -107,6 +107,12 @@ def answer_management(data, client_socket, type):
 
 
 def receive_answer(client_socket, type=""):
+    """!
+    Receive answer from server
+    @param client_socket: client socket
+    @param type: Players type of play
+    @return: message received
+    """
     global myGameData
     answer = 1
     index = 0
