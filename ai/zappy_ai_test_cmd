@@ -1,0 +1,169 @@
+#!/bin/python3
+
+import sys
+import argparse
+import socket
+import select
+import re
+
+# from main import temp_evo
+
+port = None
+team_name = None
+ip_server = None
+
+auto_command = []
+last_broadcast = None
+last_command = None
+last_answer = None
+
+class Game_data:
+    def __init__(self):
+        self.map_size_x = 0
+        self.map_size_y = 0
+        self.available_connection = 0
+        self.lvl = 1
+        # self.vision = [],
+        self.inventory  = {
+            "food": None,
+            "linemate": None ,
+            "deraumere": None ,
+            "sibur": None ,
+            "mendiane": None ,
+            "phiras": None ,
+            "thystame": None 
+        }
+
+def manHelp():
+    print("USAGE:  ./zappy_ai -p port -n name -h machine")
+    print("\tport\tis the port number")
+    print("\tname\tis the name of the team")
+    print("\tmachine\tis the name of the machine; localhost by default")
+
+def Error_man():
+    global port, team_name, ip_server
+
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "-help":
+            manHelp()
+            raise SystemExit()
+        else:
+            raise Exception("Bad arguments\n")
+    elif len(sys.argv) == 5 or len(sys.argv) == 7:
+        parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument('-p', type=int)
+        parser.add_argument('-n', type=str)
+        parser.add_argument('-h', type=str)
+        args = parser.parse_args()
+        port = args.p
+        team_name = args.n
+        ip_server = args.h
+        if team_name == None or port == None:
+            raise Exception("Bad arguments\n")
+        if ip_server == None:
+            ip_server = "127.0.0.1"
+    else:
+        raise Exception("Bad arguments\n")
+
+def read_server(client_socket):
+    msg = ""
+    while (1):
+        char_read = client_socket.recv(1)
+        if not char_read:
+            break
+        elif (char_read == b'\n'):
+            return (msg)
+        else:
+            msg += char_read.decode()
+    return (msg)
+
+def search_food(client_socket):
+    client_socket.send(("Look"+"\n").encode())
+
+def action_choice(client_socket):
+    if (len(auto_command) > 0):
+        command = auto_command[0] + "\n"
+        auto_command.pop(0)
+        client_socket.send(command.encode())
+    else:
+        search_food(client_socket)
+    
+def main():
+    global auto_command, last_command, last_answer, last_broadcast
+
+    i = 0
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        client_socket.connect((ip_server, port))
+        print("Connexion au serveur établie.")
+        print(read_server(client_socket))
+        client_socket.send((team_name+"\n").encode())
+        socket_list = [sys.stdin, client_socket]
+        myGameData = Game_data()
+        free_places = read_server(client_socket)
+        myGameData.available_connection = free_places
+        print(free_places)
+        map_size = read_server(client_socket).split()
+        myGameData.map_size_x = map_size[0]
+        myGameData.map_size_y = map_size[1]
+        print(map_size[0] + " " + map_size[1])
+        while (1):
+            # data = read_server(client_socket)
+            # print(data)
+            # if data == "dead":
+            #     print("YOU DIED x)")
+            #     break
+            # else:
+            #     answer = data.split()
+            #     if data[0] == "message":
+            #         last_broadcast = answer
+            #         print(answer, end="")
+            #         continue
+            #     print(answer, end="")
+            #     action_choice(client_socket)
+
+                
+            read_socket, _, _ = select.select(socket_list,[],[])
+            for notified_socket in read_socket:
+                if notified_socket == client_socket:
+                    data = client_socket.recv(1024)
+                    if data:
+                        data = data.decode()
+                        print(data, end="")
+                        answer = data.split()
+                        if (len(auto_command) > 0):
+                            command = auto_command[0] + "\n"
+                            auto_command.pop(0)
+                            client_socket.send(command.encode())
+                        elif (answer[0] != "message"):
+                            last_answer = answer
+                if notified_socket == sys.stdin:
+                    command = sys.stdin.readline().strip()
+                    if command:
+                        if command == "STOP":
+                            client_socket.close()
+                            print("Connexion fermée.")
+                            return (0)
+                        elif command == "AUTO":
+                            auto_command.append("Right")
+                            auto_command.append("Forward")
+                            auto_command.append("Forward")
+                            client_socket.send((command+"\n").encode())
+                        else:
+                            command = command + "\n"
+                            client_socket.send(command.encode())
+        client_socket.close()
+        print("Connexion fermée.")
+
+    except ConnectionRefusedError:
+        print("La connexion au serveur a été refusée.")
+
+if __name__ == "__main__":
+    try:
+        Error_man()
+        main()
+    except SystemExit:
+        exit(0)
+    except Exception as error:
+        sys.stdout.write(str(error))
+        exit(84)
