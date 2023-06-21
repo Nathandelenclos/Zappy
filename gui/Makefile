@@ -35,6 +35,8 @@ LIST_SIZE = $(words $(SRC))
 all : $(BINARY) libsfml
 
 $(BINARY) : $(OBJ_DIR) $(OBJ_LIST)
+	@ cp -r assets/ ..
+	@ cp -r libraries/ ..
 	@$(CXX) $(OBJ_LIST) -o $(BINARY) \
 	    -I $(INCLUDE_DIR) \
 	    -L $(SRC_DIR)$(SFML_DIR) -lsfml-graphics -lsfml-window -lsfml-system\
