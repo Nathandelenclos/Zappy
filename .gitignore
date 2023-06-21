@@ -6,3 +6,6 @@ zappy_gui
 unit_tests
 vgcore.*
 ai/src/__pycache__/*
+assets
+libraries
+gui/objs
