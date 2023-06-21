@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['x_565',['x',['../classzappy__gui_1_1PpoData.html#a6150e0515f7202e2fb518f7206ed97dc',1,'zappy_gui::PpoData::x()'],['../classzappy__gui_1_1PinData.html#a6150e0515f7202e2fb518f7206ed97dc',1,'zappy_gui::PinData::x()'],['../classzappy__gui_1_1PicData.html#a6150e0515f7202e2fb518f7206ed97dc',1,'zappy_gui::PicData::x()'],['../classzappy__gui_1_1PieData.html#a6150e0515f7202e2fb518f7206ed97dc',1,'zappy_gui::PieData::x()'],['../classzappy__gui_1_1EnwData.html#a6150e0515f7202e2fb518f7206ed97dc',1,'zappy_gui::EnwData::x()'],['../classzappy__gui_1_1Cell.html#a6150e0515f7202e2fb518f7206ed97dc',1,'zappy_gui::Cell::x()']]]
+  ['width_1292',['width',['../classzappy__gui_1_1Data.html#a2474a5474cbff19523a51eb1de01cda4',1,'zappy_gui::Data::width()'],['../structargs__t.html#a2474a5474cbff19523a51eb1de01cda4',1,'args_t::width()']]],
+  ['winnerteam_1293',['winnerTeam',['../classzappy__gui_1_1SegData.html#afec23e221ea2c70a21b63075386cfa9f',1,'zappy_gui::SegData']]]
 ];

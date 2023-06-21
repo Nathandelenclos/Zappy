@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['width_563',['width',['../classzappy__gui_1_1Data.html#a2474a5474cbff19523a51eb1de01cda4',1,'zappy_gui::Data']]],
-  ['winnerteam_564',['winnerTeam',['../classzappy__gui_1_1SegData.html#afec23e221ea2c70a21b63075386cfa9f',1,'zappy_gui::SegData']]]
+  ['velocity_1290',['velocity',['../structzappy__gui_1_1ParticleData.html#afde16740bd0977458bf5740b47454a7d',1,'zappy_gui::ParticleData']]],
+  ['vision_1291',['vision',['../classgame__data_1_1Game__data.html#a6a85fd4ff94351b9a9c9a2d24cbf3fa3',1,'game_data::Game_data']]]
 ];

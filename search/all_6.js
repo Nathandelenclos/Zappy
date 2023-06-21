@@ -1,8 +1,27 @@
 var searchData=
 [
-  ['failure_85',['FAILURE',['../Includes_8hpp.html#a6d58f9ac447476b4e084d7ca383f5183',1,'Includes.hpp']]],
-  ['find_5fpath_86',['find_path',['../namespacesearch__item.html#ae0b02743ace0c81af5cc865bda48ebb5',1,'search_item']]],
-  ['find_5frow_5fin_5fvis_87',['find_row_in_vis',['../namespacesearch__item.html#a9985dc3e18e289e2f061ceaaf61ac1c4',1,'search_item']]],
-  ['findlibraries_88',['findLibraries',['../classzappy__gui_1_1Core.html#a853be9179c868c63a9ae4142cffaf3ae',1,'zappy_gui::Core']]],
-  ['fork_5fdone_89',['fork_done',['../classgame__data_1_1Game__data.html#ac1ac26ff80d229b46b72334936055a7a',1,'game_data::Game_data']]]
+  ['failure_154',['FAILURE',['../Includes_8hpp.html#a6d58f9ac447476b4e084d7ca383f5183',1,'Includes.hpp']]],
+  ['false_155',['false',['../my_8h.html#a65e9886d74aaee76545e83dd09011727',1,'my.h']]],
+  ['false_156',['FALSE',['../my_8h.html#aa93f0eb578d23995850d61f7d61c55c1',1,'my.h']]],
+  ['find_5fcommand_157',['find_command',['../new__command_8c.html#abe2de8b78e6ebcc08e25a6865fa05a3e',1,'find_command(server_t *server, client_t *client, string command):&#160;new_command.c'],['../server_8h.html#abe2de8b78e6ebcc08e25a6865fa05a3e',1,'find_command(server_t *server, client_t *client, string command):&#160;new_command.c']]],
+  ['find_5flist_158',['find_list',['../list_8h.html#abd543cd1e9bb2670a4006042a714a5e3',1,'find_list(node *list, int(*function)(each_t each)):&#160;find_list.c'],['../find__list_8c.html#abd543cd1e9bb2670a4006042a714a5e3',1,'find_list(node *list, int(*function)(each_t each)):&#160;find_list.c']]],
+  ['find_5flist_2ec_159',['find_list.c',['../find__list_8c.html',1,'']]],
+  ['find_5fpath_160',['find_path',['../namespacesearch__item.html#ae0b02743ace0c81af5cc865bda48ebb5',1,'search_item']]],
+  ['find_5frow_5fin_5fvis_161',['find_row_in_vis',['../namespacesearch__item.html#a9985dc3e18e289e2f061ceaaf61ac1c4',1,'search_item']]],
+  ['findlibraries_162',['findLibraries',['../classzappy__gui_1_1Core.html#a853be9179c868c63a9ae4142cffaf3ae',1,'zappy_gui::Core']]],
+  ['finished_163',['FINISHED',['../cmd_8h.html#a38c891a9d63eaeee7109af8b73e50e63adbd1812bee789fbf3548cf79d3f2b400',1,'cmd.h']]],
+  ['food_164',['FOOD',['../item_8h.html#ae9a1610dc1e2b33b2507e240214e1746abaad2be1abe0cffbc3a0bbf032a604c4',1,'item.h']]],
+  ['food_5fquantity_165',['FOOD_QUANTITY',['../message_8h.html#a2f3225a4f716e8bcdfa86f167b919705',1,'message.h']]],
+  ['fork_2ec_166',['fork.c',['../fork_8c.html',1,'']]],
+  ['fork_5fcmd_167',['fork_cmd',['../commands_8h.html#aa556bb97166c26bb4736a63db0394724',1,'fork_cmd(server_t *server, cmd_t *cmd):&#160;fork.c'],['../fork_8c.html#aa556bb97166c26bb4736a63db0394724',1,'fork_cmd(server_t *server, cmd_t *cmd):&#160;fork.c']]],
+  ['fork_5fdone_168',['fork_done',['../classgame__data_1_1Game__data.html#ac1ac26ff80d229b46b72334936055a7a',1,'game_data::Game_data']]],
+  ['forward_169',['forward',['../forward_8c.html#a4c025962ddd86744a0c1487c76301c86',1,'forward(server_t *server, cmd_t *cmd):&#160;forward.c'],['../commands_8h.html#a4c025962ddd86744a0c1487c76301c86',1,'forward(server_t *server, cmd_t *cmd):&#160;forward.c']]],
+  ['forward_2ec_170',['forward.c',['../forward_8c.html',1,'']]],
+  ['free_171',['FREE',['../list_8h.html#a3fff9ce329964b961ee891f64ff33653',1,'list.h']]],
+  ['free_5fall_172',['FREE_ALL',['../list_8h.html#a525780eca41b5042a3f0cdf386ab98dd',1,'list.h']]],
+  ['free_5farray_173',['free_array',['../str__to__word__array_8c.html#a81a8163a838ff55d33697de5148af1d4',1,'free_array(char **array):&#160;str_to_word_array.c'],['../my_8h.html#a81a8163a838ff55d33697de5148af1d4',1,'free_array(char **array):&#160;str_to_word_array.c']]],
+  ['free_5flist_174',['free_list',['../list_8h.html#a5a2dc17f28736e459b6978567db7d87c',1,'free_list(node *head, void(*screen)(void *data)):&#160;free_list.c'],['../free__list_8c.html#a64201950e6080b769aa4b8d8938b2a94',1,'free_list(node *head, void(*p_free)(void *data)):&#160;free_list.c']]],
+  ['free_5flist_2ec_175',['free_list.c',['../free__list_8c.html',1,'']]],
+  ['freq_176',['freq',['../structargs__t.html#ae0d22272b68e75d19ac0b80c01f806b6',1,'args_t']]],
+  ['func_177',['func',['../structcommand__t.html#a13f4f5d3542e38df1a0933f87bd7de0c',1,'command_t::func()'],['../structcmd__s.html#a31521c1a8b184eccfea51843227d142f',1,'cmd_s::func()']]]
 ];

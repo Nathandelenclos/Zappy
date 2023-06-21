@@ -1,5 +1,29 @@
 var searchData=
 [
-  ['openwindow_161',['openWindow',['../classIGraphical.html#af8795c1a1ddd94bcd13cc9e1a27920ac',1,'IGraphical::openWindow()'],['../classzappy__gui_1_1LibSFML.html#a5430549f5ea3c40f892099826fa0e049',1,'zappy_gui::LibSFML::openWindow()']]],
-  ['orientation_162',['orientation',['../classzappy__gui_1_1PpoData.html#a528d22a2a1651a4831eb643884a3c718',1,'zappy_gui::PpoData']]]
+  ['n_413',['n',['../classzappy__gui_1_1PpoData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PpoData::n()'],['../classzappy__gui_1_1PlvData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PlvData::n()'],['../classzappy__gui_1_1PinData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PinData::n()'],['../classzappy__gui_1_1PexData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PexData::n()'],['../classzappy__gui_1_1PbcData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PbcData::n()'],['../classzappy__gui_1_1PfkData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PfkData::n()'],['../classzappy__gui_1_1PdrData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PdrData::n()'],['../classzappy__gui_1_1PgtData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PgtData::n()'],['../classzappy__gui_1_1PdiData.html#a76f11d9a0a47b94f72c2d0e77fb32240',1,'zappy_gui::PdiData::n()']]],
+  ['name_414',['name',['../structteam__t.html#a8ccf841cb59e451791bcb2e1ac4f1edc',1,'team_t']]],
+  ['nb_5farrived_415',['nb_arrived',['../classgame__data_1_1Game__data.html#ac2fd30c1a04ee8a2388948c635213f75',1,'game_data::Game_data']]],
+  ['nb_5fderaumere_416',['nb_deraumere',['../structevolution__t.html#a2d46e476afc97315115f123d39b61bae',1,'evolution_t']]],
+  ['nb_5flinemate_417',['nb_linemate',['../structevolution__t.html#ab07a8d705535f96b57016e4e1f6862dd',1,'evolution_t']]],
+  ['nb_5fmendiane_418',['nb_mendiane',['../structevolution__t.html#a74f165a494a10ec436fbf67a1db7e7c7',1,'evolution_t']]],
+  ['nb_5fphiras_419',['nb_phiras',['../structevolution__t.html#a8b950c1f210a15d34b6c73e160844fb1',1,'evolution_t']]],
+  ['nb_5fplayer_420',['nb_player',['../structevolution__t.html#ad66e1453f7d7d1e428b3803dffe62eb4',1,'evolution_t']]],
+  ['nb_5fsibur_421',['nb_sibur',['../structevolution__t.html#a2726593e93f8d127e73e4166ce172392',1,'evolution_t']]],
+  ['nb_5fthystame_422',['nb_thystame',['../structevolution__t.html#aa22fb6da920e57695f938ca9bc020cca',1,'evolution_t']]],
+  ['needupdate_423',['needUpdate',['../classzappy__gui_1_1Core.html#a37a5d28adb46c72f2dab9a2a3b236f2c',1,'zappy_gui::Core']]],
+  ['new_5fai_5fclient_424',['new_ai_client',['../handle__action_8c.html#ad95ee5649c744c12c6ad184f7b6ec62e',1,'handle_action.c']]],
+  ['new_5fcommand_425',['new_command',['../server_8h.html#acda4d26cac8ff9765567d7741d76c4a6',1,'new_command(server_t *server, client_t *client, command_t command, string command_str):&#160;new_command.c'],['../new__command_8c.html#acda4d26cac8ff9765567d7741d76c4a6',1,'new_command(server_t *server, client_t *client, command_t command, string command_str):&#160;new_command.c']]],
+  ['new_5fcommand_2ec_426',['new_command.c',['../new__command_8c.html',1,'']]],
+  ['new_5fconnection_427',['new_connection',['../server_8h.html#a87cf0563b758871303c802cb937da383',1,'new_connection(server_t *server):&#160;new_connection.c'],['../new__connection_8c.html#a87cf0563b758871303c802cb937da383',1,'new_connection(server_t *server):&#160;new_connection.c']]],
+  ['new_5fconnection_2ec_428',['new_connection.c',['../new__connection_8c.html',1,'']]],
+  ['new_5fevent_429',['new_event',['../server_8h.html#a12d9be05a51f1986e11509362d52a204',1,'new_event(server_t *server, client_t *client, command_t command):&#160;new_command.c'],['../new__command_8c.html#a12d9be05a51f1986e11509362d52a204',1,'new_event(server_t *server, client_t *client, command_t command):&#160;new_command.c']]],
+  ['new_5fgraphic_5fclient_430',['new_graphic_client',['../handle__action_8c.html#ad1edcac75cfe21d3a48fc586674c25a3',1,'handle_action.c']]],
+  ['new_5fplayer_431',['new_player',['../new__player_8c.html#a33032403b1d3920b7635aa530d6cc922',1,'new_player(server_t *server, client_t *client):&#160;new_player.c'],['../server_8h.html#a33032403b1d3920b7635aa530d6cc922',1,'new_player(server_t *server, client_t *client):&#160;new_player.c']]],
+  ['new_5fplayer_2ec_432',['new_player.c',['../new__player_8c.html',1,'']]],
+  ['next_433',['next',['../structlist__s.html#ac91dea6558dbc7a1bc7ce11530518761',1,'list_s']]],
+  ['node_434',['node',['../list_8h.html#a6c747eed718f3733be3ec42aa2d3dd83',1,'list.h']]],
+  ['none_435',['NONE',['../server_8h.html#a24e306979a4cfd43a66895238f85b225ac157bdf0b85a40d2619cbc8bc1ae5fe2',1,'server.h']]],
+  ['north_436',['NORTH',['../player_8h.html#ae9ae980041e438eed7a3af43ce4e9f6bad0611de6f28d4a9c9eac959f5344698e',1,'player.h']]],
+  ['not_5ffollowed_437',['NOT_FOLLOWED',['../cmd_8h.html#a38c891a9d63eaeee7109af8b73e50e63ae635fd79e8fbfd0cd86822e637520f13',1,'cmd.h']]],
+  ['not_5fstarted_438',['NOT_STARTED',['../cmd_8h.html#a38c891a9d63eaeee7109af8b73e50e63ae7d82dfe80ea0bd4feea8ee49ea2eab5',1,'cmd.h']]]
 ];
