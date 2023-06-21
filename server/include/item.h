@@ -19,22 +19,8 @@ typedef enum {
     SIBUR,
     MENDIANE,
     PHIRAS,
-    THYSTAME,
-    EGG
+    THYSTAME
 } item_type_t;
-
-static const string item_type_str[] = {
-    "player",
-    "food",
-    "linemate",
-    "deraumere",
-    "sibur",
-    "mendiane",
-    "phiras",
-    "thystame",
-    "egg",
-    NULL
-};
 
 typedef struct {
     item_type_t type;
@@ -45,7 +31,7 @@ typedef struct {
     item_type_t type;
 } item_t;
 
-static const type_density_t type_density[] = {
+static type_density_t type_density[] = {
     {FOOD, 0.5},
     {LINEMATE, 0.3},
     {DERAUMERE, 0.15},

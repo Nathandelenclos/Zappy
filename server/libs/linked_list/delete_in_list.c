@@ -8,20 +8,19 @@
 #include "list.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 
 /**
  * Delete a node in the list.
  * @param head_ref - Head of the list.
  * @param key - Data to delete.
  */
-bool delete_in_list(node **head_ref, void *key)
+void delete_in_list(node **head_ref, void *key)
 {
     node *temp = *head_ref, *prev;
     if (temp != NULL && temp->data == key) {
         *head_ref = temp->next;
         FREE(temp);
-        return true;
+        return;
     }
 
     while (temp != NULL && temp->data != key) {
@@ -30,9 +29,8 @@ bool delete_in_list(node **head_ref, void *key)
     }
 
     if (temp == NULL) {
-        return false;
+        return;
     }
     prev->next = temp->next;
     FREE(temp);
-    return true;
 }

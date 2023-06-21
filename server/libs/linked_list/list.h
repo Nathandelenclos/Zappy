@@ -6,7 +6,6 @@
 */
 
 #include <stdlib.h>
-#include <stdbool.h>
 
 #ifndef LINKED_LIST_H
     #define LINKED_LIST_H
@@ -31,7 +30,7 @@ typedef struct {
 int put_in_list(node **list, void *data);
 int free_list(node *head, void (*screen)(void *data));
 void show_list(node *list);
-bool delete_in_list(node **list, void *data);
+void delete_in_list(node **list, void *data);
 int len_list(node *list);
 void insert_in_list(node *previous, void *data);
 void delete_first(node **head);

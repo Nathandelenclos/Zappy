@@ -18,8 +18,7 @@ typedef struct server_s server_t;
 typedef enum {
     NOT_STARTED,
     STARTED,
-    FINISHED,
-    NOT_FOLLOWED
+    FINISHED
 } STATE_CMD;
 
 typedef struct cmd_s {

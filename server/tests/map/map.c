@@ -25,7 +25,7 @@ Test(map, test_generate_x_tiles)
     map_t *tile = create_tile();
     map_t *tmp = tile;
 
-    generate_x_tiles(tile, 5, 0);
+    generate_x_tiles(tile, 5);
     for (int i = 0; i < 5; ++i) {
         cr_assert(tmp->right != NULL);
         tmp = tmp->right;
@@ -39,7 +39,7 @@ Test(map, test_generate_x_tiles_left)
     map_t *tile = create_tile();
     map_t *tmp = tile;
 
-    generate_x_tiles(tile, 5, 0);
+    generate_x_tiles(tile, 5);
     for (int i = 0; i < 5; ++i) {
         cr_assert(tmp->left != NULL);
         tmp = tmp->left;
@@ -54,7 +54,7 @@ Test(map, test_generate_x_tiles_check_size)
     map_t *tmp = tile;
     int size = 1;
 
-    generate_x_tiles(tile, 5, 0);
+    generate_x_tiles(tile, 5);
     while (tmp->right != tile) {
         size++;
         tmp = tmp->right;
@@ -94,8 +94,8 @@ Test(map, test_link_up_down_multiple_tiles)
 {
     map_t *first = create_tile();
     map_t *second = create_tile();
-    generate_x_tiles(first, 5, 0);
-    generate_x_tiles(second, 5, 1);
+    generate_x_tiles(first, 5);
+    generate_x_tiles(second, 5);
 
     link_up_down(first, second);
     cr_assert(first->down == second);
@@ -110,7 +110,7 @@ Test(map, test_creation_of_a_map_10_x_10)
 
     for (int i = 0; i < 10; ++i) {
         tmp_map[i] = create_tile();
-        generate_x_tiles(tmp_map[i], 10, i);
+        generate_x_tiles(tmp_map[i], 10);
     }
     for (int i = 0; i < 9; ++i) {
         link_up_down(tmp_map[i], tmp_map[i + 1]);
@@ -157,7 +157,7 @@ Test(map, test_creation_of_a_map_10_x_10_check_size)
 
     for (int i = 0; i < 10; ++i) {
         tmp_map[i] = create_tile();
-        generate_x_tiles(tmp_map[i], 10, i);
+        generate_x_tiles(tmp_map[i], 10);
     }
     for (int i = 0; i < 9; ++i) {
         link_up_down(tmp_map[i], tmp_map[i + 1]);
@@ -278,16 +278,3 @@ Test(map, test_creation_of_a_map_using_generation_function_size_0)
     cr_assert(map == NULL);
 }
 
-Test(map, map_pos)
-{
-    map_t *map = generate_map(5, 5);
-
-    for (int a = 0; a < 5; a++){
-        for (int i = 0; i < 5; ++i) {
-            cr_assert(map->pos_x == i);
-            cr_assert(map->pos_y == a);
-            map = map->right;
-        }
-        map = map->down;
-    }
-}

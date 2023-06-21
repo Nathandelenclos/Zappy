@@ -32,9 +32,8 @@ map_t *create_tile(void)
  * Generate x tiles (x is the total size so if x == 1 no tile will be created).
  * @param tile - The tile.
  * @param x - The x size.
- * @param y - The y pos to handle pos inside the map.
  */
-void generate_x_tiles(map_t *tile, int x, int y)
+void generate_x_tiles(map_t *tile, int x)
 {
     map_t *tmp = tile;
 
@@ -43,14 +42,10 @@ void generate_x_tiles(map_t *tile, int x, int y)
         tile->left = tile;
         return;
     }
-    tmp->pos_y = y;
-    tmp->pos_x = 0;
     for (int i = 1; i < x; i++) {
         tmp->right = create_tile();
         tmp->right->left = tmp;
         tmp = tmp->right;
-        tmp->pos_y = y;
-        tmp->pos_x = i;
     }
     tmp->right = tile;
     tile->left = tmp;
@@ -90,7 +85,7 @@ map_t *generate_map(int x, int y)
         return NULL;
     for (int i = 0; i < y; ++i) {
         tmp_map[i] = create_tile();
-        generate_x_tiles(tmp_map[i], x, i);
+        generate_x_tiles(tmp_map[i], x);
     }
     for (int i = 0; i < y - 1; ++i) {
         link_up_down(tmp_map[i], tmp_map[i + 1]);

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2023
 ** YEP-400-LIL-4-1-zappy
 ** File description:
-** game/commands/test.c
+** game/commands/test.h
 */
 
 #include "server.h"

@@ -15,7 +15,7 @@
  */
 args_t *args_init()
 {
-    args_t *args = MALLOC(sizeof(args_t));
+    args_t *args = malloc(sizeof(args_t));
     args->port = 0;
     args->width = 0;
     args->height = 0;
