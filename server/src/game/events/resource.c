@@ -43,7 +43,6 @@ void resource(server_t *server, cmd_t *cmd)
             random_places(server, type_density[i].type, (int)quantity);
         }
     }
-    dprintf(1, "Map generated\n");
     command_t command = {"resource", 20, resource};
     new_event(server, NULL, command);
 }
