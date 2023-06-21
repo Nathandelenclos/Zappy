@@ -1,4 +1,5 @@
 from utils import *
+from search_item import *
 from game_data import *
 
 
@@ -124,6 +125,11 @@ def receive_answer(client_socket, type=""):
             myGameData.broadcast = True
             myGameData.mode = None
             myGameData.has_arrived = False
+            if myGameData.lvl == 8:
+                print("YOU WON :)")
+                client_socket.close()
+                print("Connexion fermée.")
+                exit()
             return(data)
         elif data == "ko" and index == 1:
             myGameData.broadcast = True
