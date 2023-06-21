@@ -1,3 +1,5 @@
 .idea
 zappy_server
-
+*.o
+unit_tests
+vgcore.*

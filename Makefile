@@ -5,8 +5,8 @@
 ## Makefile
 ##
 
-PROJECT	=	MyTeams
-NAME	=	myTeams
+PROJECT	=	Zappy
+NAME	=	zappy
 
 MAKES	=	./ai	\
             ./gui	\
@@ -55,7 +55,7 @@ fclean: clean
 	@ printf "$(GREEN)Done$(RESET)\n"
 
 tests_run:	$(TESTOBJ)
-	@ echo "tests_run"
+	@ $(foreach file, ${MAKES}, ${MAKE} $(file) tests_run;)
 
 re: fclean all
 de: fclean debug
