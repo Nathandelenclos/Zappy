@@ -8,50 +8,6 @@
 #include "server.h"
 
 /**
- * Get the players on the tile.
- * @param server - The server.
- * @param cmd - The cmd.
- * @return The players.
- */
-node *get_players_on_tile(cmd_t *cmd)
-{
-    node *players = NULL;
-    node *tmp = cmd->client->player->map->tile->items;
-    item_t *item = NULL;
-    while (tmp) {
-        item = tmp->data;
-        if (item->type == PLAYER) {
-            put_in_end(&players, item);
-        }
-        tmp = tmp->next;
-    }
-    return players;
-}
-
-/**
- * Get the players on the tile with the level.
- * @param server - The server.
- * @param cmd - The cmd.
- * @param level - The level.
- * @return The players.
- */
-node *get_players_on_tile_with_level(cmd_t *cmd, int level)
-{
-    node *players = get_players_on_tile(cmd);
-    node *players_level = NULL;
-    node *tmp = players;
-    player_t *player = NULL;
-    while (tmp) {
-        player = tmp->data;
-        if (player->level == level) {
-            put_in_end(&players_level, player);
-        }
-        tmp = tmp->next;
-    }
-    return players_level;
-}
-
-/**
  * Check if the incantation is possible.
  * @param cmd - The cmd.
  * @return - True if possible, false otherwise.
@@ -72,73 +28,6 @@ bool check_incantation(cmd_t *cmd)
         }
     }
     return true;
-}
-
-/**
- * Pause current activity.
- * @param server - The server.
- * @param clients - The clients.
- */
-void pause_activity(server_t *server, node *clients)
-{
-    client_t *client;
-    for (node *tmp = clients; tmp; tmp = tmp->next) {
-        client = tmp->data;
-        cmd_t *last_command = client->commands->data;
-        if (last_command->state == STARTED) {
-            last_command->state = PAUSE;
-            last_command->timestamp_end = server->time;
-            delete_in_list(&server->cmd_queue, last_command);
-        }
-    }
-}
-
-/**
- * Resume current activity.
- * @param server - The server.
- * @param clients - The clients.
- */
-void resume_activity(server_t *server, node *clients)
-{
-    client_t *client;
-    for (node *tmp = clients; tmp; tmp = tmp->next) {
-        client = tmp->data;
-        cmd_t *cmd_tmp;
-        for (node *node_cmd = client->commands; node_cmd; node_cmd = node_cmd->next) {
-            cmd_tmp = node_cmd->data;
-            if (cmd_tmp->state == PAUSE) {
-                cmd_tmp->state = STARTED;
-                timestamp_t diff =
-                    cmd_tmp->timestamp_end - cmd_tmp->timestamp_start;
-                timestamp_t need_time = (cmd_tmp->ticks != 0 ?
-                    (((cmd_tmp->ticks * 1000) / server->args->freq)) : 0);
-                cmd_tmp->timestamp_end = server->time + (need_time - diff);
-                add_cmd(cmd_tmp, &server->cmd_queue);
-                break;
-            }
-        }
-    }
-}
-
-/**
- * Get the clients from the players.
- * @param server - The server.
- * @param players - The players.
- * @return The clients.
- */
-node *player_to_client(server_t *server, node *players)
-{
-    node *clients = NULL;
-    player_t *tmp_player;
-    for (node *tmp = players; tmp; tmp = tmp->next) {
-        tmp_player = tmp->data;
-        for (node *tmp_c = server->clients; tmp_c; tmp_c = tmp_c->next) {
-            if (!search_by_player(tmp_c->data, tmp_player)) {
-                put_in_list(&clients, tmp_c->data);
-            }
-        }
-    }
-    return clients;
 }
 
 /**

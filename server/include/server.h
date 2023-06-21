@@ -94,6 +94,13 @@ void new_command(server_t *server, client_t *client, command_t command, string c
 map_t *random_place(server_t *server, item_type_t type);
 node *random_places(server_t *server, item_type_t type, int quantity);
 void new_event(server_t *server, client_t *client, command_t command);
+string read_message(client_t *client);
+void find_command(server_t *server, client_t *client, string command);
+node *player_to_client(server_t *server, node *players);
+void pause_activity(server_t *server, node *clients);
+void resume_activity(server_t *server, node *clients);
+node *get_players_on_tile_with_level(cmd_t *cmd, int level);
+node *get_players_on_tile(cmd_t *cmd);
 
 static const command_t commands_ai[] = {
     {"Forward", 7, forward},
