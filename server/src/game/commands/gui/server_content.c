@@ -15,15 +15,19 @@ void tna(server_t *server, cmd_t *cmd)
 {
     node *team = server->teams;
     team_t *tmp = NULL;
+    char buffer[10000] = {0};
+    int offset = 0;
 
     (void)cmd;
     while (team != NULL) {
         tmp = (team_t *)team->data;
         if (strcmp(tmp->name, "GRAPHIC") == 0)
             continue;
-        dprintf(cmd->client->socket_fd, "tna %s\n", tmp->name);
+        offset += snprintf(buffer + offset,
+           sizeof(buffer) - offset,"tna %s\n", tmp->name);
         team = team->next;
     }
+    write(cmd->client->socket_fd, buffer, offset);
 }
 
 /**

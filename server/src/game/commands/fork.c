@@ -16,7 +16,7 @@ void fork_cmd(server_t *server, cmd_t *cmd)
     add_item_to_inventory(&player->map->tile->items, EGG);
     dprintf(client->socket_fd, OK);
     if (server->gui != NULL)
-dprintf(server->gui->socket_fd, "enw %d %d %d %d\n",
+        dprintf(server->gui->socket_fd, "enw %d %d %d %d\n",
         0, client->socket_fd,
         player->map->pos_x, player->map->pos_y);
 }
