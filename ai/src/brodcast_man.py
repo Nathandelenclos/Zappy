@@ -10,7 +10,6 @@ def join(answer, client_socket):
     :return: None
     """
     global myGameData
-    # printRed(myGameData.mode)
     if myGameData.has_arrived == True:
         return
     if answer == "0,":
@@ -18,7 +17,6 @@ def join(answer, client_socket):
         client_socket.send(("Broadcast " + myGameData.team_name + " arrived\n").encode())
         printGreen("Broadcast " + myGameData.team_name + " arrived")
         receive_answer(client_socket)
-        # printGreen(myGameData.mode)
         myGameData.has_arrived = True
     elif answer == "2," or answer == "1," or answer == "8,":
         printGreen("Forward")
@@ -66,30 +64,21 @@ def broadcast_man(data, answer, client_socket, type):
         return ()
     print(data)
     message = data.split(", ")
-    # if message[1] == myGameData.team_name+" nb_player" and myGameData.presence == False:
     if message[1] == myGameData.team_name+" nb_player":
         print("Broadcast "+ myGameData.team_name +" present "+ myGameData.uuid_str +" "+str(myGameData.lvl))
         client_socket.send(("Broadcast "+ myGameData.team_name +" present "+ myGameData.uuid_str +" "+str(myGameData.lvl)+"\n").encode())
         data = receive_answer(client_socket)
-        # myGameData.presence = True
         myGameData.broadcast = False
     elif message[1] == myGameData.team_name + " stop" and myGameData.has_arrived == False:
         myGameData.broadcast = True
         myGameData.mode = None
     elif type == "asker" and len(answer) > 4 and answer[3] == "present":
-        # if answer[4] in myGameData.uuid_present:
-        #     return ()
-        # myGameData.uuid_present.append(answer[4])
         myGameData.available["lvl"+answer[5]] += 1
-    # elif message[1] == myGameData.team_name+" end nb_player":
-    #     myGameData.presence = False
     elif message[1] == myGameData.team_name + " gather":
         myGameData.mode = "gather"
         join(answer[1], client_socket)
     elif message[1] == myGameData.team_name + " arrived" and myGameData.mode != "gather":
         myGameData.nb_arrived += 1
-    # else:
-    #     myGameData.last_broadcast.append(answer)
 
 
 def answer_management(data, client_socket, type):
@@ -113,23 +102,6 @@ def answer_management(data, client_socket, type):
         if answer[0] == "message":
             broadcast_man(data, answer, client_socket, type)
             return(1)
-        # elif data == "Elevation underway":
-        #     # if type != "again":
-        #     print(data)
-        #     myGameData.broadcast = False
-        #     return(1)
-        #     # data = receive_answer(client_socket)
-        #     # if data == "ko":
-        #     #     printGreen("Evolution failed")
-        # elif data == "Current level: "+str(myGameData.lvl+1):
-        #     print(data)
-        #     printGreen("Evolution is a success")
-        #     myGameData.lvl += 1
-        #     myGameData.broadcast = True
-        #     myGameData.mode = None
-        #     # else:
-        #     #     answer_management("Elevation underway", client_socket, "again")
-        #     return (0)
         print(data)
         return (0)
 

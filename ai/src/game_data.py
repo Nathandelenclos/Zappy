@@ -8,7 +8,6 @@ class Game_data:
     def __init__(self):
         self.broadcast = True
         self.fork_done = 0
-        # self.presence = False
         self.mode = None
         self.last_answer = None
         self.last_command = None
@@ -46,7 +45,6 @@ class Game_data:
             "lvl8": [6, 2, 2, 2, 2, 2, 1]
         }
         self.inventory = {
-            # inventaire commun a faire apres pour opti, ia qui rammasse le dernier item necessaire lance l'appel (broadcast)
             "food": None,
             "linemate": None,
             "deraumere": None,

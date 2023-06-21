@@ -7,6 +7,11 @@ def printGreen(data):
     print("\033[92m" + data + "\033[0m")
 
 def printRed(data):
+    """!
+    Print in green
+    @param data: data to print
+    @return: None
+    """
     print("\033[91m" + data + "\033[0m")
 
 def man_help():
