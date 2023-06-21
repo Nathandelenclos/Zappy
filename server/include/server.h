@@ -104,7 +104,6 @@ static const command_t commands_ai[] = {
     {"Broadcast", 7, broadcast},
     {"Connect_nbr", 0, connect_nbr},
     {"Fork", 42, fork_cmd},
-    {"Eject", 7, debug_cmd},
     {"Take", 7, take},
     {"Set", 7, set},
     {"Incantation", 0, incantation_start},

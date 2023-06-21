@@ -7,11 +7,11 @@
 
 #include "server.h"
 
+
 void eject(server_t *server, cmd_t *cmd)
 {
-    // eject pdt incantation eject les player dans la direction du joueur de la command
-    // casse les eggs
     if (get_item_count(cmd->client->player->map->tile->items, EGG) >= 1) {
         remove_item_from_inventory(&cmd->client->player->map->tile->items, EGG);
     }
+    dprintf(cmd->client->socket_fd, OK);
 }

@@ -113,11 +113,13 @@ void print_look(server_t *server, cmd_t *cmd, node *tiles)
         node *items = tile->items;
         while (items) {
             item_t *item = items->data;
-            dprintf(cmd->client->socket_fd, items->next == NULL ? "%s" : "%s ", item_type_str[item->type]);
+            dprintf(cmd->client->socket_fd, items->next == NULL ? "%s" : "%s ",
+                item_type_str[item->type]);
             items = items->next;
         }
-        if (tiles->next)
+        if (tiles->next) {
             dprintf(cmd->client->socket_fd, ", ");
+        }
         tiles = tiles->next;
     }
     dprintf(cmd->client->socket_fd, "]\n");
@@ -133,13 +135,17 @@ void look(server_t *server, cmd_t *cmd)
     client_t *client = cmd->client;
     int dir = client->player->direction;
     node *tiles = NULL;
-    if (dir == NORTH)
+    if (dir == NORTH) {
         tiles = look_north(server, cmd);
-    if (dir == SOUTH)
+    }
+    if (dir == SOUTH) {
         tiles = look_south(server, cmd);
-    if (dir == EAST)
+    }
+    if (dir == EAST) {
         tiles = look_east(server, cmd);
-    if (dir == WEST)
+    }
+    if (dir == WEST) {
         tiles = look_west(server, cmd);
+    }
     print_look(server, cmd, tiles);
 }
