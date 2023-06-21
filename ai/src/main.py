@@ -74,9 +74,6 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.stderr.write("AI\n")
-    # error_man()
-    # main()
     try:
         error_man()
         main()
