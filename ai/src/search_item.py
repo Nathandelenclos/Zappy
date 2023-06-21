@@ -1,10 +1,46 @@
 import sys
 import socket
+import random
 import re
 from game_data import *
 from utils import *
 from brodcast_man import receive_answer
 from main import check_inventory
+
+
+def go_to_item(splitData, item):
+    instructions = []
+    fCount = 0
+    limit = 1
+    tile = 0
+    width = 1
+    for i in range(0, len(splitData)):
+        if i == limit:
+            limit += limit + 2
+            fCount += 1
+            width += 2
+        if splitData[i].find(item) != -1:
+            for a in range(0, fCount):
+                instructions.append("Forward")
+            tile = i
+            break
+    viewLine = [b for b in range((limit - width), limit)]
+    middle = viewLine[int((len(viewLine) / 2))]
+    if width > 3:
+        middle -= 1
+    if tile < middle:
+        instructions.append("Left")
+        for t in range(0, (middle - tile)):
+            instructions.append("Forward")
+        instructions.append("Take " + item)
+    elif tile > middle:
+        instructions.append("Right")
+        for t in range(0, (tile - middle)):
+            instructions.append("Forward")
+        instructions.append("Take " + item)
+    else:
+        instructions.append("Take " + item)
+    return instructions
 
 
 def find_path(data, item):
@@ -18,48 +54,22 @@ def find_path(data, item):
     data = data.replace('[', ' ')
     data = data.replace(']', ' ')
     splitData = data.split(",")
-    instructions = []
     count = 0
     for i in range(0, len(splitData)):
         if splitData[i].find(item) != -1:
             break
         count += 1
     if count == len(splitData):
-        return ["Forward" for f in range(0, myGameData.lvl)]
+        randomNbr = random.randint(0, 3)
+        if (randomNbr == 0):
+            return ["Left", "Forward", "Forward", "Forward"]
+        elif (randomNbr == 1):
+            return ["Right", "Forward", "Forward", "Forward"]
+        return ["Forward" for f in range(0, random.randint(0, 6))]
     elif (splitData[0].find(item)) != -1:
         return ["Take " + item]
     else:
-        fCount = 0
-        limit = 1
-        tile = 0
-        width = 1
-        for i in range(0, len(splitData)):
-            if i == limit:
-                limit += limit + 2
-                fCount += 1
-                width += 2
-            if splitData[i].find(item) != -1:
-                for a in range(0, fCount):
-                    instructions.append("Forward")
-                tile = i
-                break
-        viewLine = [b for b in range((limit - width), limit)]
-        middle = viewLine[int((len(viewLine) / 2))]
-        if width > 3:
-            middle -= 1
-        if tile < middle:
-            instructions.append("Left")
-            for t in range(0, (middle - tile)):
-                instructions.append("Forward")
-            instructions.append("Take " + item)
-        elif tile > middle:
-            instructions.append("Right")
-            for t in range(0, (tile - middle)):
-                instructions.append("Forward")
-            instructions.append("Take " + item)
-        else:
-            instructions.append("Take " + item)
-        return instructions
+        return go_to_item(splitData, item)
 
 
 def search_choice(client_socket, data, item):
