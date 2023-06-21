@@ -46,7 +46,6 @@ def join(answer, client_socket):
         printGreen("Forward")
         client_socket.send(("Forward\n").encode())
         receive_answer(client_socket)
-    # exit(0)
     return
 
 
@@ -94,7 +93,7 @@ def answer_management(data, client_socket, type):
         print("YOU DIED x)")
         client_socket.close()
         print("Connexion fermée.")
-        exit()
+        exit(0)
     else:
         answer = data.split()
         if len(answer) == 0:
@@ -134,7 +133,7 @@ def receive_answer(client_socket, type=""):
                 print("YOU WON :)")
                 client_socket.close()
                 print("Connexion fermée.")
-                exit()
+                exit(0)
             return(data)
         elif data == "ko" and index == 1:
             myGameData.broadcast = True
