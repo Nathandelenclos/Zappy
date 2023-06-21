@@ -54,24 +54,77 @@ bool check_incantation(cmd_t *cmd)
     node *items = cmd->client->player->map->tile->items;
     player_t *player = cmd->client->player;
     int level = player->level;
-    node *players = get_players_on_tile(cmd);
-    player_t *tmp_player;
-    int player_count = 0;
-    for (node *tmp = players; tmp; tmp = tmp->next) {
-        tmp_player = tmp->data;
-        if (tmp_player->level == level) {
-            player_count++;
-        }
-    }
-    if (evolutions[level][0] > player_count) {
+    node *players = get_players_on_tile_with_level(cmd,
+        cmd->client->player->level);
+    if (evolutions[level - 1][0] > len_list(players)) {
         return false;
     }
     for (int i = 1; i < 8; ++i) {
-        if (evolutions[level][i] > get_item_count(items, i)) {
+        if (evolutions[level - 1][i] > get_item_count(items, i)) {
             return false;
         }
     }
     return true;
+}
+
+void pause_activity(server_t *server, node *clients)
+{
+    client_t *client;
+    for (node *tmp = clients; tmp; tmp = tmp->next) {
+        client = tmp->data;
+        cmd_t *last_command = client->commands->data;
+        if (last_command->state == STARTED) {
+            last_command->state = PAUSE;
+            last_command->timestamp_end = server->time;
+            delete_in_list(&server->cmd_queue, last_command);
+        }
+    }
+}
+
+void resume_activity(server_t *server, node *clients)
+{
+    client_t *client;
+    for (node *tmp = clients; tmp; tmp = tmp->next) {
+        client = tmp->data;
+        cmd_t *cmd_tmp;
+        for (node *node_cmd = client->commands; node_cmd; node_cmd = node_cmd->next) {
+            cmd_tmp = node_cmd->data;
+            if (cmd_tmp->state == PAUSE) {
+                cmd_tmp->state = STARTED;
+                timestamp_t diff = cmd_tmp->timestamp_end - cmd_tmp->timestamp_start;
+                timestamp_t need_time = (cmd_tmp->ticks != 0 ?
+                (((cmd_tmp->ticks * 1000) / server->args->freq)) : 0);
+                cmd_tmp->timestamp_end = server->time + (need_time - diff);
+                add_cmd(cmd_tmp, &server->cmd_queue);
+                break;
+            }
+        }
+
+    }
+}
+
+node *player_to_client(server_t *server, node *players)
+{
+    node *clients = NULL;
+    player_t *tmp_player;
+    for (node *tmp = players; tmp; tmp = tmp->next) {
+        tmp_player = tmp->data;
+        for (node *tmp_c = server->clients; tmp_c; tmp_c = tmp_c->next) {
+            if (!search_by_player(tmp_c->data, tmp_player))
+                put_in_list(&clients, tmp_c->data);
+        }
+    }
+    return clients;
+}
+
+int remove_items_from_inventory(node **inventory, item_type_t type, int count)
+{
+    int removed = 0;
+    for (int i = 0; i < count; ++i) {
+        if (remove_item_from_inventory(inventory, type))
+            removed++;
+    }
+    return removed;
 }
 
 /**
@@ -81,16 +134,36 @@ bool check_incantation(cmd_t *cmd)
  */
 void incantation(server_t *server, cmd_t *cmd)
 {
+    node *players = get_players_on_tile_with_level(cmd,
+            cmd->client->player->level);
+    node *clients = player_to_client(server, players);
+    client_t *tmp_client;
     if (check_incantation(cmd)) {
-        node *players = get_players_on_tile_with_level(cmd,
-            cmd->client->player->level);
-        for (node *tmp = players; tmp; tmp = tmp->next)
-            ((player_t *)tmp->data)->level++;
-        dprintf(cmd->client->socket_fd, "Current level: %d\n",
-            cmd->client->player->level);
+        for (node *tmp = clients; tmp; tmp = tmp->next) {
+            tmp_client = tmp->data;
+            tmp_client->player->level++;
+            dprintf(tmp_client->socket_fd, "Current level: %d\n",
+            tmp_client->player->level);
+        }
     } else {
-        dprintf(cmd->client->socket_fd, KO);
+        for (node *tmp = clients; tmp; tmp = tmp->next) {
+            tmp_client = tmp->data;
+            dprintf(tmp_client->socket_fd, KO);
+        }
     }
+}
+
+void incantation_error(server_t *server, cmd_t *cmd)
+{
+    dprintf(cmd->client->socket_fd, KO);
+}
+
+void incantation_mate(server_t *server, cmd_t *cmd)
+{
+    node *player = NULL;
+    put_in_list(&player, cmd->client);
+    resume_activity(server, player);
+    FREE(player);
 }
 
 /**
@@ -100,17 +173,40 @@ void incantation(server_t *server, cmd_t *cmd)
  */
 void incantation_start(server_t *server, cmd_t *cmd)
 {
+    void (*func)(server_t *server, struct cmd_s *cmd);
+    command_t mate = {"incantation_mate", 300, incantation_mate};
+    client_t *client_tmp;
     if (check_incantation(cmd)) {
         node *players = get_players_on_tile_with_level(cmd,
             cmd->client->player->level);
-        for (node *tmp = players; tmp; tmp = tmp->next) {
-            node *client = search_in_list_by(server->clients, tmp->data,
-                search_by_player);
-            dprintf(((client_t *)client->data)->socket_fd, "Elevation underway\n");
+        node *clients = player_to_client(server, players);
+        for (node *tmp = clients; tmp; tmp = tmp->next) {
+            node *client_mate = NULL;
+            client_tmp = tmp->data;
+            if (cmd->client == client_tmp) {
+                continue;
+            }
+            put_in_list(&client_mate, client_tmp);
+            pause_activity(server, client_mate);
+            FREE(client_mate);
+            dprintf(client_tmp->socket_fd, "Elevation underway\n");
+            new_command(server, client_tmp, mate, "incantation_mate");
         }
-        command_t end = {"incantation_end", 300, incantation};
-        new_command(server, cmd->client, end, cmd->cmd);
+        dprintf(cmd->client->socket_fd, "Elevation underway\n");
+        func = incantation;
     } else {
+        func = incantation_error;
         dprintf(cmd->client->socket_fd, KO);
     }
+    command_t end = {"incantation_end", 300, func};
+    new_command(server, cmd->client, end, cmd->cmd);
 }
+
+// 1 player send Incantation
+// Incantation de tout les player de même niveau sur la case
+// si ko alors bloque unqiuement l'incanteur sur 300/f
+// si Elevation underway bloque tout les joueur sur tile de même niveau
+// Au debut et à la fin check Incantation
+// Ko au début et à la fin
+// 1 check envoie Elevation undeway sur tout les perso de même niveau
+// suprimer les items à la fin des 300/f

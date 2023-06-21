@@ -21,10 +21,12 @@ string read_message(client_t *client)
     }
     string have_return = strstr(buffer, "\n");
     string have_return2 = strstr(buffer, "\r");
-    if (have_return != NULL)
+    if (have_return != NULL) {
         have_return[0] = '\0';
-    if (have_return2 != NULL)
+    }
+    if (have_return2 != NULL) {
         have_return2[0] = '\0';
+    }
     return my_strdup(buffer);
 }
 
@@ -35,24 +37,27 @@ string read_message(client_t *client)
  * @param command - The command.
  * @param command_str - The command str.
  */
-void new_command(server_t *server, client_t *client, command_t command, string command_str)
+void new_command(server_t *server, client_t *client, command_t command,
+    string command_str)
 {
-    cmd_t *cmd = create_cmd( client, my_strdup(command_str),
+    cmd_t *cmd = create_cmd(client, my_strdup(command_str),
         server->time,
         server->time + (command.time != 0 ?
-            (((command.time  * 1000) / server->args->freq)) : 0),
+            (((command.time * 1000) / server->args->freq)) : 0),
         command.func);
+    cmd->ticks = command.time;
     if (client && client->commands) {
         cmd_t *last_cmd = client->commands->data;
-        if (last_cmd->state != FINISHED) {
+        if (last_cmd->state != FINISHED && last_cmd->state != PAUSE) {
             cmd->state = NOT_STARTED;
             cmd->timestamp_start = last_cmd->timestamp_end;
             cmd->timestamp_end = cmd->timestamp_start + (command.time != 0
-                    ? ((command.time * 1000) / server->args->freq) : 0);
+                ? ((command.time * 1000) / server->args->freq) : 0);
         }
     }
-    if (client)
+    if (client) {
         put_in_list(&client->commands, cmd);
+    }
     add_cmd(cmd, &server->cmd_queue);
 }
 
@@ -65,10 +70,10 @@ void new_command(server_t *server, client_t *client, command_t command, string c
  */
 void new_event(server_t *server, client_t *client, command_t command)
 {
-    cmd_t *cmd = create_cmd( client, my_strdup(""),
+    cmd_t *cmd = create_cmd(client, my_strdup(""),
         server->time,
         server->time + (command.time != 0 ?
-            (((command.time  * 1000) / server->args->freq)) : 0),
+            (((command.time * 1000) / server->args->freq)) : 0),
         command.func);
     cmd->state = NOT_FOLLOWED;
     add_cmd(cmd, &server->cmd_queue);
@@ -99,7 +104,8 @@ void find_command(server_t *server, client_t *client, string command)
  */
 void new_graphic_client(server_t *server, client_t *client)
 {
-    client->team = search_in_list_by(server->teams, "GRAPHIC", search_by_team)->data;
+    client->team = search_in_list_by(server->teams, "GRAPHIC",
+        search_by_team)->data;
     client->type = GUI;
     client->state = WAITING_COMMAND;
     dprintf(client->socket_fd, "%d\n%d %d\n", server->args->clients_nb,
