@@ -54,11 +54,11 @@ def evolve_in_group(client_socket):
     printGreen("Number of players: " + str(myGameData.available["lvl"+str(myGameData.lvl)]))
     if myGameData.available["lvl"+str(myGameData.lvl)] >= 5:
         gathering_mode_and_incantation(client_socket)
-    # elif (nb_player < 5 and myGameData.fork_done < 5):
-    #     print("Fork")
-    #     client_socket.send(("Fork\n").encode())
-    #     data = receive_answer(client_socket)
-    #     myGameData.fork_done += 1
+    elif (nb_player < 5 and myGameData.fork_done < 5):
+        print("Fork")
+        client_socket.send(("Fork\n").encode())
+        data = receive_answer(client_socket)
+        myGameData.fork_done += 1
     elif (nb_player >= 5):
         printGreen("wait others to evolve")
         for i in range(0, 12):

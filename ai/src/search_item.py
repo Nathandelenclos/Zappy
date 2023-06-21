@@ -8,26 +8,37 @@ from brodcast_man import receive_answer
 from main import check_inventory
 
 
+def find_row_in_vis(tile):
+    """!
+    Find the row in which the seeked item is
+    @param tile: tile on which the item is
+    @return: number of row on which the item is and middle of this row
+    """
+    for row_number, values in myGameData.vision.items():
+        if tile in values:
+            middle_number = values[len(values) // 2]
+            return int(row_number), middle_number
+
+
 def go_to_item(splitData, item):
+    """!
+    Instructions to go to the seeked item
+    @param splitData Look result
+    @param item: seeked item
+    @return: list of instructions
+    """
+    global myGameData
     instructions = []
-    fCount = 0
-    limit = 1
     tile = 0
-    width = 1
+    row = None
+    middle = None
     for i in range(0, len(splitData)):
-        if i == limit:
-            limit += limit + 2
-            fCount += 1
-            width += 2
         if splitData[i].find(item) != -1:
-            for a in range(0, fCount):
-                instructions.append("Forward")
             tile = i
+            row, middle = find_row_in_vis(tile)
             break
-    viewLine = [b for b in range((limit - width), limit)]
-    middle = viewLine[int((len(viewLine) / 2))]
-    if width > 3:
-        middle -= 1
+    for f in range(0, row):
+        instructions.append("Forward")
     if tile < middle:
         instructions.append("Left")
         for t in range(0, (middle - tile)):
