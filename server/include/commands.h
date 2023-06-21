@@ -10,6 +10,8 @@
 
     #include "cmd.h"
 
+    #define SIGN(x) (x < 0 ? -1 : 1)
+
 typedef struct server_s server_t;
 typedef struct client_s client_t;
 typedef char *string;
@@ -36,33 +38,5 @@ typedef struct {
     double x;
     double y;
 } Point;
-
-static const Point pair_angle_broadcast[8][2] = {
-    {
-        {1.0, 0.0},
-        {2.0, 0.0},
-    },{
-        {2.0, 0.0},
-        {3.0, 1.0},
-    },{
-        {3.0, 1.0},
-        {3.0, 2.0},
-    },{
-        {3.0, 2.0},
-        {2.0, 3.0},
-    },{
-        {2.0, 3.0},
-        {1.0, 3.0},
-    },{
-        {1.0, 3.0},
-        {0.0, 2.0},
-    },{
-        {0.0, 2.0},
-        {0.0, 1.0},
-    },{
-        {0.0, 1.0},
-        {1.0, 0.0},
-    }
-};
 
 #endif /* !COMMANDS_H_ */

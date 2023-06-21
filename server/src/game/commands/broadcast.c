@@ -6,26 +6,13 @@
 */
 
 #include "server.h"
+#include "math.h"
 
-double crossProduct(Point v1, Point v2) {
-    return v1.x * v2.y - v1.y * v2.x;
-}
-
-int isPointInAngle(Point A1, Point A2, Point side1, Point side2) {
-    Point vector1 = { side1.x - A1.x, side1.y - A1.y };
-    Point vector2 = { side2.x - A1.x, side2.y - A1.y };
-    Point pointVector = { A2.x - A1.x, A2.y - A1.y };
-
-    double cross1 = crossProduct(vector1, pointVector);
-    double cross2 = crossProduct(pointVector, vector2);
-
-    if (cross1 >= 0 && cross2 >= 0) {
-        return 1; // A2 est dans la zone de l'angle
-    } else {
-        return 0; // A2 est en dehors de la zone de l'angle
-    }
-}
-
+/**
+ * Get IA client.
+ * @param server -
+ * @return
+ */
 node *get_all_ia_client(server_t *server)
 {
     node *tmp = server->clients;
@@ -39,32 +26,47 @@ node *get_all_ia_client(server_t *server)
     return ia_clients;
 }
 
+/**
+ *
+ * @param client
+ * @param cell
+ * @return
+ */
+int to_direction(client_t *client, int cell)
+{
+    if (cell == 0)
+        return 0;
+    if (client->player->direction == NORTH)
+        cell -= 2;
+    if (client->player->direction == SOUTH)
+        cell -= 6;
+    if (client->player->direction == WEST)
+        cell -= 4;
+    cell += cell < 1 ? 8 : 0;
+    return cell;
+}
+
 void broadcast(server_t *server, cmd_t *cmd)
 {
     client_t *client = cmd->client;
     node *client_ai = get_all_ia_client(server);
     for (node *tmp = client_ai; tmp; tmp = tmp->next) {
         client_t *client_tmp = tmp->data;
-        if (client_tmp == client) {
+        if (client_tmp == client)
             continue;
-        }
         Point A1 = { ((double)client_tmp->player->map->pos_x), ((double)client_tmp->player->map->pos_y)};
         Point A2 = { ((double)client->player->map->pos_x), ((double)client->player->map->pos_y)};
-
-        if (A1.x == A2.x && A1.y == A2.y) {
-            dprintf(client_tmp->socket_fd, "0\n");
+        Point B1 = { A2.x - A1.x, (-A2.y) - (-A1.y) };
+        if (B1.x == 0 && B1.y == 0) {
+            dprintf(client_tmp->socket_fd, "message 0, %s\n", strlen(cmd->cmd) <= 10 ? "" : cmd->cmd + 10);
             continue;
         }
-        bool isInAngles = false;
-        for (int i = 0; i < 8; ++i) {
-            int isInAngle = isPointInAngle(A1, A2, pair_angle_broadcast[i][0], pair_angle_broadcast[i][1]);
-            int res =  ((1 + ((int)client_tmp->player->direction) * 2) + i) % 8;
-            if (isInAngle) {
-                dprintf(client_tmp->socket_fd, "%d\n", res == 0 ? 8 : res);
-                isInAngles = true;
-                break;
-            }
-        }
-        dprintf(client_tmp->socket_fd, "%s\n", isInAngles ? "True" : "False");
+        B1.x -= abs(B1.x) > server->args->width / 2 ? server->args->width * SIGN(B1.x) : 0;
+        B1.y -= abs(B1.y) > server->args->height / 2 ? server->args->height * SIGN(B1.y) : 0;
+        double angle = atan2(B1.y, B1.x) * 180 / M_PI;
+        angle = angle < 0 ? angle + 360 : angle;
+        int cell = (int)(round(fmod((((angle - fmod(angle, 22.5)) / 22.5) / 2), 8)) + 1);
+        dprintf(client_tmp->socket_fd, "message %d, %s\n",
+            to_direction(client_tmp, cell), strlen(cmd->cmd) <= 10 ? "" : cmd->cmd + 10);
     }
 }
