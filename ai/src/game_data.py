@@ -2,6 +2,9 @@ import uuid
 
 
 class Game_data:
+    """!
+    Class to store all of the game data
+    """
     def __init__(self):
         self.broadcast = True
         self.fork_done = 0
@@ -31,8 +34,9 @@ class Game_data:
             "lvl7": 0
         }
         self.uuid_present = []
-        self.stones_in_game = ["linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
-        self.evolution_infos  = {
+        self.stones_in_game = ["linemate", "deraumere", "sibur", "mendiane",
+                               "phiras", "thystame"]
+        self.evolution_infos = {
             "lvl2": [1, 1, 0, 0, 0, 0, 0],
             "lvl3": [2, 1, 1, 1, 0, 0, 0],
             "lvl4": [2, 2, 0, 1, 0, 2, 0],
@@ -41,14 +45,16 @@ class Game_data:
             "lvl7": [6, 1, 2, 3, 0, 1, 0],
             "lvl8": [6, 2, 2, 2, 2, 2, 1]
         }
-        self.inventory  = { #inventaire commun a faire apres pour opti, ia qui rammasse le dernier item necessaire lance l'appel (broadcast)
+        self.inventory = {
+            # inventaire commun a faire apres pour opti, ia qui rammasse le dernier item necessaire lance l'appel (broadcast)
             "food": None,
-            "linemate": None ,
-            "deraumere": None ,
-            "sibur": None ,
-            "mendiane": None ,
-            "phiras": None ,
-            "thystame": None 
+            "linemate": None,
+            "deraumere": None,
+            "sibur": None,
+            "mendiane": None,
+            "phiras": None,
+            "thystame": None
         }
+
 
 myGameData = Game_data()

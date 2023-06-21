@@ -5,34 +5,12 @@
 ## Makefile
 ##
 
-PROJECT	=	Zappy Server
-NAME	=	../zappy_server
+PROJECT	=	Zappy AI
+NAME	=	../zappy_ai
 
-MAIN	= 	src/main.c
-SRCS	=	$(shell find ./src -type f -name "*.c" ! -name 'main.c')
-HEADS	=	$(shell find ./include -type f -name "*.h")
 TESTS	=	$(shell find ./tests -type f -name "*.c")
 
-LIBS	=	./libs/linked_list	\
-			./libs/my		\
-			./libs/network
-
-OBJS	=	$(SRCS:.c=.o) $(MAIN:.c=.o)
-
-TESTOBJ	=	$(SRCS:.c=.o) $(TESTS:.c=.o)
-TESTNAME	=	unit_tests
-
 ################################################################################
-
-CFLAGS	+=	-W -Wall -Wextra
-CFLAGS	+=	-I../../include/ -I ../../libs/
-
-LDFLAGS	+=	-L./libs/
-LDFLAGS	+=	-llist
-LDFLAGS	+=	-lmy
-LDFLAGS	+=	-lnet
-
-TESTCFLAGS = $(CFLAGS) $(LDFLAGS) --coverage -lcriterion
 
 ################################################################################
 
@@ -43,7 +21,7 @@ INPUT_DOC	=	./src
 SHELL	=	/bin/bash
 PRINT	=	printf "$(PROJECT):\t" ; printf
 RM	=	rm -f
-CC	=	gcc
+CC	=	chmod 755 zappy_ai
 
 RESET	=	\033[0m
 RED	=	\033[0;31m
@@ -57,46 +35,22 @@ CYAN	=	\033[1;36m
 
 all: $(NAME)
 
-debug: CFLAGS += -g
 debug: $(NAME)
 
-buildlib:
-	@ $(PRINT) "$(YELLOW)%b$(RESET)\n" "Compiling libs files"
-	@ $(foreach lib, ${LIBS}, ${MAKE} -C $(lib);)
-	@ $(PRINT) "$(YELLOW)%b$(RESET)\n" "$(GREEN)Done$(RESET)"
-
-$(NAME): buildlib $(OBJS)
+$(NAME):
 	@ $(PRINT) "$(YELLOW)%-40b$(RESET)" "Building $(NAME)"
-	@ $(CC) -o $(NAME) $(OBJS) $(LDFLAGS) && \
+	@ $(CC) && \
 	  (printf "$(GREEN)Done$(RESET)\n" ; exit 0) || \
 	  (printf "$(RED)Fail$(RESET)\n" ; exit 1)
 
 clean:
-	@ $(PRINT) "$(YELLOW)%-40b$(RESET)" "Deleting libs files"
-	@ $(foreach lib, ${LIBS}, ${MAKE} -C $(lib) clean;)
-	@ $(PRINT) "$(YELLOW)%b$(RESET)\n" "$(GREEN)Done$(RESET)"
 	@ $(PRINT) "$(YELLOW)%-40b$(RESET)" "Deleting object files"
-	@ $(RM) $(OBJS)
 	@ printf "$(GREEN)Done$(RESET)\n"
 
 fclean: clean
-	@ $(PRINT) "$(YELLOW)%-40b$(RESET)" "Deleting libs files"
-	@ $(foreach lib, ${LIBS}, ${MAKE} -C $(lib) fclean;)
-	@ $(PRINT) "$(YELLOW)%b$(RESET)\n" "$(GREEN)Done$(RESET)"
 	@ $(PRINT) "$(YELLOW)%-40b$(RESET)" "Deleting $(NAME)"
-	@ $(RM) $(NAME)
-	@ $(RM) vgcore.*
 	@ $(RM) -r ./doc
 	@ printf "$(GREEN)Done$(RESET)\n"
 
-tests_run:	$(TESTOBJ)
-	@ gcc -o $(TESTNAME) $(TESTOBJ) $(TESTCFLAGS)
-	./$(TESTNAME)
-
 re: fclean all
 de: fclean debug
-
-.c.o:
-	@ $(CC) -c $< -o $@ $(CFLAGS) && \
-	  ($(PRINT) "  $(GREEN)[OK]$(CYAN)  %b$(RESET)\n" $<) || \
-	  ($(PRINT) "  $(RED)[XX]$(CYAN)  %b$(RESET)\n" $< ; exit 1)

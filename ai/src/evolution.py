@@ -3,10 +3,16 @@ from game_data import *
 from brodcast_man import receive_answer
 from search_item import *
 
+
 def can_evolve(client_socket):
+    """!
+    Check if the player can evolve
+    @param client_socket: client socket
+    @return: True if the player can evolve, False otherwise
+    """
     global myGameData
     can_lvl_up = 0
-    lvl = "lvl"+str(myGameData.lvl+1)
+    lvl = "lvl" + str(myGameData.lvl + 1)
     stones_needed = myGameData.evolution_infos[lvl].copy()
     stones_needed.pop(0)
     index = 0
@@ -25,16 +31,24 @@ def can_evolve(client_socket):
     else:
         return (False)
 
+
 def evolve_in_group(client_socket):
-    print("Broadcast "+ myGameData.team_name +" nb_player")
-    client_socket.send(("Broadcast "+ myGameData.team_name +" nb_player\n").encode())
+    """!
+    Evolve in group
+    @param client_socket: client socket
+    @return: None
+    """
+    print("Broadcast " + myGameData.team_name + " nb_player")
+    client_socket.send(
+        ("Broadcast " + myGameData.team_name + " nb_player\n").encode())
     data = receive_answer(client_socket, "asker")
     for i in range(0, 4):
         print("Left")
-        client_socket.send(("Left"+"\n").encode())
+        client_socket.send(("Left" + "\n").encode())
         data = receive_answer(client_socket, "asker")
-    print("Broadcast "+ myGameData.team_name +" end nb_player")
-    client_socket.send(("Broadcast "+ myGameData.team_name +" end nb_player\n").encode())
+    print("Broadcast " + myGameData.team_name + " end nb_player")
+    client_socket.send(
+        ("Broadcast " + myGameData.team_name + " end nb_player\n").encode())
     data = receive_answer(client_socket, "asker")
     nb_player = 0
     for value in myGameData.available.values():
@@ -54,16 +68,22 @@ def evolve_in_group(client_socket):
         printGreen("wait others to evolve")
         for i in range(0, 12):
             print("Left")
-            client_socket.send(("Left"+"\n").encode())
+            client_socket.send(("Left" + "\n").encode())
             data = receive_answer(client_socket, "asker")
     else:
         printGreen("wait clients to connect")
         for i in range(0, 12):
             print("Left")
-            client_socket.send(("Left"+"\n").encode())
+            client_socket.send(("Left" + "\n").encode())
             data = receive_answer(client_socket, "asker")
 
+
 def go_evolve(client_socket):
+    """!
+    Go to evolving spot
+    @param client_socket: client socket
+    @return: None
+    """
     global myGameData
     if myGameData.lvl == 1:
         take_all_on_tile(client_socket)
@@ -84,6 +104,11 @@ def go_evolve(client_socket):
             evolve_in_group(client_socket)
 
 def gathering_mode(client_socket):
+    """!
+    Trigger gathering mode
+    @param client_socket: client socket
+    @return: True if the player can gather to evolve, False otherwise
+    """
     global myGameData
     while myGameData.nb_arrived < 3:
         client_socket.send(("Broadcast " + myGameData.team_name + " gather\n").encode())
@@ -96,8 +121,18 @@ def gathering_mode(client_socket):
             data = receive_answer(client_socket, "asker")
     return (True)
 
+
 def gathering_mode_and_incantation(client_socket):
+    """!
+    Trigger gathering mode and incantation
+    @param client_socket: client socket
+    @return: None
+    """
     if gathering_mode(client_socket) == True:
+        client_socket.send(
+            ("Broadcast " + myGameData.team_name + " stop\n").encode())
+        print("Broadcast " + myGameData.team_name + " stop")
+        data = receive_answer(client_socket, "asker")
         take_all_on_tile(client_socket)
         drop_items_on_tile(client_socket)
         print("Incantation lvl"+str(myGameData.lvl))
