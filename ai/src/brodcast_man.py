@@ -124,7 +124,7 @@ def receive_answer(client_socket, type=""):
             myGameData.broadcast = True
             myGameData.mode = None
             myGameData.has_arrived = False
-            return()
+            return(data)
         elif data == "ko" and index == 1:
             myGameData.broadcast = True
             myGameData.mode = None
