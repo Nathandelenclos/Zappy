@@ -56,7 +56,7 @@ void broadcast(server_t *server, cmd_t *cmd)
     client_t *client = cmd->client;
     node *client_ai = get_all_ia_client(server);
     if (strlen(cmd->cmd) <= 10) {
-        dprintf(client->socket_fd, "ko\n");
+        dprintf(client->socket_fd, KO);
         return;
     }
     for (node *tmp = client_ai; tmp; tmp = tmp->next) {
@@ -78,4 +78,5 @@ void broadcast(server_t *server, cmd_t *cmd)
         dprintf(client_tmp->socket_fd, "message %d, %s\n",
             to_direction(client_tmp, cell), strlen(cmd->cmd) <= 10 ? "" : cmd->cmd + 10);
     }
+    dprintf(client->socket_fd, OK);
 }

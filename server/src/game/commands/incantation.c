@@ -102,10 +102,10 @@ void incantation_start(server_t *server, cmd_t *cmd)
             put_in_list(&client_mate, client_tmp);
             pause_activity(server, client_mate);
             FREE(client_mate);
-            dprintf(client_tmp->socket_fd, "Elevation underway\n");
+            dprintf(client_tmp->socket_fd, ELEVATION_UNDERWAY);
             new_command(server, client_tmp, mate, "incantation_mate");
         }
-        dprintf(cmd->client->socket_fd, "Elevation underway\n");
+        dprintf(cmd->client->socket_fd, ELEVATION_UNDERWAY);
         func = incantation;
     } else {
         func = incantation_error;

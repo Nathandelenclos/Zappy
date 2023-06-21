@@ -35,5 +35,5 @@ void forward(server_t *server, cmd_t *cmd)
         client->player->map = map->left;
     }
     delete_in_list(&map->tile->items, client->player);
-    dprintf(client->socket_fd, "ok\n");
+    dprintf(client->socket_fd, OK);
 }

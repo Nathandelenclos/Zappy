@@ -20,13 +20,13 @@ void take(server_t *server, cmd_t *cmd)
                 add_item_to_inventory(&cmd->client->player->inventory, i);
                 remove_item_from_inventory(
                     &cmd->client->player->map->tile->items, i);
-                dprintf(cmd->client->socket_fd, "ok\n");
+                dprintf(cmd->client->socket_fd, OK);
                 return;
             } else {
-                dprintf(cmd->client->socket_fd, "ko\n");
+                dprintf(cmd->client->socket_fd, KO);
                 return;
             }
         }
     }
-    dprintf(cmd->client->socket_fd, "ko\n");
+    dprintf(cmd->client->socket_fd, KO);
 }
